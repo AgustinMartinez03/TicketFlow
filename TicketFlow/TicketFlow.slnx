@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="TicketFlow.API/TicketFlow.API.csproj" />
+  <Project Path="TicketFlow.Application/TicketFlow.Application.csproj" />
+  <Project Path="TicketFlow.Domain/TicketFlow.Domain.csproj" />
+  <Project Path="TicketFlow.Infrastructure/TicketFlow.Infrastructure.csproj" />
+</Solution>
