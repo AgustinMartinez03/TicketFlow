@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
-using TicketFlow.Application.UseCases;
+using TicketFlow.Application.Interfaces.IUseCase;
 
 namespace TicketFlow.API.Controllers
 {
@@ -8,9 +8,9 @@ namespace TicketFlow.API.Controllers
     [Route("api/v1/[controller]")]
     public class EventsController : ControllerBase
     {
-        private readonly CreateEventUseCase _useCase;
+        private readonly ICreateEventUseCase _useCase;
 
-        public EventsController(CreateEventUseCase useCase)
+        public EventsController(ICreateEventUseCase useCase)
         {
             _useCase = useCase;
         }

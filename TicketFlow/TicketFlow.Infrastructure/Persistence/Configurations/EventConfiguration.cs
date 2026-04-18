@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TicketFlow.Domain.Entities; // Referencia a la capa Domain
+using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Infrastructure.Persistence.Configurations
 {
@@ -29,6 +29,17 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Status)
                 .IsRequired()
                 .HasMaxLength(20);
+
+            builder.HasData(
+                new Event
+                {
+                    Id = 1,
+                    Name = "Concierto de Rock Universitario",
+                    EventDate = new DateTime(2026, 10, 15, 20, 0, 0),
+                    Venue = "Estadio UNAJ",
+                    Status = "Active"
+                }
+            );
         }
     }
 }
