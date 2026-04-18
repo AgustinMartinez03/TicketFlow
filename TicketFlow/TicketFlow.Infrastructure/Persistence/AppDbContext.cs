@@ -11,8 +11,6 @@ namespace TicketFlow.Infrastructure.Persistence
 
         // Nuestra tabla
         public DbSet<Event> Events { get; set; }
-        public DbSet<Sector> Sectors { get; set; }
-        public DbSet<Seat> Seats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

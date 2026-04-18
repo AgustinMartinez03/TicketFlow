@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
-using TicketFlow.Application.Interfaces.IUseCase;
-using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.UseCases;
 
 namespace TicketFlow.API.Controllers
 {
@@ -9,29 +8,18 @@ namespace TicketFlow.API.Controllers
     [Route("api/v1/[controller]")]
     public class EventsController : ControllerBase
     {
-        private readonly ICreateEventUseCase _createUseCase;
-        private readonly IGetEventCatalogUseCase _getCatalogUseCase;
+        private readonly CreateEventUseCase _useCase;
 
-        public EventsController(ICreateEventUseCase createUseCase, IGetEventCatalogUseCase getCatalogUseCase)
+        public EventsController(CreateEventUseCase useCase)
         {
-            _createUseCase = createUseCase;
-            _getCatalogUseCase = getCatalogUseCase;
+            _useCase = useCase;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            var eventId = await _createUseCase.ExecuteAsync(request);
-            // Retornamos un objeto anónimo específico o simplemente el ID, ya no usamos el GenericResponse
-            return CreatedAtAction(nameof(GetEvents), new { id = eventId }, new { Id = eventId, Message = "Evento creado exitosamente" });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
-        {
-            // response ahora es de tipo EventCatalogResponse
-            var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
-            return Ok(response);
+            var eventId = await _useCase.ExecuteAsync(request);
+            return CreatedAtAction(nameof(CreateEvent), new { id = eventId }, new { Id = eventId, Message = "Evento creado" });
         }
     }
 }

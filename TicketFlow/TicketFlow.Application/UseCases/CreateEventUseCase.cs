@@ -1,11 +1,10 @@
 ﻿using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.ICommands;
-using TicketFlow.Application.Interfaces.IUseCase;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
 {
-    public class CreateEventUseCase: ICreateEventUseCase
+    public class CreateEventUseCase
     {
         private readonly IEventCommand _eventCommand;
 
