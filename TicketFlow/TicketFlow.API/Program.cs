@@ -29,6 +29,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IGetEventCatalogUseCase, GetEventCatalogUseCase>();
             builder.Services.AddScoped<ISeatQuery, SeatQuery>();
             builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
+            builder.Services.AddScoped<ISeatCommand, SeatCommand>();
+            builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
