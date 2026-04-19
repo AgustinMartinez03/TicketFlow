@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
-using TicketFlow.Application.Interfaces.IUseCase;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Application.UseCases;
 using TicketFlow.Infrastructure.Command;
@@ -28,6 +27,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<ICreateEventUseCase, CreateEventUseCase>();
             builder.Services.AddScoped<IEventQuery, EventQuery>();
             builder.Services.AddScoped<IGetEventCatalogUseCase, GetEventCatalogUseCase>();
+            builder.Services.AddScoped<ISeatQuery, SeatQuery>();
+            builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
