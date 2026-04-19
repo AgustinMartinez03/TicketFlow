@@ -1,6 +1,6 @@
 ﻿using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.ICommands;
-using TicketFlow.Application.Interfaces.IUseCase;
+using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases

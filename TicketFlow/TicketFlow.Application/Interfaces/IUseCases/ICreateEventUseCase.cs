@@ -1,6 +1,6 @@
 ﻿using TicketFlow.Application.DTOs.Request;
 
-namespace TicketFlow.Application.Interfaces.IUseCase
+namespace TicketFlow.Application.Interfaces.IUseCases
 {
     public interface ICreateEventUseCase
     {

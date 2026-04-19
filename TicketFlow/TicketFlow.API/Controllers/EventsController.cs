@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
-using TicketFlow.Application.Interfaces.IUseCase;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
