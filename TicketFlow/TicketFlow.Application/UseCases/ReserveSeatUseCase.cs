@@ -48,6 +48,7 @@ namespace TicketFlow.Application.UseCases
             // 4. Crear Log de Auditoría
             var auditLog = new AuditLog
             {
+                UserId = request.UserId,
                 Action = "RESERVE",
                 EntityType = "Seat",
                 EntityId = seat.Id.ToString(),
