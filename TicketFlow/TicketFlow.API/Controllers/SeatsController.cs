@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -14,18 +15,18 @@ namespace TicketFlow.API.Controllers
             _reserveUseCase = reserveUseCase;
         }
 
-        // POST: api/v1/seats/{id}/reserve
-        [HttpPost("{id}/reserve")]
-        public async Task<IActionResult> ReserveSeat(Guid id)
+        // POST: api/v1/seats/reserve
+        [HttpPost("reserve")]
+        public async Task<IActionResult> ReserveSeat([FromBody] ReserveSeatRequest request)
         {
             try
             {
-                var message = await _reserveUseCase.ExecuteAsync(id);
-                return Ok(new { Message = message });
+                var message = await _reserveUseCase.ExecuteAsync(request);
+                // Aquí usamos 201 Created porque estamos creando una Reservation
+                return StatusCode(201, new { Message = message });
             }
             catch (Exception ex)
             {
-                // Si la butaca no existe o ya está vendida, capturamos el error y devolvemos un 400 Bad Request
                 return BadRequest(new { Error = ex.Message });
             }
         }

@@ -1,8 +1,9 @@
-﻿namespace TicketFlow.Application.Interfaces.IUseCases
+﻿using TicketFlow.Application.DTOs.Request;
+
+namespace TicketFlow.Application.Interfaces.IUseCases
 {
     public interface IReserveSeatUseCase
     {
-        // Devolveremos un string con el resultado para hacerlo sencillo por ahora
-        Task<string> ExecuteAsync(Guid seatId);
+        Task<string> ExecuteAsync(ReserveSeatRequest request);
     }
 }
