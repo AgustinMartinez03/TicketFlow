@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
@@ -7,6 +6,9 @@ using TicketFlow.Application.UseCases;
 using TicketFlow.Infrastructure.Command;
 using TicketFlow.Infrastructure.Persistence;
 using TicketFlow.Infrastructure.Querys;
+using FluentValidation;
+using TicketFlow.Application.Validators;
+using TicketFlow.Application.DTOs.Request;
 
 namespace TicketFlow.API
 {
@@ -33,6 +35,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
             builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
             builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
+
+            builder.Services.AddScoped<IValidator<ReserveSeatRequest>, ReserveSeatRequestValidator>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
