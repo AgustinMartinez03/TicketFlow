@@ -72,7 +72,9 @@ namespace TicketFlow.API
 
             app.UseHttpsRedirection();
 
+
             app.UseCors("AllowFrontend");
+
 
             app.UseAuthorization();
 
