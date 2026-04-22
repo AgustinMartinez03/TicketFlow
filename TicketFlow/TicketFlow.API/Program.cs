@@ -35,6 +35,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
             builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
             builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
+            builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
+            builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
 
             builder.Services.AddScoped<IValidator<ReserveSeatRequest>, ReserveSeatRequestValidator>();
 

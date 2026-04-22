@@ -24,6 +24,23 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
 
             // Indice único: No pueden existir dos usuarios con el mismo email
             builder.HasIndex(u => u.Email).IsUnique();
+
+            builder.HasData(
+                new User
+                {
+                    Id = 1,
+                    Name = "Agustin (Tech Lead)",
+                    Email = "agus@ticketflow.com",
+                    PasswordHash = "123456" // En producción esto iría encriptado con BCrypt
+                },
+                new User
+                {
+                    Id = 2,
+                    Name = "Alejandro",
+                    Email = "ale@ticketflow.com",
+                    PasswordHash = "123456"
+                }
+            );
         }
     }
 }

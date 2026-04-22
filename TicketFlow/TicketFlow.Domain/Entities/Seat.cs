@@ -8,5 +8,6 @@
         public int SeatNumber { get; set; }
         public string Status { get; set; } = "Available";
         public int Version { get; set; }
+        public Sector Sector { get; set; } = null!;
     }
 }
