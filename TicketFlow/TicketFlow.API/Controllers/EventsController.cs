@@ -8,19 +8,24 @@ namespace TicketFlow.API.Controllers
     [Route("api/v1/[controller]")]
     public class EventsController : ControllerBase
     {
-        private readonly ICreateEventUseCase _createUseCase;
+        private readonly ICreateEventUseCase _createEventUseCase;
         private readonly IGetEventCatalogUseCase _getCatalogUseCase;
+        private readonly IGetSectorsByEventUseCase _getSectorsUseCase;
 
-        public EventsController(ICreateEventUseCase createUseCase, IGetEventCatalogUseCase getCatalogUseCase)
+        public EventsController(
+            IGetEventCatalogUseCase getCatalogUseCase,
+            ICreateEventUseCase createEventUseCase,
+            IGetSectorsByEventUseCase getSectorsUseCase)
         {
-            _createUseCase = createUseCase;
             _getCatalogUseCase = getCatalogUseCase;
+            _createEventUseCase = createEventUseCase;
+            _getSectorsUseCase = getSectorsUseCase;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            var eventId = await _createUseCase.ExecuteAsync(request);
+            var eventId = await _createEventUseCase.ExecuteAsync(request);
             // Retornamos un objeto anónimo específico o simplemente el ID, ya no usamos el GenericResponse
             return CreatedAtAction(nameof(GetEvents), new { id = eventId }, new { Id = eventId, Message = "Evento creado exitosamente" });
         }
@@ -31,6 +36,20 @@ namespace TicketFlow.API.Controllers
             // response ahora es de tipo EventCatalogResponse
             var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
             return Ok(response);
+        }
+
+        [HttpGet("{id}/sectors")]
+        public async Task<IActionResult> GetSectors(int id)
+        {
+            var sectors = await _getSectorsUseCase.ExecuteAsync(id);
+
+            // Buena práctica: Si la lista viene vacía, el evento no existe o no tiene sectores
+            if (sectors == null || !sectors.Any())
+            {
+                return NotFound(new { Message = $"No se encontraron sectores para el evento con ID {id}." });
+            }
+
+            return Ok(sectors);
         }
     }
 }
