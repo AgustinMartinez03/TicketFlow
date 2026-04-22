@@ -1,14 +1,15 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Application.UseCases;
+using TicketFlow.Application.Validators;
 using TicketFlow.Infrastructure.Command;
 using TicketFlow.Infrastructure.Persistence;
+using TicketFlow.Infrastructure.Query;
 using TicketFlow.Infrastructure.Querys;
-using FluentValidation;
-using TicketFlow.Application.Validators;
-using TicketFlow.Application.DTOs.Request;
 
 namespace TicketFlow.API
 {
@@ -37,6 +38,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
             builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
             builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
+            builder.Services.AddScoped<ISectorQuery, SectorQuery>();
+            builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
             builder.Services.AddScoped<IValidator<ReserveSeatRequest>, ReserveSeatRequestValidator>();
 
