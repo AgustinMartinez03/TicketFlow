@@ -15,6 +15,11 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.HasKey(e => e.Id);
 
             // Propiedades y restricciones
+
+            builder.Property(e => e.Id)
+                .IsRequired()
+                .ValueGeneratedOnAdd();
+
             builder.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(150);
