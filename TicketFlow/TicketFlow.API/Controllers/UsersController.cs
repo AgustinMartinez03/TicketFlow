@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -15,6 +16,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet("{id}/reservations")]
+        [ProducesResponseType(typeof(UserReservationResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> GetUserReservations(int id)
         {
             var results = await _useCase.ExecuteAsync(id);

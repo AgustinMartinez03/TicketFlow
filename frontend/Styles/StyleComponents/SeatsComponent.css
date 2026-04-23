@@ -1,0 +1,71 @@
+body {
+    background-color: #0b0f1a;
+    color: white;
+}
+
+/* Stage */
+.stage {
+    margin: 20px auto;
+    width: 60%;
+    padding: 10px;
+    background: linear-gradient(to right, #7b2ff7, #f107a3);
+    border-radius: 20px;
+}
+
+/* Legend */
+.legend .box {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.available { background-color: #0f5132; }
+.reserved { background-color: #7a4f01; }
+.sold { background-color: #2c2f36; }
+
+/* Grid */
+#seats-container {
+    display: grid;
+    grid-template-columns: 40px repeat(12, 50px) 40px;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Seat */
+.seat {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.seat:hover {
+    transform: scale(1.1);
+}
+
+/* Estados */
+.available { background-color: #0f5132; }
+.reserved { background-color: #7a4f01; }
+.sold {
+    background-color: #2c2f36;
+    cursor: not-allowed;
+}
+
+/* Seleccionado (violeta como la imagen) */
+.selected {
+    background: linear-gradient(145deg, #b84cff, #7b2ff7);
+}
+
+/* Letras de filas */
+.row-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+}

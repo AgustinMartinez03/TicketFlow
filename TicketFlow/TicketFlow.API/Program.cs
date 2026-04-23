@@ -2,8 +2,10 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.ICommands;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.Mapper;
 using TicketFlow.Application.UseCases;
 using TicketFlow.Application.Validators;
 using TicketFlow.Infrastructure.Command;
@@ -27,17 +29,21 @@ namespace TicketFlow.API
             // 2. Inyección de Dependencias (Nuestras capas)
             // Scoped significa que se crea una instancia por cada petición HTTP
             builder.Services.AddScoped<IEventCommand, EventCommand>();
-            builder.Services.AddScoped<ICreateEventUseCase, CreateEventUseCase>();
+            builder.Services.AddScoped<IEventMapper, EventMapper>();
             builder.Services.AddScoped<IEventQuery, EventQuery>();
+            builder.Services.AddScoped<ICreateEventUseCase, CreateEventUseCase>();
             builder.Services.AddScoped<IGetEventCatalogUseCase, GetEventCatalogUseCase>();
+
             builder.Services.AddScoped<ISeatQuery, SeatQuery>();
             builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
             builder.Services.AddScoped<ISeatCommand, SeatCommand>();
             builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
+
             builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
             builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
             builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
             builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
+
             builder.Services.AddScoped<ISectorQuery, SectorQuery>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
@@ -47,11 +53,11 @@ namespace TicketFlow.API
             // Configuración de CORS
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowFrontend", policy =>
+                options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500") // Las URLs de tu Live Server
-                          .AllowAnyHeader()  // Permite cualquier tipo de dato (JSON)
-                          .AllowAnyMethod(); // Permite GET, POST, PUT, DELETE, etc.
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                 });
             });
 
@@ -70,14 +76,11 @@ namespace TicketFlow.API
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowAll");
+
             app.UseHttpsRedirection();
 
-
-            app.UseCors("AllowFrontend");
-
-
             app.UseAuthorization();
-
 
             app.MapControllers();
 
