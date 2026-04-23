@@ -9,26 +9,30 @@
     
     <link href="./Styles/Paleta.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-
-    <nav class="navbar navbar-dark bg-dark mb-4">
+<body class="bg-dark text-white">
+    <nav class="navbar navbar-dark mb-4" style="background-color: #0b0c10;">
         <div class="container">
-            <span class="navbar-brand mb-0 h1">🎫 TicketFlow</span>
-            <span class="navbar-text text-white">
-                Usuario: ID 1 (Agustín)
-            </span>
+            <span class="navbar-brand mb-0 h1" style="color: var(--neon-purple);">🎫 TicketFlow</span>
+            <span class="navbar-text text-white">Usuario: ID 1 (Agustín)</span>
         </div>
     </nav>
 
-    <main class="container" id="main-content">
-        <div class="text-center mt-5">
-            <h2>Bienvenido a TicketFlow</h2>
-            <p>El frontend está configurado correctamente.</p>
+    <main class="container py-5" id="main-content">
+        <div class="mb-5">
+            <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Descubrir & Reservar</p>
+            <h1 class="display-4 fw-bold">Próximos Eventos</h1>
+            <p style="color: var(--text-muted);">Encontrá los mejores conciertos y shows cerca tuyo.</p>
+        </div>
+
+        <div class="row g-4" id="events-grid">
+            <div class="col-12 text-center my-5" id="loading-spinner">
+                <div class="spinner-border" style="color: var(--neon-purple);" role="status"></div>
+                <p class="mt-2 text-muted">Cargando catálogo...</p>
+            </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <script type="module" src="./Js/Controllers/UserPageMain.js"></script>
 </body>
 </html>
