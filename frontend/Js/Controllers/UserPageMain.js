@@ -2,7 +2,7 @@ import { fetchEvents } from '../Services/EventService.js';
 import { createEventCard } from '../Components/Cards/EventCard.js';
 import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
-import { fetchSeatsBySector } from '../Services/SeatService.js';
+import { fetchSeatsBySector, reserveSeatApi } from '../Services/SeatService.js';
 
 // Variables globales para las Vistas
 const viewCatalog = document.getElementById('view-catalog');
@@ -237,21 +237,56 @@ function attachSeatClickEvents() {
                 cancelButtonText: 'Cancelar',
                 background: '#1a1d24',         // Fondo oscuro de la tarjeta
                 color: '#ffffff'               // Texto blanco
-            }).then((result) => {
+            }).then(async(result) => {
                 
                 // Si el usuario hace clic en "Sí, reservar"
                 if (result.isConfirmed) {
-                    console.log(`[A PREPARAR EL POST] Resignando Butaca ID: ${seatId}`);
                     
-                    // Mostramos un mensaje de éxito temporal
+                    // Mostramos un cartel de "Cargando..." para que el usuario no haga doble clic
                     Swal.fire({
-                        title: '¡Butaca Seleccionada!',
-                        text: 'Ahora debemos conectarlo con la API.',
-                        icon: 'success',
+                        title: 'Procesando reserva...',
+                        text: 'Por favor aguardá un instante.',
                         background: '#1a1d24',
                         color: '#ffffff',
-                        confirmButtonColor: '#8b5cf6'
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
+
+                    try {
+                        // ID de prueba (Reemplazar por el Guid de tu C# en SQL Server)
+                        const dummyUserId = "1"; // <--- OJO AQUÍ
+                        
+                        // 1. Llamamos a la API!
+                        await reserveSeatApi(seatId, dummyUserId);
+                        
+                        // 2. Si salió bien, mostramos cartel de éxito
+                        await Swal.fire({
+                            title: '¡Reserva Confirmada!',
+                            text: `Tu butaca ha sido reservada con éxito.`,
+                            icon: 'success',
+                            background: '#1a1d24',
+                            color: '#ffffff',
+                            confirmButtonColor: '#10b981' // Verde éxito
+                        });
+
+                        // 3. (Opcional pero recomendado) Recargar el mapa de butacas para que se pinte de gris (Vendida)
+                        // Para hacerlo, simulamos un clic en el botón "Ver Butacas" del sector actual
+                        const currentSectorBtn = document.querySelector(`.btn-view-seats[data-sector-id="${e.target.closest('#seats-grid').getAttribute('data-current-sector') || ''}"]`);
+                        if(currentSectorBtn) currentSectorBtn.click(); // Esto recargaría la vista
+
+                    } catch (error) {
+                        // Si salió mal (ej: alguien más la compró un segundo antes)
+                        Swal.fire({
+                            title: '¡Ups!',
+                            text: error.message || 'No se pudo completar la reserva.',
+                            icon: 'error',
+                            background: '#1a1d24',
+                            color: '#ffffff',
+                            confirmButtonColor: '#ef4444' // Rojo error
+                        });
+                    }
                 }
             });
         });
