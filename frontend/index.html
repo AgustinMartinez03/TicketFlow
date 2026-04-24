@@ -21,18 +21,30 @@
     </nav>
 
     <main class="container py-5" id="main-content">
-        <div class="mb-5">
-            <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Descubrir & Reservar</p>
-            <h1 class="display-4 fw-bold">Próximos Eventos</h1>
-            <p style="color: var(--text-muted);">Encontrá los mejores conciertos y shows cerca tuyo.</p>
-        </div>
-
-        <div class="row g-4" id="events-grid">
-            <div class="col-12 text-center my-5" id="loading-spinner">
-                <div class="spinner-border" style="color: var(--neon-purple);" role="status"></div>
-                <p class="mt-2 text-muted">Cargando catálogo...</p>
+        
+        <div id="view-catalog">
+            <div class="mb-5">
+                <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Descubrir & Reservar</p>
+                <h1 class="display-4 fw-bold">Próximos Eventos</h1>
+                <p style="color: var(--text-muted);">Encontrá los mejores conciertos y shows cerca tuyo.</p>
+            </div>
+            <div class="row g-4" id="events-grid">
+                <div class="col-12 text-center my-5" id="loading-spinner">
+                    <div class="spinner-border" style="color: var(--neon-purple);" role="status"></div>
+                </div>
             </div>
         </div>
+
+        <div id="view-sectors" class="d-none">
+            <button id="btn-back-catalog" class="btn btn-outline-light mb-4">⬅ Volver al Catálogo</button>
+            <div class="mb-4">
+                <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Paso 2</p>
+                <h2 class="display-5 fw-bold">Elegí tu Sector</h2>
+            </div>
+            <div class="row g-4" id="sectors-grid">
+                </div>
+        </div>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
