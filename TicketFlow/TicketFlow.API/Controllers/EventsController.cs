@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
+using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -31,6 +32,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status201Created)] // Especificamos el tipo de respuesta esperado
         public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             // response ahora es de tipo EventCatalogResponse
@@ -39,6 +41,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet("{id}/sectors")]
+        [ProducesResponseType(typeof(SectorResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> GetSectors(int id)
         {
             var sectors = await _getSectorsUseCase.ExecuteAsync(id);

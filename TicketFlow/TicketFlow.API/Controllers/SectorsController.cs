@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -16,6 +17,7 @@ namespace TicketFlow.API.Controllers
 
         // GET: api/v1/sectors/{sectorId}/seats
         [HttpGet("{sectorId}/seats")]
+        [ProducesResponseType(typeof(SeatResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> GetSeatsBySector(int sectorId)
         {
             var seats = await _getSeatsUseCase.ExecuteAsync(sectorId);
