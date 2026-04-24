@@ -25,7 +25,7 @@ export function createEventCard(event) {
                     </div>
                     
                     <button class="btn btn-neon w-100 mt-auto btn-select-seats" data-id="${event.id}">
-                        Seleccionar Butacas
+                        Ver Sectores
                     </button>
                 </div>
             </div>
