@@ -215,7 +215,7 @@ function renderSeatsGrid(seatsList) {
     attachSeatClickEvents();
 }
 
-// Escuchar clics en butacas disponibles (ACTUALIZADA)
+// Escuchar clics en butacas disponibles (CON SWEETALERT2)
 function attachSeatClickEvents() {
     const availableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
     
@@ -225,8 +225,35 @@ function attachSeatClickEvents() {
             const row = e.target.getAttribute('data-seat-row');
             const number = e.target.getAttribute('data-seat-number');
 
-            console.log(`[CLICK] Butaca ID: ${seatId} | Fila: ${row} | Número: ${number}`);
-            // El próximo paso será lanzar la alerta de SweetAlert para confirmar la reserva
+            // Lanzamos el cartel de SweetAlert2 con estilos oscuros
+            Swal.fire({
+                title: '¿Confirmar Reserva?',
+                text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#8b5cf6', // Nuestro violeta neón
+                cancelButtonColor: '#3f3f46',  // Gris oscuro
+                confirmButtonText: 'Sí, reservar',
+                cancelButtonText: 'Cancelar',
+                background: '#1a1d24',         // Fondo oscuro de la tarjeta
+                color: '#ffffff'               // Texto blanco
+            }).then((result) => {
+                
+                // Si el usuario hace clic en "Sí, reservar"
+                if (result.isConfirmed) {
+                    console.log(`[A PREPARAR EL POST] Resignando Butaca ID: ${seatId}`);
+                    
+                    // Mostramos un mensaje de éxito temporal
+                    Swal.fire({
+                        title: '¡Butaca Seleccionada!',
+                        text: 'Ahora debemos conectarlo con la API.',
+                        icon: 'success',
+                        background: '#1a1d24',
+                        color: '#ffffff',
+                        confirmButtonColor: '#8b5cf6'
+                    });
+                }
+            });
         });
     });
 }
