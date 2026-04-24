@@ -2,11 +2,15 @@ import { fetchEvents } from '../Services/EventService.js';
 import { createEventCard } from '../Components/Cards/EventCard.js';
 import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
+import { fetchSeatsBySector } from '../Services/SeatService.js';
 
 // Variables globales para las Vistas
 const viewCatalog = document.getElementById('view-catalog');
 const viewSectors = document.getElementById('view-sectors');
 const sectorsGrid = document.getElementById('sectors-grid');
+const viewSeats = document.getElementById('view-seats');
+const seatsGrid = document.getElementById('seats-grid');
+const seatMapTitle = document.getElementById('seat-map-title');
 
 async function initPage() {
     const gridContainer = document.getElementById('events-grid');
@@ -98,16 +102,140 @@ document.getElementById('btn-back-catalog').addEventListener('click', () => {
 
 function attachSectorButtonEvents() {
     const btnViewSeats = document.querySelectorAll('.btn-view-seats');
-    
+
     btnViewSeats.forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', async (e) => {
             const sectorId = e.target.getAttribute('data-sector-id');
-            console.log(`🚀 ¡Preparando el mapa de butacas para el Sector ID: ${sectorId}!`);
-            
-            // Acá programaremos la Rebanada B - Parte 2 (El mapa de butacas real)
+
+            // Un pequeño truco para leer el nombre del sector desde la tarjeta y ponerlo de título
+            const sectorName = e.target.closest('.card-body').querySelector('h4').innerText;
+            seatMapTitle.innerText = `Sector: ${sectorName}`;
+
+            // 1. Ocultar vista Sectores, mostrar vista Butacas
+            viewSectors.classList.add('d-none');
+            viewSeats.classList.remove('d-none');
+
+            // 2. Spinner
+            seatsGrid.innerHTML = '<div class="text-center my-5"><div class="spinner-border" style="color: var(--neon-purple);" role="status"></div><p class="mt-2 text-muted">Armando el escenario...</p></div>';
+
+            // 3. Traer los datos
+            try {
+                const responseData = await fetchSeatsBySector(sectorId);
+                const seatsList = responseData.seats ? responseData.seats : responseData;
+                
+                if (!seatsList || seatsList.length === 0) {
+                    seatsGrid.innerHTML = '<div class="text-center text-muted py-4">No hay butacas configuradas para este sector.</div>';
+                    return;
+                }
+                console.log("Así viene la butaca desde C#:", seatsList[0]);
+                // 4. Mandar a dibujar la grilla
+                renderSeatsGrid(seatsList);
+
+            } catch (error) {
+                console.error(error);
+                seatsGrid.innerHTML = '<div class="text-center text-danger py-4">Error al cargar el mapa de butacas.</div>';
+            }
         });
     });
 }
+
+// Función que procesa la lista y dibuja el mapa
+// Función que procesa la lista y dibuja el mapa (ACTUALIZADA)
+function renderSeatsGrid(seatsList) {
+    // 1. Agrupar butacas por Fila (ahora usamos rowIdentifier)
+    const rows = {};
+    seatsList.forEach(seat => {
+        if (!rows[seat.rowIdentifier]) rows[seat.rowIdentifier] = [];
+        rows[seat.rowIdentifier].push(seat);
+    });
+
+    let html = '';
+
+    // 2. Ordenar las filas alfabéticamente (A, B, C...) y dibujarlas
+    Object.keys(rows).sort().forEach(rowKey => {
+        const seatsInRow = rows[rowKey];
+        
+        // Ordenar butacas numéricamente (ahora usamos seatNumber)
+        seatsInRow.sort((a, b) => a.seatNumber - b.seatNumber);
+
+        html += `
+            <div class="d-flex align-items-center mb-2">
+                <div style="width: 25px; font-weight: bold; color: var(--text-muted); font-size: 0.9rem;">${rowKey}</div>
+                <div class="d-flex gap-2 flex-wrap flex-grow-1 justify-content-center">
+        `;
+
+        // 3. Dibujar cada butaca de esta fila
+        seatsInRow.forEach(seat => {
+            let bgColor = '';
+            let borderColor = '';
+            let disabledClass = '';
+            let cursorStyle = 'cursor: pointer;';
+
+            // Evaluamos el Status que manda el backend
+            if (seat.status === 'Available') {
+                bgColor = 'rgba(16, 185, 129, 0.15)'; // Verde oscuro
+                borderColor = 'rgba(16, 185, 129, 0.5)';
+            } else if (seat.status === 'Reserved') {
+                bgColor = 'rgba(245, 158, 11, 0.15)'; // Amarillo oscuro
+                borderColor = 'rgba(245, 158, 11, 0.5)';
+                disabledClass = 'disabled';
+                cursorStyle = 'cursor: not-allowed; opacity: 0.8;';
+            } else {
+                // Sold (Vendido)
+                bgColor = 'rgba(255, 255, 255, 0.05)'; // Gris
+                borderColor = 'rgba(255, 255, 255, 0.1)';
+                disabledClass = 'disabled';
+                cursorStyle = 'cursor: not-allowed; opacity: 0.5;';
+            }
+
+            // Actualizamos data-seat-row y data-seat-number
+            html += `
+                <button class="btn btn-sm seat-btn ${disabledClass}"
+                        style="width: 32px; height: 32px; padding: 0; font-size: 0.75rem; border-radius: 6px; 
+                               background-color: ${bgColor}; border: 1px solid ${borderColor}; color: #fff; ${cursorStyle}"
+                        data-seat-id="${seat.id}"
+                        data-seat-row="${seat.rowIdentifier}"
+                        data-seat-number="${seat.seatNumber}"
+                        title="Fila ${seat.rowIdentifier} - Butaca ${seat.seatNumber}">
+                    ${seat.seatNumber}
+                </button>
+            `;
+        });
+
+        html += `
+                </div>
+                <div style="width: 25px; text-align: right; font-weight: bold; color: var(--text-muted); font-size: 0.9rem;">${rowKey}</div>
+            </div>
+        `;
+    });
+
+    seatsGrid.innerHTML = html;
+
+    // 4. Activar los clics solo en las disponibles
+    attachSeatClickEvents();
+}
+
+// Escuchar clics en butacas disponibles (ACTUALIZADA)
+function attachSeatClickEvents() {
+    const availableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
+    
+    availableSeats.forEach(seatBtn => {
+        seatBtn.addEventListener('click', (e) => {
+            const seatId = e.target.getAttribute('data-seat-id');
+            const row = e.target.getAttribute('data-seat-row');
+            const number = e.target.getAttribute('data-seat-number');
+
+            console.log(`[CLICK] Butaca ID: ${seatId} | Fila: ${row} | Número: ${number}`);
+            // El próximo paso será lanzar la alerta de SweetAlert para confirmar la reserva
+        });
+    });
+}
+
+// Botón para volver atrás (De Vista 3 a Vista 2)
+document.getElementById('btn-back-sectors').addEventListener('click', () => {
+    viewSeats.classList.add('d-none');
+    viewSectors.classList.remove('d-none');
+});
 
 // Arrancar
 initPage();
