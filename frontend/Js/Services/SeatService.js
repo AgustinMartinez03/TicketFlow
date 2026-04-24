@@ -1,0 +1,12 @@
+const API_BASE_URL = "http://localhost:5041/api/v1"; 
+
+export async function fetchSeatsBySector(sectorId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Sectors/${sectorId}/seats`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.error("Error en SeatService:", error);
+        throw error;
+    }
+}
