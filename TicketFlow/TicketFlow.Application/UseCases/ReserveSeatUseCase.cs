@@ -44,7 +44,7 @@ namespace TicketFlow.Application.UseCases
             if (seat.Status != "Available") throw new Exception($"La butaca ya no está disponible. Estado: {seat.Status}");
 
             // 2. Modificar Butaca
-            seat.Status = "Sold";
+            seat.Status = "Reserved";
             _seatCommand.UpdateSeat(seat);
 
             // 3. Crear Reserva
