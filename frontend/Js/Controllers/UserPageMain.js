@@ -261,6 +261,16 @@ function attachSeatClickEvents() {
                         // 1. Llamamos a la API!
                         await reserveSeatApi(seatId, dummyUserId);
                         
+                        // 2. MAGIA DE FRONTEND: Actualizamos el botón instantáneamente en la pantalla
+                        // Le agregamos la clase disabled para que no dispare más clics
+                        seatBtn.classList.add('disabled');
+
+                        // Le cambiamos los estilos al color "Reservado" (Amarillo oscuro)
+                        seatBtn.style.backgroundColor = 'rgba(245, 158, 11, 0.15)'; 
+                        seatBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+                        seatBtn.style.cursor = 'not-allowed';
+                        seatBtn.style.opacity = '0.8';
+
                         // 2. Si salió bien, mostramos cartel de éxito
                         await Swal.fire({
                             title: '¡Reserva Confirmada!',
@@ -273,8 +283,8 @@ function attachSeatClickEvents() {
 
                         // 3. (Opcional pero recomendado) Recargar el mapa de butacas para que se pinte de gris (Vendida)
                         // Para hacerlo, simulamos un clic en el botón "Ver Butacas" del sector actual
-                        const currentSectorBtn = document.querySelector(`.btn-view-seats[data-sector-id="${e.target.closest('#seats-grid').getAttribute('data-current-sector') || ''}"]`);
-                        if(currentSectorBtn) currentSectorBtn.click(); // Esto recargaría la vista
+                        // const currentSectorBtn = document.querySelector(`.btn-view-seats[data-sector-id="${e.target.closest('#seats-grid').getAttribute('data-current-sector') || ''}"]`);
+                        // if(currentSectorBtn) currentSectorBtn.click(); // Esto recargaría la vista
 
                     } catch (error) {
                         // Si salió mal (ej: alguien más la compró un segundo antes)
