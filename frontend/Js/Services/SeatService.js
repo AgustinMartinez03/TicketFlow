@@ -2,7 +2,7 @@ const API_BASE_URL = "http://localhost:5041/api/v1";
 
 export async function fetchSeatsBySector(sectorId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/Sectors/${sectorId}/seats`);
+        const response = await fetch(`${API_BASE_URL}/sectors/${sectorId}/seats`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.json();
     } catch (error) {
@@ -18,7 +18,7 @@ export async function reserveSeatApi(seatId, userId) {
     try {
         // AJUSTE CLAVE: Revisa tu Swagger para confirmar que la URL sea exactamente esta.
         // A veces es /Reservations, o /Seats/reserve
-        const response = await fetch(`${API_BASE_URL}/Seats/reserve`, {
+        const response = await fetch(`${API_BASE_URL}/reservations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

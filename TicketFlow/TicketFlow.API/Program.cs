@@ -63,7 +63,8 @@ namespace TicketFlow.API
                 });
             });
 
-
+            // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
