@@ -1,9 +1,10 @@
-﻿using TicketFlow.Application.DTOs.Response;
+﻿using TicketFlow.Domain.Entities; // Asegúrate de importar la entidad
 
 namespace TicketFlow.Application.Interfaces.IQuerys
 {
     public interface ISeatQuery
     {
-        Task<IEnumerable<SeatResponse>> GetSeatsBySectorAsync(int sectorId);
+        // Cambiamos SeatResponse por Seat
+        Task<IEnumerable<Seat>> GetSeatsBySectorAsync(int sectorId);
     }
 }

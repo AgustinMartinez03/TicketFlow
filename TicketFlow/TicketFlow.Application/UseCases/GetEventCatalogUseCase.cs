@@ -1,4 +1,5 @@
 ﻿using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
 
@@ -7,27 +8,25 @@ namespace TicketFlow.Application.UseCases
     public class GetEventCatalogUseCase : IGetEventCatalogUseCase
     {
         private readonly IEventQuery _eventQuery;
+        private readonly IEventMapper _eventMapper; // Inyectamos el mapper
 
-        public GetEventCatalogUseCase(IEventQuery eventQuery)
+        public GetEventCatalogUseCase(IEventQuery eventQuery, IEventMapper eventMapper)
         {
             _eventQuery = eventQuery;
+            _eventMapper = eventMapper;
         }
 
         public async Task<EventCatalogResponse> ExecuteAsync(int pageNumber, int pageSize)
         {
-            if (pageNumber <= 0) pageNumber = 1;
-            if (pageSize <= 0) pageSize = 10;
-            if (pageSize > 50) pageSize = 50;
+            var (events, totalRecords) = await _eventQuery.GetPaginatedEventsAsync(pageNumber, pageSize);
 
-            var result = await _eventQuery.GetPaginatedEventsAsync(pageNumber, pageSize);
-
-            // Armamos la respuesta específica
+            // Usamos el mapper para convertir la lista de entidades a DTOs
             return new EventCatalogResponse
             {
-                Events = result.Events,
+                Events = _eventMapper.MapToEventResponse(events),
+                TotalRecords = totalRecords,
                 PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalRecords = result.TotalRecords
+                PageSize = pageSize
             };
         }
     }

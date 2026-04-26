@@ -35,6 +35,7 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IGetEventCatalogUseCase, GetEventCatalogUseCase>();
 
             builder.Services.AddScoped<ISeatQuery, SeatQuery>();
+            builder.Services.AddScoped<ISeatMapper, SeatMapper>();
             builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
             builder.Services.AddScoped<ISeatCommand, SeatCommand>();
             builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
@@ -45,6 +46,7 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
 
             builder.Services.AddScoped<ISectorQuery, SectorQuery>();
+            builder.Services.AddScoped<ISectorMapper, SectorMapper>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
             builder.Services.AddScoped<IValidator<ReserveSeatRequest>, ReserveSeatRequestValidator>();
