@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aplication.DTOs.Responses;
+using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -41,18 +43,21 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet("{id}/sectors")]
-        [ProducesResponseType(typeof(SectorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<SectorResponse>), StatusCodes.Status200OK)] // Tip: siempre usa IEnumerable o List en el type
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetSectors(int id)
         {
-            var sectors = await _getSectorsUseCase.ExecuteAsync(id);
-
-            // Buena práctica: Si la lista viene vacía, el evento no existe o no tiene sectores
-            if (sectors == null || !sectors.Any())
+            try
             {
-                return NotFound(new { Message = $"No se encontraron sectores para el evento con ID {id}." });
+                // El controlador llama a ciegas
+                var sectors = await _getSectorsUseCase.ExecuteAsync(id);
+                return Ok(sectors);
             }
-
-            return Ok(sectors);
+            catch (ExceptionNotFound ex)
+            {
+                // Si el UseCase gritó, lo atrapamos y devolvemos el 404 estandarizado
+                return NotFound(new ApiError { Message = ex.Message });
+            }
         }
     }
 }

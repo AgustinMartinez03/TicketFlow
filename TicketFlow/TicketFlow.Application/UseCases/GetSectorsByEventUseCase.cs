@@ -2,6 +2,8 @@
 using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.Exceptions;
+
 
 namespace TicketFlow.Application.UseCases
 {
@@ -20,6 +22,12 @@ namespace TicketFlow.Application.UseCases
         {
             // 2. Obtenemos las entidades del Query
             var sectors = await _sectorQuery.GetSectorsByEventAsync(eventId);
+
+            // LA LÓGICA VIVE AQUÍ AHORA
+            if (sectors == null || !sectors.Any())
+            {
+                throw new ExceptionNotFound($"No se encontraron sectores para el evento con ID {eventId}.");
+            }
 
             // 3. Las transformamos usando el mapper
             return _sectorMapper.MapToSectorResponseList(sectors);
