@@ -1,10 +1,7 @@
-﻿using TicketFlow.Application.DTOs.Response;
+﻿using TicketFlow.Domain.Entities; // Asegúrate de importar la entidad
 
-namespace TicketFlow.Application.Interfaces.IQuerys
+public interface IEventQuery
 {
-    public interface IEventQuery
-    {
-        // Cambiamos EventDto por EventResponse
-        Task<(IEnumerable<EventResponse> Events, int TotalRecords)> GetPaginatedEventsAsync(int pageNumber, int pageSize);
-    }
+    // Ahora devuelve IEnumerable<Event>
+    Task<(IEnumerable<Event> Events, int TotalRecords)> GetPaginatedEventsAsync(int pageNumber, int pageSize);
 }

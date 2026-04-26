@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Interfaces.IQuerys;
+using TicketFlow.Domain.Entities;
 using TicketFlow.Infrastructure.Persistence;
 
 namespace TicketFlow.Infrastructure.Query
@@ -14,19 +15,12 @@ namespace TicketFlow.Infrastructure.Query
             _context = context;
         }
 
-        public async Task<List<SectorResponse>> GetSectorsByEventIdAsync(int eventId)
+        public async Task<IEnumerable<Sector>> GetSectorsByEventAsync(int eventId)
         {
             return await _context.Sectors
-                .AsNoTracking() // Clave para lecturas ultrarrápidas
+                .AsNoTracking() // Recomendado para lecturas
                 .Where(s => s.EventId == eventId)
-                .Select(s => new SectorResponse
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Price = s.Price,
-                    Capacity = s.Capacity
-                })
-                .ToListAsync();
+                .ToListAsync(); // Traemos la entidad completa sin transformar
         }
     }
 }

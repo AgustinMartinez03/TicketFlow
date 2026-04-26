@@ -32,7 +32,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status201Created)] // Especificamos el tipo de respuesta esperado
+        [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status200OK)] // Especificamos el tipo de respuesta esperado
         public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             // response ahora es de tipo EventCatalogResponse
@@ -41,7 +41,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet("{id}/sectors")]
-        [ProducesResponseType(typeof(SectorResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SectorResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSectors(int id)
         {
             var sectors = await _getSectorsUseCase.ExecuteAsync(id);

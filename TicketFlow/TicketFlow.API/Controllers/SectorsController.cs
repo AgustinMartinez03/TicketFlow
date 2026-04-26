@@ -17,7 +17,7 @@ namespace TicketFlow.API.Controllers
 
         // GET: api/v1/sectors/{sectorId}/seats
         [HttpGet("{sectorId}/seats")]
-        [ProducesResponseType(typeof(SeatResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SeatResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSeatsBySector(int sectorId)
         {
             var seats = await _getSeatsUseCase.ExecuteAsync(sectorId);

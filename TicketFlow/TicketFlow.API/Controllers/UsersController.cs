@@ -16,7 +16,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpGet("{id}/reservations")]
-        [ProducesResponseType(typeof(UserReservationResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(UserReservationResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserReservations(int id)
         {
             var results = await _useCase.ExecuteAsync(id);
