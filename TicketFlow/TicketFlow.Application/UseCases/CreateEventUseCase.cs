@@ -40,12 +40,21 @@ namespace TicketFlow.Application.UseCases
                 // 3. ¡Magia! Generar automáticamente las butacas para este sector
                 for (int i = 1; i <= sectorReq.Capacity; i++)
                 {
+                    // Calculamos el índice de la fila (0 para los asientos 1-10, 1 para 11-20, etc.)
+                    int rowIndex = (i - 1) / 10;
+
+                    // Convertimos el índice a letra (0 -> A, 1 -> B, 2 -> C...)
+                    string rowIdentifier = ((char)('A' + rowIndex)).ToString();
+
+                    // Calculamos el número de asiento relativo a su fila (del 1 al 10)
+                    int seatNumberInRow = ((i - 1) % 10) + 1;
+
                     newSector.Seats.Add(new Seat
                     {
                         Id = Guid.NewGuid(),
                         SectorId = newSector.Id,
-                        RowIdentifier = "A", // Para simplificar, todas en la fila A por ahora
-                        SeatNumber = i,
+                        RowIdentifier = rowIdentifier,
+                        SeatNumber = seatNumberInRow,
                         Status = "Available"
                     });
                 }
