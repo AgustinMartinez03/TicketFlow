@@ -23,35 +23,37 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             // Configuración de Concurrencia (Fase 2)
             builder.Property(s => s.Version).IsConcurrencyToken();
 
-            // DATA SEEDING: 50 Butacas por sector
+            // DATA SEEDING: 50 Butacas por sector (5 Filas de 10 butacas cada una)
             var seats = new List<Seat>();
 
-            // Generar 50 butacas para el Sector 1 (VIP)
-            for (int i = 1; i <= 50; i++)
-            {
-                seats.Add(new Seat
-                {
-                    Id = Guid.NewGuid(),
-                    SectorId = 1,
-                    RowIdentifier = "A",
-                    SeatNumber = i,
-                    Status = "Available",
-                    Version = 1
-                });
-            }
+            int cantidadFilas = 5;    // 5 filas (A, B, C, D, E)
+            int butacasPorFila = 10;  // 10 butacas por fila (Total: 50 butacas por sector)
 
-            // Generar 50 butacas para el Sector 2 (General)
-            for (int i = 1; i <= 50; i++)
+            // Los IDs de los 2 sectores que ya tenés creados
+            int[] sectorIds = new int[] { 1, 2 };
+
+            foreach (int sectorId in sectorIds)
             {
-                seats.Add(new Seat
+                // Bucle para las letras (Filas)
+                for (int f = 0; f < cantidadFilas; f++)
                 {
-                    Id = Guid.NewGuid(),
-                    SectorId = 2,
-                    RowIdentifier = "B",
-                    SeatNumber = i,
-                    Status = "Available",
-                    Version = 1
-                });
+                    // Convertimos el índice 0, 1, 2... en letra A, B, C...
+                    string rowIdentifier = ((char)('A' + f)).ToString();
+
+                    // Bucle para los números (Butacas)
+                    for (int numero = 1; numero <= butacasPorFila; numero++)
+                    {
+                        seats.Add(new Seat
+                        {
+                            Id = Guid.NewGuid(),
+                            SectorId = sectorId,
+                            RowIdentifier = rowIdentifier,
+                            SeatNumber = numero,
+                            Status = "Available",
+                            Version = 1
+                        });
+                    }
+                }
             }
 
             builder.HasData(seats);
