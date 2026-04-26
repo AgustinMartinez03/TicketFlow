@@ -16,15 +16,15 @@ namespace TicketFlow.API.Controllers
         }
 
         // GET: api/v1/sectors/{sectorId}/seats
-        [HttpGet("{sectorId}/seats")]
+        [HttpGet("{id}/seats")]
         [ProducesResponseType(typeof(SeatResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSeatsBySector(int sectorId)
+        public async Task<IActionResult> GetSeatsBySector(int id)
         {
-            var seats = await _getSeatsUseCase.ExecuteAsync(sectorId);
+            var seats = await _getSeatsUseCase.ExecuteAsync(id);
 
             if (!seats.Any())
             {
-                return NotFound(new { Message = $"No se encontraron butacas para el sector con ID {sectorId}" });
+                return NotFound(new { Message = $"No se encontraron butacas para el sector con ID {id}" });
             }
 
             return Ok(seats);
