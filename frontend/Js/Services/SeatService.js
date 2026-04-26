@@ -18,7 +18,7 @@ export async function reserveSeatApi(seatId, userId) {
     try {
         // AJUSTE CLAVE: Revisa tu Swagger para confirmar que la URL sea exactamente esta.
         // A veces es /Reservations, o /Seats/reserve
-        const response = await fetch(`${API_BASE_URL}/seats/reserve`, {
+        const response = await fetch(`${API_BASE_URL}/reservations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

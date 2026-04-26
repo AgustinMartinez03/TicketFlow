@@ -6,17 +6,17 @@ namespace TicketFlow.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class SeatsController : ControllerBase
+    public class ReservationsController : ControllerBase
     {
         private readonly IReserveSeatUseCase _reserveUseCase;
 
-        public SeatsController(IReserveSeatUseCase reserveUseCase)
+        public ReservationsController(IReserveSeatUseCase reserveUseCase)
         {
             _reserveUseCase = reserveUseCase;
         }
 
-        // POST: api/v1/seats/reserve
-        [HttpPost("reserve")]
+        // POST: api/v1/seats/reservations
+        [HttpPost]
         public async Task<IActionResult> ReserveSeat([FromBody] ReserveSeatRequest request)
         {
             try
