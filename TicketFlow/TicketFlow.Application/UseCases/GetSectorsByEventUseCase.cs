@@ -20,16 +20,20 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<IEnumerable<SectorResponse>> ExecuteAsync(int eventId)
         {
-            // 2. Obtenemos las entidades del Query
+            // 1. Validamos la entrada: Si el ID es 0 o negativo, es un "Bad Request"
+            if (eventId <= 0)
+            {
+                throw new ExceptionBadRequest("El ID del evento debe ser un número positivo.");
+            }
+
             var sectors = await _sectorQuery.GetSectorsByEventAsync(eventId);
 
-            // LA LÓGICA VIVE AQUÍ AHORA
+            // 2. Validamos el resultado: Si no hay nada, es un "Not Found"
             if (sectors == null || !sectors.Any())
             {
                 throw new ExceptionNotFound($"No se encontraron sectores para el evento con ID {eventId}.");
             }
 
-            // 3. Las transformamos usando el mapper
             return _sectorMapper.MapToSectorResponseList(sectors);
         }
     }

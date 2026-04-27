@@ -25,6 +25,7 @@ namespace TicketFlow.API.Controllers
             _getSectorsUseCase = getSectorsUseCase;
         }
 
+        // POST: api/v1/events
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
@@ -33,6 +34,7 @@ namespace TicketFlow.API.Controllers
             return CreatedAtAction(nameof(GetEvents), new { id = eventId }, new { Id = eventId, Message = "Evento creado exitosamente" });
         }
 
+        // GET: api/v1/events
         [HttpGet]
         [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status200OK)] // Especificamos el tipo de respuesta esperado
         public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -42,9 +44,11 @@ namespace TicketFlow.API.Controllers
             return Ok(response);
         }
 
+        // GET: api/v1/events/{id}/sectors
         [HttpGet("{id}/sectors")]
         [ProducesResponseType(typeof(IEnumerable<SectorResponse>), StatusCodes.Status200OK)] // Tip: siempre usa IEnumerable o List en el type
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetSectors(int id)
         {
             try
@@ -57,6 +61,11 @@ namespace TicketFlow.API.Controllers
             {
                 // Si el UseCase gritó, lo atrapamos y devolvemos el 404 estandarizado
                 return NotFound(new ApiError { Message = ex.Message });
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                // Atrapamos el error de validación y devolvemos 400
+                return BadRequest(new ApiError { Message = ex.Message });
             }
         }
     }
