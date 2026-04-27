@@ -1,71 +1,63 @@
-body {
-    background-color: #0b0f1a;
-    color: white;
-}
+/* =========================================
+   Estilos de la Grilla de Butacas
+   ========================================= */
 
-/* Stage */
-.stage {
-    margin: 20px auto;
-    width: 60%;
-    padding: 10px;
-    background: linear-gradient(to right, #7b2ff7, #f107a3);
-    border-radius: 20px;
-}
-
-/* Legend */
-.legend .box {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 4px;
-    margin-right: 5px;
-}
-
-.available { background-color: #0f5132; }
-.reserved { background-color: #7a4f01; }
-.sold { background-color: #2c2f36; }
-
-/* Grid */
-#seats-container {
-    display: grid;
-    grid-template-columns: 40px repeat(12, 50px) 40px;
-    gap: 10px;
-    justify-content: center;
-}
-
-/* Seat */
-.seat {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.seat:hover {
-    transform: scale(1.1);
-}
-
-/* Estados */
-.available { background-color: #0f5132; }
-.reserved { background-color: #7a4f01; }
-.sold {
-    background-color: #2c2f36;
-    cursor: not-allowed;
-}
-
-/* Seleccionado (violeta como la imagen) */
-.selected {
-    background: linear-gradient(145deg, #b84cff, #7b2ff7);
-}
-
-/* Letras de filas */
+/* Etiquetas de las letras (Fila A, B, C...) */
 .row-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa;
+    width: 25px;
+    font-weight: bold;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Base de la butaca */
+.seat-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    color: #fff;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Efecto hover SOLO para las butacas que no están deshabilitadas */
+.seat-btn:not(.disabled):hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+}
+
+/* Efecto hover SOLO para las butacas disponibles */
+.seat-btn.seat-available:not(.disabled):hover {
+    background-color: #059669; /* Verde oscuro (el que antes era el color base) */
+    border-color: #34d399;     
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6); /* Resplandor más suave y oscuro */
+}
+
+/* --- Estados de las Butacas --- */
+
+.seat-btn.seat-available {
+    background-color: #065f46; /* Verde bosque mucho más oscuro y relajante */
+    border: 1px solid #047857; /* Borde sutil */
+    cursor: pointer;
+}
+
+.seat-btn.seat-reserved {
+    background-color: #926f0e !important; /* Tono mostaza/marrón oscuro */
+    border: 1px solid #b49809 !important; /* Borde a juego, sin ser chillón */
+    color: #e5e7eb !important; /* Texto apenas gris claro para que no encandile */
+    opacity: 1 !important; 
+    pointer-events: auto !important; 
+    cursor: not-allowed !important;
+}
+
+.seat-btn.seat-sold {
+    background-color: #1f2937 !important; /* Gris casi negro, se funde con el fondo */
+    border: 1px solid #374151 !important;
+    color: #9ca3af !important; /* Texto oscuro para que pase a segundo plano */
+    opacity: 0.5 !important;
+    pointer-events: auto !important;
+    cursor: not-allowed !important;
 }

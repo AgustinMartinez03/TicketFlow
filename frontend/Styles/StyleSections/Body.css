@@ -2,3 +2,27 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-main);
 }
+
+/* =========================================
+   Botones de Navegación (Volver)
+   ========================================= */
+
+.btn-back {
+    background-color: transparent;
+    color: #888888; /* Un gris clarito sutil */
+    border: 1px solid #888888; /* Borde oscuro para que no llame mucho la atención */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el ícono y el texto */
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #1a1d24; /* Fondo apenitas más claro que el body */
+    color: #ffffff; /* El texto se ilumina a blanco */
+    border-color: #8b5cf6; /* El borde toma nuestro color violeta principal */
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); /* Un resplandor violeta súper suave */
+}

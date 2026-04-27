@@ -142,7 +142,6 @@ function attachSectorButtonEvents() {
 // Función que procesa la lista y dibuja el mapa
 // Función que procesa la lista y dibuja el mapa (ACTUALIZADA)
 function renderSeatsGrid(seatsList) {
-    // 1. Agrupar butacas por Fila (ahora usamos rowIdentifier)
     const rows = {};
     seatsList.forEach(seat => {
         if (!rows[seat.rowIdentifier]) rows[seat.rowIdentifier] = [];
@@ -151,48 +150,35 @@ function renderSeatsGrid(seatsList) {
 
     let html = '';
 
-    // 2. Ordenar las filas alfabéticamente (A, B, C...) y dibujarlas
     Object.keys(rows).sort().forEach(rowKey => {
         const seatsInRow = rows[rowKey];
-        
-        // Ordenar butacas numéricamente (ahora usamos seatNumber)
         seatsInRow.sort((a, b) => a.seatNumber - b.seatNumber);
 
+        // Usamos la nueva clase .row-label
         html += `
             <div class="d-flex align-items-center mb-2">
-                <div style="width: 25px; font-weight: bold; color: var(--text-muted); font-size: 0.9rem;">${rowKey}</div>
+                <div class="row-label">${rowKey}</div>
                 <div class="d-flex gap-2 flex-wrap flex-grow-1 justify-content-center">
         `;
 
-        // 3. Dibujar cada butaca de esta fila
         seatsInRow.forEach(seat => {
-            let bgColor = '';
-            let borderColor = '';
+            let statusClass = '';
             let disabledClass = '';
-            let cursorStyle = 'cursor: pointer;';
 
-            // Evaluamos el Status que manda el backend
+            // Evaluamos el Status usando solo clases CSS
             if (seat.status === 'Available') {
-                bgColor = 'rgba(16, 185, 129, 0.15)'; // Verde oscuro
-                borderColor = 'rgba(16, 185, 129, 0.5)';
+                statusClass = 'seat-available';
             } else if (seat.status === 'Reserved') {
-                bgColor = 'rgba(245, 158, 11, 0.15)'; // Amarillo oscuro
-                borderColor = 'rgba(245, 158, 11, 0.5)';
+                statusClass = 'seat-reserved';
                 disabledClass = 'disabled';
-                cursorStyle = 'cursor: not-allowed; opacity: 0.8;';
             } else {
-                // Sold (Vendido)
-                bgColor = 'rgba(255, 255, 255, 0.05)'; // Gris
-                borderColor = 'rgba(255, 255, 255, 0.1)';
+                statusClass = 'seat-sold';
                 disabledClass = 'disabled';
-                cursorStyle = 'cursor: not-allowed; opacity: 0.5;';
             }
 
-            // Actualizamos data-seat-row y data-seat-number
+            // HTML limpito, sin atributos style
             html += `
-                <button class="btn btn-sm seat-btn ${disabledClass}"
-                        style="width: 32px; height: 32px; padding: 0; font-size: 0.75rem; border-radius: 6px; 
-                               background-color: ${bgColor}; border: 1px solid ${borderColor}; color: #fff; ${cursorStyle}"
+                <button class="btn btn-sm seat-btn ${statusClass} ${disabledClass}"
                         data-seat-id="${seat.id}"
                         data-seat-row="${seat.rowIdentifier}"
                         data-seat-number="${seat.seatNumber}"
@@ -202,16 +188,15 @@ function renderSeatsGrid(seatsList) {
             `;
         });
 
+        // Usamos la nueva clase .row-label para el lado derecho
         html += `
                 </div>
-                <div style="width: 25px; text-align: right; font-weight: bold; color: var(--text-muted); font-size: 0.9rem;">${rowKey}</div>
+                <div class="row-label text-end">${rowKey}</div>
             </div>
         `;
     });
 
     seatsGrid.innerHTML = html;
-
-    // 4. Activar los clics solo en las disponibles
     attachSeatClickEvents();
 }
 
@@ -263,13 +248,10 @@ function attachSeatClickEvents() {
                         
                         // 2. MAGIA DE FRONTEND: Actualizamos el botón instantáneamente en la pantalla
                         // Le agregamos la clase disabled para que no dispare más clics
-                        seatBtn.classList.add('disabled');
-
-                        // Le cambiamos los estilos al color "Reservado" (Amarillo oscuro)
-                        seatBtn.style.backgroundColor = 'rgba(245, 158, 11, 0.15)'; 
-                        seatBtn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
-                        seatBtn.style.cursor = 'not-allowed';
-                        seatBtn.style.opacity = '0.8';
+                        // AHORA (Usar esto):
+                        // 2. MAGIA DE FRONTEND: Actualizamos el botón instantáneamente cambiando clases
+                        seatBtn.classList.remove('seat-available');
+                        seatBtn.classList.add('disabled', 'seat-reserved');
 
                         // 2. Si salió bien, mostramos cartel de éxito
                         await Swal.fire({
