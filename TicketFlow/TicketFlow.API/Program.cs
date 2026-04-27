@@ -47,6 +47,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<ISectorMapper, SectorMapper>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
+            builder.Services.AddScoped<IUserQuery, UserQuery>();
+
 
             // Configuración de CORS
             builder.Services.AddCors(options =>
