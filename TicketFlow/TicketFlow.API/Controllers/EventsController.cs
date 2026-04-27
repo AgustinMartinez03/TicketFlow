@@ -27,11 +27,22 @@ namespace TicketFlow.API.Controllers
 
         // POST: api/v1/events
         [HttpPost]
+        [ProducesResponseType(typeof(CreateEventResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            var eventId = await _createEventUseCase.ExecuteAsync(request);
-            // Retornamos un objeto anónimo específico o simplemente el ID, ya no usamos el GenericResponse
-            return CreatedAtAction(nameof(GetEvents), new { id = eventId }, new { Id = eventId, Message = "Evento creado exitosamente" });
+            try
+            {
+                // El controlador ya no crea el objeto { Id = ..., Message = ... }
+                var result = await _createEventUseCase.ExecuteAsync(request);
+
+                // Devolvemos 201 Created y pasamos el objeto que vino de Application
+                return Created($"/api/v1/events/{result.Id}", result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiError { Message = ex.Message });
+            }
         }
 
         // GET: api/v1/events

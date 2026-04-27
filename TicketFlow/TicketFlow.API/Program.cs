@@ -1,13 +1,10 @@
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Application.Mapper;
 using TicketFlow.Application.UseCases;
-using TicketFlow.Application.Validators;
 using TicketFlow.Infrastructure.Command;
 using TicketFlow.Infrastructure.Persistence;
 using TicketFlow.Infrastructure.Query;
@@ -48,8 +45,6 @@ namespace TicketFlow.API
             builder.Services.AddScoped<ISectorQuery, SectorQuery>();
             builder.Services.AddScoped<ISectorMapper, SectorMapper>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
-
-            builder.Services.AddScoped<IValidator<ReserveSeatRequest>, ReserveSeatRequestValidator>();
 
 
             // Configuración de CORS
