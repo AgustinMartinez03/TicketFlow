@@ -6,5 +6,6 @@ namespace TicketFlow.Application.Interfaces.IQuerys
     {
         // Cambiamos SeatResponse por Seat
         Task<IEnumerable<Seat>> GetSeatsBySectorAsync(int sectorId);
+        Task<Seat?> GetSeatByIdAsync(Guid seatId);
     }
 }

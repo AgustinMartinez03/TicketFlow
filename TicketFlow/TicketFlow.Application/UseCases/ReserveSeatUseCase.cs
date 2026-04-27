@@ -2,6 +2,7 @@
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions; // Nuestras excepciones limpias
 using TicketFlow.Application.Interfaces.ICommands;
+using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Domain.Entities;
 
@@ -10,16 +11,22 @@ namespace TicketFlow.Application.UseCases
     public class ReserveSeatUseCase : IReserveSeatUseCase
     {
         private readonly ISeatCommand _seatCommand;
+        private readonly ISeatQuery _seatQuery;
+        private readonly IUserQuery _userQuery;
         private readonly IReservationCommand _reservationCommand;
         private readonly IAuditLogCommand _auditLogCommand;
 
         // Quitamos IValidator del constructor
         public ReserveSeatUseCase(
             ISeatCommand seatCommand,
+            ISeatQuery seatQuery,
+            IUserQuery userQuery,
             IReservationCommand reservationCommand,
             IAuditLogCommand auditLogCommand)
         {
             _seatCommand = seatCommand;
+            _seatQuery = seatQuery;
+            _userQuery = userQuery;
             _reservationCommand = reservationCommand;
             _auditLogCommand = auditLogCommand;
         }
@@ -38,7 +45,7 @@ namespace TicketFlow.Application.UseCases
             }
 
             // --- 2. VALIDAR BUTACA (Not Found y Conflict) ---
-            var seat = await _seatCommand.GetSeatByIdAsync(request.SeatId);
+            var seat = await _seatQuery.GetSeatByIdAsync(request.SeatId);
 
             if (seat == null)
             {
@@ -49,6 +56,15 @@ namespace TicketFlow.Application.UseCases
             {
                 throw new ExceptionConflict($"La butaca ya no está disponible. Estado: {seat.Status}");
             }
+
+            // --- 2. VALIDAR USUARIO(Not Found) ---
+            var user = await _userQuery.GetUserByIdAsync(request.UserId);
+
+            if (user == null)
+            {
+                throw new ExceptionNotFound("El usuario no existe.");
+            }
+
 
             // --- 3. MODIFICAR BUTACA ---
             seat.Status = "Reserved";

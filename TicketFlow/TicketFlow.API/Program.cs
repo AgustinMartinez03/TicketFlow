@@ -38,6 +38,7 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
 
             builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
+            builder.Services.AddScoped<IReservationMapper, ReservationMapper>();
             builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
             builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
             builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
@@ -45,6 +46,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<ISectorQuery, SectorQuery>();
             builder.Services.AddScoped<ISectorMapper, SectorMapper>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
+
+            builder.Services.AddScoped<IUserQuery, UserQuery>();
 
 
             // Configuración de CORS
