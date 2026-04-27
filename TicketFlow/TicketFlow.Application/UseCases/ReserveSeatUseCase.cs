@@ -50,6 +50,8 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionConflict($"La butaca ya no está disponible. Estado: {seat.Status}");
             }
 
+
+
             // --- 3. MODIFICAR BUTACA ---
             seat.Status = "Reserved";
             _seatCommand.UpdateSeat(seat); // Tu método original

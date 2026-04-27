@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Domain.Entities; // Cambiamos el DTO por la entidad
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Infrastructure.Persistence;
 
@@ -14,25 +14,20 @@ namespace TicketFlow.Infrastructure.Querys
             _context = context;
         }
 
-        public async Task<List<UserReservationResponse>> GetReservationsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Reservation>> GetReservationsByUserIdAsync(int userId)
         {
             return await _context.Reservations
-                .AsNoTracking() // Lectura rápida
-                .Include(r => r.Seat) // Unimos con Seat
-                    .ThenInclude(s => s.Sector) // Desde Seat, unimos con Sector
-                        .ThenInclude(sec => sec.Event) // Desde Sector, unimos con Event
+                .AsNoTracking()
+                .Include(r => r.Seat)
+                    .ThenInclude(s => s.Sector)
+                        .ThenInclude(sec => sec.Event)
                 .Where(r => r.UserId == userId)
-                .Select(r => new UserReservationResponse
-                {
-                    ReservationId = r.Id,
-                    EventName = r.Seat.Sector.Event.Name,
-                    EventDate = r.Seat.Sector.Event.EventDate,
-                    Venue = r.Seat.Sector.Event.Venue,
-                    SectorName = r.Seat.Sector.Name,
-                    SeatDetails = $"Fila {r.Seat.RowIdentifier} - Asiento {r.Seat.SeatNumber}",
-                    Status = r.Status
-                })
-                .ToListAsync();
+                .ToListAsync(); // Devolvemos las entidades puras sin transformarlas
+        }
+
+        public async Task<Seat?> GetSeatByIdAsync(Guid seatId)
+        {
+            return await _context.Seats.FirstOrDefaultAsync(s => s.Id == seatId);
         }
     }
 }
