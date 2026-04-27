@@ -107,8 +107,8 @@ function attachSectorButtonEvents() {
         button.addEventListener('click', async (e) => {
             const sectorId = e.target.getAttribute('data-sector-id');
 
-            // Un pequeño truco para leer el nombre del sector desde la tarjeta y ponerlo de título
-            const sectorName = e.target.closest('.card-body').querySelector('h4').innerText;
+            // ¡Truco limpio! Leemos el nombre directamente del botón
+            const sectorName = e.target.getAttribute('data-name');
             seatMapTitle.innerText = `Sector: ${sectorName}`;
 
             // 1. Ocultar vista Sectores, mostrar vista Butacas
