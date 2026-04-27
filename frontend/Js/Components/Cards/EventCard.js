@@ -8,19 +8,20 @@ export function createEventCard(event) {
     const dateObj = new Date(event.eventDate);
     const dateStr = dateObj.toLocaleString('es-AR', { dateStyle: 'full', timeStyle: 'short' });
 
-    // HTML de la tarjeta usando la grilla de Bootstrap (col-md-6 col-lg-4)
+    // HTML de la tarjeta limpio y semántico
     return `
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card event-card h-100 rounded-3 overflow-hidden">
-                <img src="${placeholderImage}" class="card-img-top" alt="${event.name}" style="aspect-ratio: 16/10; object-fit: cover;">
+                <img src="${placeholderImage}" class="card-img-top event-image" alt="${event.name}">
+                
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold mb-3" style="color: var(--text-main)">${event.name}</h5>
+                    <h5 class="card-title event-title fw-bold mb-3">${event.name}</h5>
                     
-                    <div class="d-flex align-items-center mb-2" style="color: var(--text-muted); font-size: 0.9rem;">
+                    <div class="d-flex align-items-center mb-2 event-info">
                         <span>📅 ${dateStr}</span>
                     </div>
                     
-                    <div class="d-flex align-items-center mb-4" style="color: var(--text-muted); font-size: 0.9rem;">
+                    <div class="d-flex align-items-center mb-4 event-info">
                         <span>📍 ${event.venue}</span>
                     </div>
                     

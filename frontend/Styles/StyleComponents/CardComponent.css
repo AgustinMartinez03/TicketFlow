@@ -24,3 +24,24 @@
     box-shadow: var(--neon-glow);
     color: white;
 }
+
+/* =========================================
+   Estilos específicos del contenido de la Card
+   ========================================= */
+
+/* Imagen del evento */
+.event-image {
+    aspect-ratio: 16/10;
+    object-fit: cover;
+}
+
+/* Título de la tarjeta */
+.event-title {
+    color: var(--text-main);
+}
+
+/* Contenedor de la información (fecha, lugar, etc.) */
+.event-info {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
