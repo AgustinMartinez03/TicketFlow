@@ -1,7 +1,9 @@
-﻿using TicketFlow.Domain.Entities; // Asegúrate de importar la entidad
+﻿using TicketFlow.Domain.Entities;
 
-public interface IEventQuery
+namespace TicketFlow.Application.Interfaces.IQuerys
 {
-    // Ahora devuelve IEnumerable<Event>
-    Task<(IEnumerable<Event> Events, int TotalRecords)> GetPaginatedEventsAsync(int pageNumber, int pageSize);
+    public interface IEventQuery
+    {
+        Task<(IEnumerable<Event> Events, int TotalRecords)> GetPaginatedEventsAsync(int pageNumber, int pageSize);
+    }
 }

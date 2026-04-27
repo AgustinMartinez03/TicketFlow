@@ -36,12 +36,20 @@ namespace TicketFlow.API.Controllers
 
         // GET: api/v1/events
         [HttpGet]
-        [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status200OK)] // Especificamos el tipo de respuesta esperado
+        [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)] // Documentamos el nuevo error
         public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            // response ahora es de tipo EventCatalogResponse
-            var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
-            return Ok(response);
+            try
+            {
+                var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
+                return Ok(response);
+            }
+            catch (ExceptionBadRequest ex)
+            {
+                // Atrapamos si nos mandan páginas negativas o tamaños gigantes
+                return BadRequest(new ApiError { Message = ex.Message });
+            }
         }
 
         // GET: api/v1/events/{id}/sectors
