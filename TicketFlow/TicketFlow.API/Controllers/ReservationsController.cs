@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aplication.DTOs.Responses;
+using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
+using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.UseCases;
 
 namespace TicketFlow.API.Controllers
 {
@@ -17,17 +21,30 @@ namespace TicketFlow.API.Controllers
 
         // POST: api/v1/seats/reservations
         [HttpPost]
+        [ProducesResponseType(typeof(ReserveSeatResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> ReserveSeat([FromBody] ReserveSeatRequest request)
         {
             try
             {
-                var message = await _reserveUseCase.ExecuteAsync(request);
-                // Aquí usamos 201 Created porque estamos creando una Reservation
-                return StatusCode(201, new { Message = message });
+                var response = await _reserveUseCase.ExecuteAsync(request);
+
+                // Retornamos 201 Created
+                return Created($"/api/v1/users/{request.UserId}/reservations", response);
             }
-            catch (Exception ex)
+            catch (ExceptionBadRequest ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(new ApiError { Message = ex.Message });
+            }
+            catch (ExceptionNotFound ex)
+            {
+                return NotFound(new ApiError { Message = ex.Message });
+            }
+            catch (ExceptionConflict ex)
+            {
+                return Conflict(new ApiError { Message = ex.Message });
             }
         }
     }

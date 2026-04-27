@@ -1,5 +1,6 @@
-﻿using FluentValidation;
-using TicketFlow.Application.DTOs.Request;
+﻿using TicketFlow.Application.DTOs.Request;
+using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Application.Exceptions; // Nuestras excepciones limpias
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Domain.Entities;
@@ -11,43 +12,49 @@ namespace TicketFlow.Application.UseCases
         private readonly ISeatCommand _seatCommand;
         private readonly IReservationCommand _reservationCommand;
         private readonly IAuditLogCommand _auditLogCommand;
-        private readonly IValidator<ReserveSeatRequest> _validator; // 1. Declarar el validador
 
-        // Inyectamos los 3 comandos
+        // Quitamos IValidator del constructor
         public ReserveSeatUseCase(
             ISeatCommand seatCommand,
             IReservationCommand reservationCommand,
-            IAuditLogCommand auditLogCommand,
-            IValidator<ReserveSeatRequest> validator) // 2. Inyectarlo en el constructor)
+            IAuditLogCommand auditLogCommand)
         {
             _seatCommand = seatCommand;
             _reservationCommand = reservationCommand;
             _auditLogCommand = auditLogCommand;
-            _validator = validator;
         }
 
-        public async Task<string> ExecuteAsync(ReserveSeatRequest request)
+        public async Task<ReserveSeatResponse> ExecuteAsync(ReserveSeatRequest request)
         {
-            // --- NUEVA LÍNEA DE DEFENSA: VALIDACIÓN ---
-            var validationResult = await _validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
+            // --- 1. VALIDACIONES DE ENTRADA (Reemplazando a FluentValidation) ---
+            if (request.UserId <= 0)
             {
-                // Extraemos todos los mensajes de error y lanzamos una excepción
-                var errors = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new Exception($"Error de Validación: {errors}");
+                throw new ExceptionBadRequest("El ID del usuario debe ser un número positivo.");
             }
-            // ------------------------------------------
 
-            // 1. Validar Butaca
+            if (request.SeatId == Guid.Empty)
+            {
+                throw new ExceptionBadRequest("El ID de la butaca es obligatorio.");
+            }
+
+            // --- 2. VALIDAR BUTACA (Not Found y Conflict) ---
             var seat = await _seatCommand.GetSeatByIdAsync(request.SeatId);
-            if (seat == null) throw new Exception("La butaca no existe.");
-            if (seat.Status != "Available") throw new Exception($"La butaca ya no está disponible. Estado: {seat.Status}");
 
-            // 2. Modificar Butaca
+            if (seat == null)
+            {
+                throw new ExceptionNotFound("La butaca no existe.");
+            }
+
+            if (seat.Status != "Available")
+            {
+                throw new ExceptionConflict($"La butaca ya no está disponible. Estado: {seat.Status}");
+            }
+
+            // --- 3. MODIFICAR BUTACA ---
             seat.Status = "Reserved";
-            _seatCommand.UpdateSeat(seat);
+            _seatCommand.UpdateSeat(seat); // Tu método original
 
-            // 3. Crear Reserva
+            // --- 4. CREAR RESERVA ---
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(),
@@ -55,11 +62,11 @@ namespace TicketFlow.Application.UseCases
                 SeatId = seat.Id,
                 Status = "Confirmed",
                 ReservedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddHours(24) // Regla de negocio inventada: expira en 24hs
+                ExpiresAt = DateTime.UtcNow.AddHours(24) // Tu regla de negocio
             };
-            _reservationCommand.InsertReservation(reservation);
+            _reservationCommand.InsertReservation(reservation); // Tu método original
 
-            // 4. Crear Log de Auditoría
+            // --- 5. CREAR LOG DE AUDITORÍA ---
             var auditLog = new AuditLog
             {
                 UserId = request.UserId,
@@ -69,12 +76,17 @@ namespace TicketFlow.Application.UseCases
                 Details = $"Usuario {request.UserId} reservó la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
                 CreatedAt = DateTime.UtcNow
             };
-            _auditLogCommand.InsertAuditLog(auditLog);
+            _auditLogCommand.InsertAuditLog(auditLog); // Tu método original
 
-            // 5. ¡Guardar todo junto en una sola transacción!
-            await _seatCommand.SaveChangesAsync();
+            // --- 6. GUARDAR TODO ---
+            await _seatCommand.SaveChangesAsync(); // Tu método original
 
-            return $"Reserva exitosa. Tu Nro de Comprobante es {reservation.Id}";
+            // --- 7. DEVOLVER EL DTO ---
+            return new ReserveSeatResponse
+            {
+                ReservationId = reservation.Id,
+                Message = $"Reserva exitosa. Tu Nro de Comprobante es {reservation.Id}"
+            };
         }
     }
 }
