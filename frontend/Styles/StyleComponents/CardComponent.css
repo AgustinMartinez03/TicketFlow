@@ -24,3 +24,82 @@
     box-shadow: var(--neon-glow);
     color: white;
 }
+
+/* =========================================
+   Estilos específicos del contenido de la Card
+   ========================================= */
+
+/* Imagen del evento */
+.event-image {
+    aspect-ratio: 16/10;
+    object-fit: cover;
+}
+
+/* Título de la tarjeta */
+.event-title {
+    color: var(--text-main);
+}
+
+/* Contenedor de la información (fecha, lugar, etc.) */
+.event-info {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+
+
+/* =========================================
+   Estilos para las Tarjetas de Sectores
+   ========================================= */
+
+/* Contenedor principal del sector */
+.sector-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    /* transition opcional por si querés que tenga el mismo efecto hover que EventCard */
+    transition: transform 0.3s ease, border-color 0.3s ease; 
+}
+
+.sector-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* Encabezado del sector */
+.sector-header {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 15px;
+    border-bottom: none; /* Para limpiar bordes nativos de Bootstrap */
+}
+
+/* Precio destacado */
+.sector-price {
+    color: var(--neon-purple);
+    font-weight: 800;
+}
+
+/* Botón outline de Neón */
+.btn-outline-neon {
+    background-color: transparent;
+    border: 2px solid var(--neon-purple);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Agregamos el hover para que el botón "brille" al pasar el mouse */
+.btn-outline-neon:hover {
+    background-color: var(--neon-purple);
+    box-shadow: var(--neon-glow);
+    color: white;
+}
+
+.sector-info {
+    color: var(--text-main); /* Color clarito y legible */
+    font-size: 1.05rem;
+}
