@@ -73,3 +73,34 @@
     pointer-events: auto !important;
     cursor: not-allowed !important;
 }
+
+
+/* =========================================
+   Escenario y Contenedores Extras
+   ========================================= */
+.stage-container { max-width: 600px; }
+
+.stage-line {
+    height: 8px;
+    width: 80%;
+    background-color: var(--neon-purple);
+    box-shadow: var(--neon-glow);
+}
+
+.stage-text {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+}
+
+/* Leyendas */
+.legend-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+}
+
+.legend-available { background-color: #065f46; border: 1px solid #047857; }
+.legend-reserved  { background-color: #926f0e; border: 1px solid #b49809; }
+.legend-sold      { background-color: #1f2937; border: 1px solid #374151; }
+
+.seats-card-wrapper { max-width: 800px; }
