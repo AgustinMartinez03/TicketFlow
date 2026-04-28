@@ -29,7 +29,7 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                 new User
                 {
                     Id = 1,
-                    Name = "Agustin (Tech Lead)",
+                    Name = "Agustin",
                     Email = "agus@ticketflow.com",
                     PasswordHash = "123456" // En producción esto iría encriptado con BCrypt
                 },
