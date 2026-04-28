@@ -127,7 +127,7 @@ function attachSectorButtonEvents() {
                     seatsGrid.innerHTML = '<div class="text-center text-muted py-4">No hay butacas configuradas para este sector.</div>';
                     return;
                 }
-                console.log("Así viene la butaca desde C#:", seatsList[0]);
+                
                 // 4. Mandar a dibujar la grilla
                 renderSeatsGrid(seatsList);
 
