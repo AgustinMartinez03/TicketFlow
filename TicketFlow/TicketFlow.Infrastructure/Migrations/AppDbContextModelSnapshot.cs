@@ -170,7 +170,7 @@ namespace TicketFlow.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("69a4d4ed-05e7-452a-925d-7e6a269b272f"),
+                            Id = new Guid("91c2366e-bca7-4ebd-b3a3-57f62488820e"),
                             RowIdentifier = "A",
                             SeatNumber = 1,
                             SectorId = 1,
@@ -179,7 +179,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("66bcf674-bd26-451a-898c-4825dd72025a"),
+                            Id = new Guid("17db3074-2ca7-4848-bbb1-3d93607dc55d"),
                             RowIdentifier = "A",
                             SeatNumber = 2,
                             SectorId = 1,
@@ -188,7 +188,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9779360d-956b-47fd-826e-2b9b5a711f1c"),
+                            Id = new Guid("12dcfe06-7fe4-44ef-8777-f99277aa9154"),
                             RowIdentifier = "A",
                             SeatNumber = 3,
                             SectorId = 1,
@@ -197,7 +197,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("30fddd05-5e6e-4774-a5de-8cf3f62ec68b"),
+                            Id = new Guid("2018f535-5289-4fca-98c5-b9b161e1b7e2"),
                             RowIdentifier = "A",
                             SeatNumber = 4,
                             SectorId = 1,
@@ -206,7 +206,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ee97793f-fec8-43c8-8fb7-1714d3b119c2"),
+                            Id = new Guid("22c99fb3-59eb-4c1c-940a-b54208c84285"),
                             RowIdentifier = "A",
                             SeatNumber = 5,
                             SectorId = 1,
@@ -215,7 +215,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e81bc41e-381b-470f-9988-859f837b7143"),
+                            Id = new Guid("4fddd258-7f28-4196-a6c4-a544dbe01841"),
                             RowIdentifier = "A",
                             SeatNumber = 6,
                             SectorId = 1,
@@ -224,7 +224,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("70382125-a79d-4e34-bcb2-a6e3211a2dab"),
+                            Id = new Guid("3076c99d-1e1a-4bb8-b879-067e8b921f03"),
                             RowIdentifier = "A",
                             SeatNumber = 7,
                             SectorId = 1,
@@ -233,7 +233,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b288e078-bf4c-4935-9100-f71d19a72abf"),
+                            Id = new Guid("9b8f9e2d-df8e-42f4-b0cb-13b9cf94caf6"),
                             RowIdentifier = "A",
                             SeatNumber = 8,
                             SectorId = 1,
@@ -242,7 +242,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0a53b92d-8253-4f0e-9215-d292fd73d8a0"),
+                            Id = new Guid("1ddb6d16-0550-4072-ba9e-f3a8d223360d"),
                             RowIdentifier = "A",
                             SeatNumber = 9,
                             SectorId = 1,
@@ -251,7 +251,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("bb2f545f-0bf6-49b5-a730-c8f14784a6e7"),
+                            Id = new Guid("0f33f8ab-c6a7-49fc-b01a-e2169ecb5ca3"),
                             RowIdentifier = "A",
                             SeatNumber = 10,
                             SectorId = 1,
@@ -260,7 +260,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e3349eed-06b6-4f7c-9128-82eeb1919b1f"),
+                            Id = new Guid("0d484b8f-39f1-4229-981d-ff21700e7a73"),
                             RowIdentifier = "B",
                             SeatNumber = 1,
                             SectorId = 1,
@@ -269,7 +269,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e3080fdd-9ba7-4d8b-beb9-9a138942ed9e"),
+                            Id = new Guid("b4c52af6-c591-4503-8aa0-a868effebc1c"),
                             RowIdentifier = "B",
                             SeatNumber = 2,
                             SectorId = 1,
@@ -278,7 +278,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f1d010f8-fd22-40c8-a999-62aee8c2736b"),
+                            Id = new Guid("907e5003-c090-4c2f-8046-be2037e809b5"),
                             RowIdentifier = "B",
                             SeatNumber = 3,
                             SectorId = 1,
@@ -287,7 +287,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("adc971e9-0eb6-42ba-b1f1-4a9b66d5cf63"),
+                            Id = new Guid("d3dbb917-bf85-477b-bb09-d76e17296d94"),
                             RowIdentifier = "B",
                             SeatNumber = 4,
                             SectorId = 1,
@@ -296,7 +296,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("58123b37-b404-4c5e-bdda-64b39074db23"),
+                            Id = new Guid("2ccabb17-116c-4dad-8162-def44480a47d"),
                             RowIdentifier = "B",
                             SeatNumber = 5,
                             SectorId = 1,
@@ -305,7 +305,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a14b0b23-fddc-4e4d-a5c4-a84ad0f9518b"),
+                            Id = new Guid("76182d4f-46a8-40ed-8f0e-b7b73e025652"),
                             RowIdentifier = "B",
                             SeatNumber = 6,
                             SectorId = 1,
@@ -314,7 +314,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7b8340c0-87f9-491d-86e9-afca90c9cf74"),
+                            Id = new Guid("7b478a53-2198-4de1-8200-e033705e9179"),
                             RowIdentifier = "B",
                             SeatNumber = 7,
                             SectorId = 1,
@@ -323,7 +323,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fa63868e-9193-4e47-b309-de5f9562755c"),
+                            Id = new Guid("4cdb54e6-09d8-4265-8997-22bcfe6bca51"),
                             RowIdentifier = "B",
                             SeatNumber = 8,
                             SectorId = 1,
@@ -332,7 +332,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("437c9800-895d-4256-b784-99d28e240934"),
+                            Id = new Guid("980c819a-7baf-4169-9159-f0eb729d0563"),
                             RowIdentifier = "B",
                             SeatNumber = 9,
                             SectorId = 1,
@@ -341,7 +341,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f161f4d7-af8a-43bd-9a1d-32a178e451d5"),
+                            Id = new Guid("89eac0ba-3154-498a-8e53-b7db49513a58"),
                             RowIdentifier = "B",
                             SeatNumber = 10,
                             SectorId = 1,
@@ -350,7 +350,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0e80cd74-ea37-4f14-84c7-c7068835491e"),
+                            Id = new Guid("94506aa8-cd36-4251-97c2-bad63b89473a"),
                             RowIdentifier = "C",
                             SeatNumber = 1,
                             SectorId = 1,
@@ -359,7 +359,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("663e1f2c-7880-4376-844a-228cb6245988"),
+                            Id = new Guid("a20f2b40-be78-4cda-ba85-3bb9add1338a"),
                             RowIdentifier = "C",
                             SeatNumber = 2,
                             SectorId = 1,
@@ -368,7 +368,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("109e8c6e-65f9-4b9c-86a2-292b1c8e04b8"),
+                            Id = new Guid("27657278-02b1-4cf2-9b3c-d3b0ae19c0fe"),
                             RowIdentifier = "C",
                             SeatNumber = 3,
                             SectorId = 1,
@@ -377,7 +377,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8b575098-2c6d-47df-861c-b294e4abab51"),
+                            Id = new Guid("8d5dc6e1-5294-4e81-b412-dadca2f12698"),
                             RowIdentifier = "C",
                             SeatNumber = 4,
                             SectorId = 1,
@@ -386,7 +386,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("66a73461-58a4-4055-9640-cdc1f812e3da"),
+                            Id = new Guid("ee838cfb-755c-441a-85ca-747b70bc3a22"),
                             RowIdentifier = "C",
                             SeatNumber = 5,
                             SectorId = 1,
@@ -395,7 +395,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6d899102-edb9-4340-b2f6-c560ba7f2ff2"),
+                            Id = new Guid("2e981fe9-d5ad-4d70-92f4-d52d5d01de9b"),
                             RowIdentifier = "C",
                             SeatNumber = 6,
                             SectorId = 1,
@@ -404,7 +404,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9a54a6bb-ef97-4689-98c9-06f2eb616612"),
+                            Id = new Guid("42c2246a-caad-490a-a66c-0f6ebb9a51ab"),
                             RowIdentifier = "C",
                             SeatNumber = 7,
                             SectorId = 1,
@@ -413,7 +413,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6239e534-ebf3-4b13-9a9d-f610d94f519f"),
+                            Id = new Guid("c2c63ed6-642e-45f2-8b46-7d02783810bc"),
                             RowIdentifier = "C",
                             SeatNumber = 8,
                             SectorId = 1,
@@ -422,7 +422,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7c39958c-64bb-45f2-b6cd-606dd192c250"),
+                            Id = new Guid("84ba70ac-5330-4354-b2fa-eae72cb1fabb"),
                             RowIdentifier = "C",
                             SeatNumber = 9,
                             SectorId = 1,
@@ -431,7 +431,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1b88e52f-a615-4e33-8cfd-172ce73cd073"),
+                            Id = new Guid("6229b530-e5c6-4d58-bef1-9519a1feecac"),
                             RowIdentifier = "C",
                             SeatNumber = 10,
                             SectorId = 1,
@@ -440,7 +440,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("07dc7514-7a41-4e61-b253-237f4e262917"),
+                            Id = new Guid("743a37e6-7890-46f4-9c68-019120812138"),
                             RowIdentifier = "D",
                             SeatNumber = 1,
                             SectorId = 1,
@@ -449,7 +449,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("68879e03-8b3a-4faf-81d8-bf7904df7d31"),
+                            Id = new Guid("ed3b9f20-3808-41a7-bf10-580483080154"),
                             RowIdentifier = "D",
                             SeatNumber = 2,
                             SectorId = 1,
@@ -458,7 +458,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a4652be8-8d4f-4990-92c2-9a643a05f4d1"),
+                            Id = new Guid("1ba0aa70-50e0-4793-a564-b700eac91551"),
                             RowIdentifier = "D",
                             SeatNumber = 3,
                             SectorId = 1,
@@ -467,7 +467,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("dd340b00-2022-43c8-9262-6c0dfe7c4e5c"),
+                            Id = new Guid("3ddf495e-2d26-43b7-92f5-1a8d57912a8c"),
                             RowIdentifier = "D",
                             SeatNumber = 4,
                             SectorId = 1,
@@ -476,7 +476,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("314fcc67-ad78-4594-b9ae-1c7e43cc37b9"),
+                            Id = new Guid("313199ff-1ff0-4fec-b8c8-d99f21ab605e"),
                             RowIdentifier = "D",
                             SeatNumber = 5,
                             SectorId = 1,
@@ -485,7 +485,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("21740bf6-7044-4149-bbf0-f5f871cbd582"),
+                            Id = new Guid("84d57bb6-fe0c-4b55-b910-1e52ea844d09"),
                             RowIdentifier = "D",
                             SeatNumber = 6,
                             SectorId = 1,
@@ -494,7 +494,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8f567645-b8ae-4001-878e-e24b7a40167c"),
+                            Id = new Guid("7fb8df55-4722-403e-bf9e-85bdfc8ac5c9"),
                             RowIdentifier = "D",
                             SeatNumber = 7,
                             SectorId = 1,
@@ -503,7 +503,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("51b55137-1527-4867-9f25-d5972e72f973"),
+                            Id = new Guid("d93e6a03-d111-4e99-a431-e40039379682"),
                             RowIdentifier = "D",
                             SeatNumber = 8,
                             SectorId = 1,
@@ -512,7 +512,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a4a84f68-2439-427c-a8ef-f3a794e5e825"),
+                            Id = new Guid("6c0c5a74-b353-4e41-bcd6-ee649ea2d585"),
                             RowIdentifier = "D",
                             SeatNumber = 9,
                             SectorId = 1,
@@ -521,7 +521,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("878780bf-60f9-4cb9-a79e-86286f416f48"),
+                            Id = new Guid("1efde5fb-9ac5-4006-8961-30154a478f60"),
                             RowIdentifier = "D",
                             SeatNumber = 10,
                             SectorId = 1,
@@ -530,7 +530,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("13713a1c-6410-4d2c-8fb6-892b6fb846e7"),
+                            Id = new Guid("fba9bb27-2057-4847-92c3-0709aa6e8acb"),
                             RowIdentifier = "E",
                             SeatNumber = 1,
                             SectorId = 1,
@@ -539,7 +539,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2b9d826f-7bc8-4b67-a10a-0e1bb42440e0"),
+                            Id = new Guid("781f6285-905f-4823-9129-f09b209185eb"),
                             RowIdentifier = "E",
                             SeatNumber = 2,
                             SectorId = 1,
@@ -548,7 +548,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("095bf0a9-eb3b-4624-ab6a-0e73193189d3"),
+                            Id = new Guid("a898111e-c012-4559-bd45-e67dcf8beeff"),
                             RowIdentifier = "E",
                             SeatNumber = 3,
                             SectorId = 1,
@@ -557,7 +557,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("96f520fe-4b79-4c02-9c9b-d0243f38e1e8"),
+                            Id = new Guid("7b651b2d-8b17-470c-bdca-dfe304bd026f"),
                             RowIdentifier = "E",
                             SeatNumber = 4,
                             SectorId = 1,
@@ -566,7 +566,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("64fb7bc9-e5d9-4048-a145-1379bf3a799d"),
+                            Id = new Guid("953889b6-b8ff-4bb7-b162-f255d0912da7"),
                             RowIdentifier = "E",
                             SeatNumber = 5,
                             SectorId = 1,
@@ -575,7 +575,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e017d1df-8752-4386-9a90-8340f593d9c0"),
+                            Id = new Guid("49d1c5ca-66d1-4b9f-8f8e-314665b810db"),
                             RowIdentifier = "E",
                             SeatNumber = 6,
                             SectorId = 1,
@@ -584,7 +584,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e51317f2-6d87-4cad-b012-84947bf1c337"),
+                            Id = new Guid("2780921c-5372-4570-aa03-09677c14a886"),
                             RowIdentifier = "E",
                             SeatNumber = 7,
                             SectorId = 1,
@@ -593,7 +593,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("78fd49ba-474c-4b67-b8db-e38210925ad2"),
+                            Id = new Guid("4bb2cadc-72e2-4967-9e69-c4cb57fdbe52"),
                             RowIdentifier = "E",
                             SeatNumber = 8,
                             SectorId = 1,
@@ -602,7 +602,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d8a467c6-6a08-4989-8eef-45864660a430"),
+                            Id = new Guid("576ed78b-ea29-4d45-8317-65254309d29a"),
                             RowIdentifier = "E",
                             SeatNumber = 9,
                             SectorId = 1,
@@ -611,7 +611,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a20c96e0-f69a-4f77-80e1-fe53b21d8623"),
+                            Id = new Guid("4822be68-1d6f-4c93-8c26-118d0855428d"),
                             RowIdentifier = "E",
                             SeatNumber = 10,
                             SectorId = 1,
@@ -620,7 +620,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ab22fa9d-69c1-4b0e-aa0e-f8e9c7b6ba9f"),
+                            Id = new Guid("822846b9-4ba2-4f26-9584-291318c94dce"),
                             RowIdentifier = "A",
                             SeatNumber = 1,
                             SectorId = 2,
@@ -629,7 +629,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("21034369-df46-474f-80f8-c224c1e61570"),
+                            Id = new Guid("ba350bbb-4feb-401c-8529-88bcab8e7bdf"),
                             RowIdentifier = "A",
                             SeatNumber = 2,
                             SectorId = 2,
@@ -638,7 +638,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0d4491bc-902a-4857-a816-57669ffcdb51"),
+                            Id = new Guid("b68167b2-3d60-4ea5-a058-b41fedfa4faa"),
                             RowIdentifier = "A",
                             SeatNumber = 3,
                             SectorId = 2,
@@ -647,7 +647,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5fbfbe03-43a5-4bed-9829-29d8e29fe8bf"),
+                            Id = new Guid("af92aa01-d6e8-47b1-b014-e25c14b6ba7c"),
                             RowIdentifier = "A",
                             SeatNumber = 4,
                             SectorId = 2,
@@ -656,7 +656,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1ac03819-e095-4bfd-a3eb-081a066ba7fe"),
+                            Id = new Guid("ec05bc0e-6cb3-4cf6-8825-c0463305f685"),
                             RowIdentifier = "A",
                             SeatNumber = 5,
                             SectorId = 2,
@@ -665,7 +665,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("33e210a0-de9f-42f7-8db4-cdebd904e2a6"),
+                            Id = new Guid("1956f04f-c369-41b1-8c0e-21712f8ffae8"),
                             RowIdentifier = "A",
                             SeatNumber = 6,
                             SectorId = 2,
@@ -674,7 +674,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2575896d-bdad-4995-96ce-88518d0dd1f0"),
+                            Id = new Guid("be17ae66-ce79-4c81-be45-e87fb9061f64"),
                             RowIdentifier = "A",
                             SeatNumber = 7,
                             SectorId = 2,
@@ -683,7 +683,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f8da6314-2a92-4456-89af-b99863b9b8c8"),
+                            Id = new Guid("ace5cf8d-5095-4239-9f44-3ca9999d1f53"),
                             RowIdentifier = "A",
                             SeatNumber = 8,
                             SectorId = 2,
@@ -692,7 +692,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a49942a8-271a-4eba-b86a-d2d18811b029"),
+                            Id = new Guid("cc953a10-8f81-48e2-96e9-67babcea3ab0"),
                             RowIdentifier = "A",
                             SeatNumber = 9,
                             SectorId = 2,
@@ -701,7 +701,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("06948517-bb24-46b7-a1c1-2500408b62a7"),
+                            Id = new Guid("26adbc29-bab2-4c26-9ecb-b8420eda9f31"),
                             RowIdentifier = "A",
                             SeatNumber = 10,
                             SectorId = 2,
@@ -710,7 +710,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("21951333-6f71-423f-96af-b76db8e054f4"),
+                            Id = new Guid("9ce7b764-4446-4531-95a6-1a85c8660a4c"),
                             RowIdentifier = "B",
                             SeatNumber = 1,
                             SectorId = 2,
@@ -719,7 +719,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("daefdbb7-4e51-4ac8-8c00-5e19bc0bab49"),
+                            Id = new Guid("63522422-909f-4d33-9b87-473a370cc970"),
                             RowIdentifier = "B",
                             SeatNumber = 2,
                             SectorId = 2,
@@ -728,7 +728,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cb7cd8ca-1b13-45bb-9985-f40ed58c9a83"),
+                            Id = new Guid("3461ffed-946c-4c6e-807a-232f7dc4a526"),
                             RowIdentifier = "B",
                             SeatNumber = 3,
                             SectorId = 2,
@@ -737,7 +737,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c450b888-c161-4b2a-9b52-480a29230333"),
+                            Id = new Guid("755b01e5-06fc-471f-b997-bec7253d1857"),
                             RowIdentifier = "B",
                             SeatNumber = 4,
                             SectorId = 2,
@@ -746,7 +746,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4832519f-ae8c-4b26-a3a5-aba28c14f13d"),
+                            Id = new Guid("a1d4db36-e8bf-421b-a6fc-85f70fa8cba9"),
                             RowIdentifier = "B",
                             SeatNumber = 5,
                             SectorId = 2,
@@ -755,7 +755,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("be229e3f-4455-45fa-97b8-40e0b1f6b478"),
+                            Id = new Guid("a2a9241c-3a07-4261-9b3f-78261c63438d"),
                             RowIdentifier = "B",
                             SeatNumber = 6,
                             SectorId = 2,
@@ -764,7 +764,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6cd85d5f-4690-4e87-9302-c55bae49179d"),
+                            Id = new Guid("f8cdfded-8b71-4578-a801-3d98ea5d396b"),
                             RowIdentifier = "B",
                             SeatNumber = 7,
                             SectorId = 2,
@@ -773,7 +773,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("32841f86-ba25-43c4-b41e-c72515044b9b"),
+                            Id = new Guid("4426425e-8688-4d98-afea-2eb0ccf51bdc"),
                             RowIdentifier = "B",
                             SeatNumber = 8,
                             SectorId = 2,
@@ -782,7 +782,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9b0c7894-4187-486b-8a8d-51427289a7e9"),
+                            Id = new Guid("bb93bcd5-c3ae-43b0-a8ed-cca072591931"),
                             RowIdentifier = "B",
                             SeatNumber = 9,
                             SectorId = 2,
@@ -791,7 +791,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8d850456-c25b-4206-924f-7a4caa8ab38b"),
+                            Id = new Guid("23d614d8-d0c5-4dae-9ee7-eb4a4a5a7873"),
                             RowIdentifier = "B",
                             SeatNumber = 10,
                             SectorId = 2,
@@ -800,7 +800,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c9b5461a-baf7-4bf5-817f-f90d58d81733"),
+                            Id = new Guid("3290fc1a-a5c7-440d-82a5-103d858fa698"),
                             RowIdentifier = "C",
                             SeatNumber = 1,
                             SectorId = 2,
@@ -809,7 +809,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6d0fdec0-3ce1-4fa1-8af1-c92e3d414cde"),
+                            Id = new Guid("83ddbd5d-01a7-4101-a935-32f6a7eaca3d"),
                             RowIdentifier = "C",
                             SeatNumber = 2,
                             SectorId = 2,
@@ -818,7 +818,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b877e68b-6d7c-4496-85dc-52834eaea3a2"),
+                            Id = new Guid("4668a702-7ca4-4df1-b7f2-d7a41fb0da16"),
                             RowIdentifier = "C",
                             SeatNumber = 3,
                             SectorId = 2,
@@ -827,7 +827,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("27f6b989-f289-4112-adb5-d4a7722d3289"),
+                            Id = new Guid("a820cfeb-3f9c-4c13-bd9d-9621f7d0b88a"),
                             RowIdentifier = "C",
                             SeatNumber = 4,
                             SectorId = 2,
@@ -836,7 +836,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("33eb8502-a42e-4256-946a-10f445d6daf9"),
+                            Id = new Guid("081fa2c9-bd7c-424c-8876-72773c6e06cd"),
                             RowIdentifier = "C",
                             SeatNumber = 5,
                             SectorId = 2,
@@ -845,7 +845,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e8d429ab-a80b-4b80-af5c-8a76a8a0767c"),
+                            Id = new Guid("42619e8d-5aaf-4aff-85df-a7d0336d89c6"),
                             RowIdentifier = "C",
                             SeatNumber = 6,
                             SectorId = 2,
@@ -854,7 +854,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0c033d59-db2e-4ef2-97c5-541d305ed83c"),
+                            Id = new Guid("f6d5e1be-7437-499b-8818-5b587db8996a"),
                             RowIdentifier = "C",
                             SeatNumber = 7,
                             SectorId = 2,
@@ -863,7 +863,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("277ffe5e-cfb9-4324-990b-bf8fcd6c0be3"),
+                            Id = new Guid("39908dc1-bb88-461c-ba2b-b66caa591ae3"),
                             RowIdentifier = "C",
                             SeatNumber = 8,
                             SectorId = 2,
@@ -872,7 +872,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9cdd12db-bb50-4e30-8f5b-40e486ca8fbd"),
+                            Id = new Guid("6578a930-9f5a-48fb-b10d-057b6552658d"),
                             RowIdentifier = "C",
                             SeatNumber = 9,
                             SectorId = 2,
@@ -881,7 +881,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1c5804ad-dbc3-4776-8cee-fd81814e65de"),
+                            Id = new Guid("c29bc3d2-18db-406d-82b2-e9329d1f6101"),
                             RowIdentifier = "C",
                             SeatNumber = 10,
                             SectorId = 2,
@@ -890,7 +890,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2d40a7ec-d76f-4736-9ee8-1fc48054b635"),
+                            Id = new Guid("7fe31f31-db05-48b0-814c-e081e8447a8b"),
                             RowIdentifier = "D",
                             SeatNumber = 1,
                             SectorId = 2,
@@ -899,7 +899,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0d6595ae-2367-4c65-9c04-8a8841e744d7"),
+                            Id = new Guid("15554ac2-ebda-486a-94dd-6e7219b070e6"),
                             RowIdentifier = "D",
                             SeatNumber = 2,
                             SectorId = 2,
@@ -908,7 +908,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("44cee06d-5734-45f4-86ea-8ecc3d700139"),
+                            Id = new Guid("96ab1a0b-5d0d-4f14-8278-b4f39dc41965"),
                             RowIdentifier = "D",
                             SeatNumber = 3,
                             SectorId = 2,
@@ -917,7 +917,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cba9f8ba-02c8-4eb5-a6c4-c71958b4ae0e"),
+                            Id = new Guid("90b91afa-c825-45a5-af6d-019ed1161449"),
                             RowIdentifier = "D",
                             SeatNumber = 4,
                             SectorId = 2,
@@ -926,7 +926,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("375087c0-e630-4592-8d0e-134f87241d54"),
+                            Id = new Guid("d0415301-626f-45ef-a2eb-b88b5bcea853"),
                             RowIdentifier = "D",
                             SeatNumber = 5,
                             SectorId = 2,
@@ -935,7 +935,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5ed79725-8841-4fcb-8805-6d3162ce7772"),
+                            Id = new Guid("d2cf8e33-2f7d-4654-9aa6-ef6dd252cfe4"),
                             RowIdentifier = "D",
                             SeatNumber = 6,
                             SectorId = 2,
@@ -944,7 +944,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("eac073a9-3272-4794-988a-421f82163bd0"),
+                            Id = new Guid("a513df71-78ba-4b19-a351-4126ed1d827e"),
                             RowIdentifier = "D",
                             SeatNumber = 7,
                             SectorId = 2,
@@ -953,7 +953,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ddc172d6-95c6-408d-afcc-c99b0b37fb05"),
+                            Id = new Guid("dc0b4c84-c7d2-482a-877c-e836c6294ad3"),
                             RowIdentifier = "D",
                             SeatNumber = 8,
                             SectorId = 2,
@@ -962,7 +962,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b9096692-a15f-47ba-9660-4b6066ccf959"),
+                            Id = new Guid("d9f353b4-20a6-4cea-aff3-95bd74d76588"),
                             RowIdentifier = "D",
                             SeatNumber = 9,
                             SectorId = 2,
@@ -971,7 +971,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1be6874f-2461-4293-ae87-da7007349a7b"),
+                            Id = new Guid("b3ca6073-c578-4066-be93-f87a5714031e"),
                             RowIdentifier = "D",
                             SeatNumber = 10,
                             SectorId = 2,
@@ -980,7 +980,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("412b6c18-bb62-4a18-8bdf-50756d4c107c"),
+                            Id = new Guid("01c430c1-42cc-4872-a29b-0980fb1e48f6"),
                             RowIdentifier = "E",
                             SeatNumber = 1,
                             SectorId = 2,
@@ -989,7 +989,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1c476f9a-23bd-4d95-82e0-3ede01041111"),
+                            Id = new Guid("46049ef3-3c2b-43b7-8924-b01b38cca32a"),
                             RowIdentifier = "E",
                             SeatNumber = 2,
                             SectorId = 2,
@@ -998,7 +998,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c8359cfb-a778-469f-b774-4afde6377352"),
+                            Id = new Guid("07f6f1dc-71cb-4813-ae4a-0613c092700c"),
                             RowIdentifier = "E",
                             SeatNumber = 3,
                             SectorId = 2,
@@ -1007,7 +1007,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d21dc9a4-d015-42ec-8431-60b2934aa129"),
+                            Id = new Guid("21fae280-a93e-45e6-befa-c0bb38fe425b"),
                             RowIdentifier = "E",
                             SeatNumber = 4,
                             SectorId = 2,
@@ -1016,7 +1016,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5607728d-88db-4ebf-8ad8-7e465707a9b5"),
+                            Id = new Guid("14224af6-fd9e-4556-98f5-be652630c68c"),
                             RowIdentifier = "E",
                             SeatNumber = 5,
                             SectorId = 2,
@@ -1025,7 +1025,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ef2f8307-3388-4bda-a821-68b7f6581c87"),
+                            Id = new Guid("987414ae-9c2e-4237-b674-f8f3571f97c8"),
                             RowIdentifier = "E",
                             SeatNumber = 6,
                             SectorId = 2,
@@ -1034,7 +1034,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2bf271a2-b55f-4408-9f5c-8ad157b12afc"),
+                            Id = new Guid("c1feb8f6-b5c6-475c-bd22-0a36bb749c21"),
                             RowIdentifier = "E",
                             SeatNumber = 7,
                             SectorId = 2,
@@ -1043,7 +1043,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5bef7852-ad2d-4dba-a043-e37ddd062bd1"),
+                            Id = new Guid("25c6c46a-be36-42ec-b871-4bd908dd3aa7"),
                             RowIdentifier = "E",
                             SeatNumber = 8,
                             SectorId = 2,
@@ -1052,7 +1052,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("da093c63-f501-4bc8-a484-e1ff07422351"),
+                            Id = new Guid("f6411047-f2a2-4343-9066-94e45fb13578"),
                             RowIdentifier = "E",
                             SeatNumber = 9,
                             SectorId = 2,
@@ -1061,7 +1061,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3764b29f-732f-4dd2-8708-7c3bcaf5b439"),
+                            Id = new Guid("420a4fb9-4134-4276-890e-d585baf82f77"),
                             RowIdentifier = "E",
                             SeatNumber = 10,
                             SectorId = 2,
@@ -1152,7 +1152,7 @@ namespace TicketFlow.Infrastructure.Migrations
                         {
                             Id = 1,
                             Email = "agus@ticketflow.com",
-                            Name = "Agustin (Tech Lead)",
+                            Name = "Agustin",
                             PasswordHash = "123456"
                         },
                         new
