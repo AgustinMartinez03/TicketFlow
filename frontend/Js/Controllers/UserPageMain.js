@@ -206,6 +206,12 @@ function attachSeatClickEvents() {
     
     availableSeats.forEach(seatBtn => {
         seatBtn.addEventListener('click', (e) => {
+
+            // 🛡️ ESCUDO: Si el botón ya fue deshabilitado (ej. lo acaban de reservar), ignoramos el clic
+            if (seatBtn.classList.contains('disabled')) {
+                return; 
+            }
+
             const seatId = e.target.getAttribute('data-seat-id');
             const row = e.target.getAttribute('data-seat-row');
             const number = e.target.getAttribute('data-seat-number');
