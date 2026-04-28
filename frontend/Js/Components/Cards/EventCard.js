@@ -2,7 +2,7 @@
 
 export function createEventCard(event) {
     // Usamos una imagen genérica hermosa de Unsplash para los recitales
-    const placeholderImage = "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=800&q=80";
+    const placeholderImage = "Assets/Images/placeholder.jpg";
     
     // Formatear la fecha (el backend devuelve 2026-12-20T20:00:00Z)
     const dateObj = new Date(event.eventDate);

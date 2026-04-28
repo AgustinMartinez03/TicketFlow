@@ -2,6 +2,18 @@
    Estilos de la Grilla de Butacas
    ========================================= */
 
+/* Contenedor principal de la grilla para permitir scroll en celulares */
+#seats-grid {
+    overflow-x: auto; /* Activa el scroll horizontal solo si es necesario */
+    padding-bottom: 15px; /* Espacio para que la barra de scroll no tape las butacas */
+}
+
+/* Evita que las filas se aprieten y se deformen en pantallas chicas */
+.seat-row {
+    min-width: max-content;
+    padding: 0 10px;
+}
+
 /* Etiquetas de las letras (Fila A, B, C...) */
 .row-label {
     width: 25px;
