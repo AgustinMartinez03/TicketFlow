@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TicketFlow - Tu plataforma para descubrir y reservar entradas a los mejores eventos.">
     <link rel="icon" type="image/x-icon" href="Assets/favicon.ico">
     <title>TicketFlow - Reserva de Entradas</title>
     
@@ -11,79 +12,81 @@
     <link rel="stylesheet" href="Styles/Paleta.css">
     <link rel="stylesheet" href="Styles/StyleSections/Body.css">
     <link rel="stylesheet" href="Styles/StyleComponents/CardComponent.css">
-    
     <link rel="stylesheet" href="Styles/StyleComponents/SeatsComponent.css">
-
 </head>
 <body class="bg-dark text-white">
-    <nav class="navbar navbar-dark mb-4" style="background-color: #0b0c10;">
+    
+    <nav class="navbar navbar-dark mb-4 navbar-custom" aria-label="Navegación principal">
         <div class="container">
-            <span class="navbar-brand mb-0 h1" style="color: var(--neon-purple);">🎫 TicketFlow</span>
-            <span class="navbar-text text-white">Usuario: Agustín</span>
+            <span class="navbar-brand mb-0 h1 text-neon" aria-hidden="true">🎫 TicketFlow</span>
+            <span class="visually-hidden">Logo de TicketFlow</span>
+            <span class="navbar-text text-white" aria-label="Usuario actual">Usuario: Agustín</span>
         </div>
     </nav>
 
-    <main class="container py-5" id="main-content">
+    <main class="container py-5" id="main-content" role="main">
         
-        <div id="view-catalog">
+        <section id="view-catalog" aria-labelledby="catalog-title">
             <div class="mb-5">
-                <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Descubrir & Reservar</p>
-                <h1 class="display-4 fw-bold">Próximos Eventos</h1>
-                <p style="color: var(--text-muted);">Encontrá los mejores conciertos y shows cerca tuyo.</p>
+                <p class="step-subtitle mb-1" aria-hidden="true">Descubrir & Reservar</p>
+                <h1 id="catalog-title" class="display-4 fw-bold">Próximos Eventos</h1>
+                <p class="hero-subtitle">Encontrá los mejores conciertos y shows cerca tuyo.</p>
             </div>
-            <div class="row g-4" id="events-grid">
+            
+            <div class="row g-4" id="events-grid" aria-live="polite">
                 <div class="col-12 text-center my-5" id="loading-spinner">
-                    <div class="spinner-border" style="color: var(--neon-purple);" role="status"></div>
+                    <div class="spinner-border text-neon" role="status" aria-hidden="true"></div>
+                    <span class="visually-hidden">Cargando eventos...</span>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="view-sectors" class="d-none">
-            <button id="btn-back-catalog" class="btn btn-back mb-4"> <i class="bi bi-arrow-left"> </i> Volver al Catálogo</button>
+        <section id="view-sectors" class="d-none" aria-labelledby="sectors-title">
+            <button id="btn-back-catalog" class="btn btn-back mb-4" aria-label="Volver a la lista de eventos"> 
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al Catálogo
+            </button>
             <div class="mb-4">
-                <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Paso 2</p>
-                <h2 class="display-5 fw-bold">Elegí tu Sector</h2>
+                <p class="step-subtitle mb-1" aria-hidden="true">Paso 2</p>
+                <h2 id="sectors-title" class="display-5 fw-bold">Elegí tu Sector</h2>
             </div>
-            <div class="row g-4" id="sectors-grid">
-                </div>
-        </div>
+            <div class="row g-4" id="sectors-grid" aria-live="polite"></div>
+        </section>
 
-        <div id="view-seats" class="d-none">
-            <button id="btn-back-sectors" class="btn btn-back mb-4"> <i class="bi bi-arrow-left"> </i> Volver a Sectores</button>
+        <section id="view-seats" class="d-none" aria-labelledby="seat-map-title">
+            <button id="btn-back-sectors" class="btn btn-back mb-4" aria-label="Volver a la selección de sectores"> 
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a Sectores
+            </button>
             
             <div class="mb-4 text-center">
-                <p class="text-uppercase tracking-wider mb-1" style="color: var(--neon-purple); font-size: 0.85rem; font-weight: 600;">Paso 3</p>
-                
-                <h2 class="display-5 text-light fw-bold" id="seat-map-title">Sector</h2> 
-                
-                <p class="text-light mt-2 fs-5 opacity-90">Seleccioná tu butaca preferida para continuar con la reserva.</p>
+                <p class="step-subtitle mb-1" aria-hidden="true">Paso 3</p>
+                <h2 class="display-5 text-light fw-bold" id="seat-map-title">Seleccioná tu Butaca</h2>
+                <p class="text-light mt-2 fs-5 opacity-75">Seleccioná tu butaca preferida para continuar con la reserva.</p>
             </div>
 
-            <div class="mx-auto mt-5 mb-4" style="max-width: 600px;">
-                <div class="rounded-pill mx-auto" style="height: 8px; width: 80%; background-color: var(--neon-purple); box-shadow: var(--neon-glow);"></div>
-                <p class="mt-2 text-center text-uppercase text-light tracking-wider" style="font-size: 0.75rem; letter-spacing: 0.3em;">Escenario</p>
+            <div class="mx-auto mt-5 mb-4 stage-container" aria-hidden="true">
+                <div class="rounded-pill mx-auto stage-line"></div>
+                <p class="mt-2 text-center text-uppercase text-light stage-text">Escenario</p>
             </div>
 
-            <div class="d-flex justify-content-center gap-4 mb-5 flex-wrap">
+            <div class="d-flex justify-content-center gap-4 mb-5 flex-wrap" aria-label="Leyenda de colores de las butacas">
                 <div class="d-flex align-items-center gap-2">
-                    <div style="width: 15px; height: 15px; background-color: #065f46; border: 1px solid #047857; border-radius: 4px;"></div>
+                    <div class="legend-box legend-available" aria-hidden="true"></div>
                     <span class="text-light small">Disponible</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <div style="width: 15px; height: 15px; background-color: #926f0e; border: 1px solid #b49809; border-radius: 4px;"></div>
+                    <div class="legend-box legend-reserved" aria-hidden="true"></div>
                     <span class="text-light small">Reservada</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <div style="width: 15px; height: 15px; background-color: var(--card-bg); border: 1px solid #374151; border-radius: 4px;"></div>
+                    <div class="legend-box legend-sold" aria-hidden="true"></div>
                     <span class="text-light small">Vendida</span>
                 </div>
             </div>
 
-            <div class="card event-card p-4 mx-auto" style="max-width: 800px;">
-                <div id="seats-grid" class="d-flex flex-column gap-2">
-                    </div>
+            <div class="card event-card p-4 mx-auto seats-card-wrapper">
+                <div id="seats-grid" class="d-flex flex-column gap-2" aria-live="polite"></div>
             </div>
-        </div>
+        </section>
 
     </main>
 

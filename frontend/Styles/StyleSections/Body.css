@@ -26,3 +26,20 @@ body {
     border-color: #8b5cf6; /* El borde toma nuestro color violeta principal */
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); /* Un resplandor violeta súper suave */
 }
+
+/* =========================================
+   Utilidades y Navegación
+   ========================================= */
+.navbar-custom { background-color: #0b0c10; }
+.text-neon { color: var(--neon-purple); }
+
+/* Reemplaza a las clases hardcodeadas y de Tailwind que tenías (tracking-wider) */
+.step-subtitle {
+    color: var(--neon-purple);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em; 
+    text-transform: uppercase;
+}
+
+.hero-subtitle { color: var(--text-muted); }
