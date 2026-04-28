@@ -156,9 +156,9 @@ function renderSeatsGrid(seatsList) {
 
         // Usamos la nueva clase .row-label
         html += `
-            <div class="d-flex align-items-center mb-2">
+            <div class="d-flex align-items-center mb-2 seat-row">
                 <div class="row-label">${rowKey}</div>
-                <div class="d-flex gap-2 flex-wrap flex-grow-1 justify-content-center">
+                <div class="d-flex gap-2 flex-nowrap flex-grow-1 justify-content-center">
         `;
 
         seatsInRow.forEach(seat => {

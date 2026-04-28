@@ -9,8 +9,8 @@ body {
 
 .btn-back {
     background-color: transparent;
-    color: #888888; /* Un gris clarito sutil */
-    border: 1px solid #888888; /* Borde oscuro para que no llame mucho la atención */
+    color: var(--text-main); /* Un gris clarito sutil */
+    border: 1px solid var(--text-main); /* Borde oscuro para que no llame mucho la atención */
     display: inline-flex;
     align-items: center;
     gap: 8px; /* Espacio entre el ícono y el texto */
