@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketFlow.Domain.Entities; // Cambiamos el DTO por la entidad
+using TicketFlow.Domain.Entities;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Infrastructure.Persistence;
 
