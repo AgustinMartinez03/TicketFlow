@@ -8,7 +8,6 @@ namespace TicketFlow.Application.Mapper
     {
         public List<UserReservationResponse> MapToUserReservationResponseList(IEnumerable<Reservation> reservations)
         {
-            // Toda la lógica visual y de formato se muda acá
             return reservations.Select(r => new UserReservationResponse
             {
                 ReservationId = r.Id,

@@ -10,7 +10,7 @@ namespace TicketFlow.Application.UseCases
     public class GetSectorsByEventUseCase : IGetSectorsByEventUseCase
     {
         private readonly ISectorQuery _sectorQuery;
-        private readonly ISectorMapper _sectorMapper; // 1. Inyectamos el mapper
+        private readonly ISectorMapper _sectorMapper;
 
         public GetSectorsByEventUseCase(ISectorQuery sectorQuery, ISectorMapper sectorMapper)
         {
@@ -20,7 +20,6 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<IEnumerable<SectorResponse>> ExecuteAsync(int eventId)
         {
-            // 1. Validamos la entrada: Si el ID es 0 o negativo, es un "Bad Request"
             if (eventId <= 0)
             {
                 throw new ExceptionBadRequest("El ID del evento debe ser un número positivo.");
@@ -28,7 +27,6 @@ namespace TicketFlow.Application.UseCases
 
             var sectors = await _sectorQuery.GetSectorsByEventAsync(eventId);
 
-            // 2. Validamos el resultado: Si no hay nada, es un "Not Found"
             if (sectors == null || !sectors.Any())
             {
                 throw new ExceptionNotFound($"No se encontraron sectores para el evento con ID {eventId}.");

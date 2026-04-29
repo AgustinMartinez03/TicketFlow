@@ -1,6 +1,6 @@
 ﻿using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
-using TicketFlow.Application.Exceptions; // Asegúrate de importar tus excepciones
+using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Domain.Entities;
@@ -18,7 +18,6 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<CreateEventResponse> ExecuteAsync(CreateEventRequest request)
         {
-            // --- 0. VALIDACIONES DE ENTRADA (Bad Request) ---
 
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ExceptionBadRequest("El nombre del evento es obligatorio.");
@@ -32,7 +31,6 @@ namespace TicketFlow.Application.UseCases
             if (request.Sectors == null || !request.Sectors.Any())
                 throw new ExceptionBadRequest("Debe incluir al menos un sector para el evento.");
 
-            // 1. Instanciar el Evento
             var newEvent = new Event
             {
                 Name = request.Name,
@@ -41,10 +39,8 @@ namespace TicketFlow.Application.UseCases
                 Sectors = new List<Sector>()
             };
 
-            // 2. Procesar los sectores
             foreach (var sectorReq in request.Sectors)
             {
-                // Validaciones por sector
                 if (string.IsNullOrWhiteSpace(sectorReq.Name))
                     throw new ExceptionBadRequest("El nombre de cada sector es obligatorio.");
 
@@ -62,7 +58,6 @@ namespace TicketFlow.Application.UseCases
                     Seats = new List<Seat>()
                 };
 
-                // 3. Generar automáticamente las butacas
                 for (int i = 1; i <= sectorReq.Capacity; i++)
                 {
                     int rowIndex = (i - 1) / 10;
@@ -81,7 +76,6 @@ namespace TicketFlow.Application.UseCases
                 newEvent.Sectors.Add(newSector);
             }
 
-            // 4. Guardar todo en cascada
             await _eventCommand.InsertEventAsync(newEvent);
             await _eventCommand.SaveChangesAsync();
 

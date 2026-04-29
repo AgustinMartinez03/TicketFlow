@@ -9,7 +9,7 @@ namespace TicketFlow.Application.UseCases
     public class GetEventCatalogUseCase : IGetEventCatalogUseCase
     {
         private readonly IEventQuery _eventQuery;
-        private readonly IEventMapper _eventMapper; // Inyectamos el mapper
+        private readonly IEventMapper _eventMapper;
 
         public GetEventCatalogUseCase(IEventQuery eventQuery, IEventMapper eventMapper)
         {
@@ -19,7 +19,6 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<EventCatalogResponse> ExecuteAsync(int pageNumber, int pageSize)
         {
-            // 1. Validaciones de Entrada (Bad Request)
             if (pageNumber < 1)
             {
                 throw new ExceptionBadRequest("El número de página debe ser mayor a 0.");
@@ -30,15 +29,13 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionBadRequest("El tamaño de la página debe ser mayor a 0.");
             }
 
-            if (pageSize > 100) // Buena práctica de Tech Lead: evitar que pidan un millón de registros y tiren el servidor
+            if (pageSize > 100)
             {
                 throw new ExceptionBadRequest("El tamaño máximo de página permitido es 100.");
             }
 
-            // 2. Ejecutar la consulta
             var (events, totalRecords) = await _eventQuery.GetPaginatedEventsAsync(pageNumber, pageSize);
 
-            // 3. Mapear y devolver (Si events está vacío, devuelve una lista vacía, lo cual está perfecto para un 200 OK)
             return new EventCatalogResponse
             {
                 Events = _eventMapper.MapToEventResponse(events),

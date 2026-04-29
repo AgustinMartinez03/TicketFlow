@@ -1,6 +1,6 @@
 ﻿using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
-using TicketFlow.Application.Exceptions; // Nuestras excepciones limpias
+using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
@@ -16,7 +16,6 @@ namespace TicketFlow.Application.UseCases
         private readonly IReservationCommand _reservationCommand;
         private readonly IAuditLogCommand _auditLogCommand;
 
-        // Quitamos IValidator del constructor
         public ReserveSeatUseCase(
             ISeatCommand seatCommand,
             ISeatQuery seatQuery,
@@ -33,7 +32,6 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<ReserveSeatResponse> ExecuteAsync(ReserveSeatRequest request)
         {
-            // --- 1. VALIDACIONES DE ENTRADA (Reemplazando a FluentValidation) ---
             if (request.UserId <= 0)
             {
                 throw new ExceptionBadRequest("El ID del usuario debe ser un número positivo.");
@@ -44,7 +42,6 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionBadRequest("El ID de la butaca es obligatorio.");
             }
 
-            // --- 2. VALIDAR BUTACA (Not Found y Conflict) ---
             var seat = await _seatQuery.GetSeatByIdAsync(request.SeatId);
 
             if (seat == null)
@@ -57,7 +54,6 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionConflict($"La butaca ya no está disponible. Estado: {seat.Status}");
             }
 
-            // --- 2. VALIDAR USUARIO(Not Found) ---
             var user = await _userQuery.GetUserByIdAsync(request.UserId);
 
             if (user == null)
@@ -65,12 +61,9 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionNotFound("El usuario no existe.");
             }
 
-
-            // --- 3. MODIFICAR BUTACA ---
             seat.Status = "Reserved";
-            _seatCommand.UpdateSeat(seat); // Tu método original
+            _seatCommand.UpdateSeat(seat);
 
-            // --- 4. CREAR RESERVA ---
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(),
@@ -78,11 +71,10 @@ namespace TicketFlow.Application.UseCases
                 SeatId = seat.Id,
                 Status = "Confirmed",
                 ReservedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddHours(24) // Tu regla de negocio
+                ExpiresAt = DateTime.UtcNow.AddHours(24)
             };
-            _reservationCommand.InsertReservation(reservation); // Tu método original
+            _reservationCommand.InsertReservation(reservation);
 
-            // --- 5. CREAR LOG DE AUDITORÍA ---
             var auditLog = new AuditLog
             {
                 UserId = request.UserId,
@@ -92,12 +84,10 @@ namespace TicketFlow.Application.UseCases
                 Details = $"Usuario {request.UserId} reservó la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
                 CreatedAt = DateTime.UtcNow
             };
-            _auditLogCommand.InsertAuditLog(auditLog); // Tu método original
+            _auditLogCommand.InsertAuditLog(auditLog);
 
-            // --- 6. GUARDAR TODO ---
-            await _seatCommand.SaveChangesAsync(); // Tu método original
+            await _seatCommand.SaveChangesAsync();
 
-            // --- 7. DEVOLVER EL DTO ---
             return new ReserveSeatResponse
             {
                 ReservationId = reservation.Id,

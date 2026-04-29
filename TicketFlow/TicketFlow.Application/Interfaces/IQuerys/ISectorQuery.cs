@@ -1,10 +1,9 @@
-﻿using TicketFlow.Domain.Entities; // Asegúrate de importar la entidad
+﻿using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.Interfaces.IQuerys
 {
     public interface ISectorQuery
     {
-        // Ahora devuelve una colección de entidades puras
         Task<IEnumerable<Sector>> GetSectorsByEventAsync(int eventId);
     }
 }

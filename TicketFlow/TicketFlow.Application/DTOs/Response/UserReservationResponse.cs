@@ -7,7 +7,7 @@
         public DateTime EventDate { get; set; }
         public string Venue { get; set; } = string.Empty;
         public string SectorName { get; set; } = string.Empty;
-        public string SeatDetails { get; set; } = string.Empty; // Ej: "Fila A - Asiento 5"
+        public string SeatDetails { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
     }
 }

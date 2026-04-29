@@ -6,6 +6,7 @@ namespace TicketFlow.Application.Interfaces.ICommands
     {
         void InsertReservation(Reservation reservation);
     }
-    /* Nota: No les ponemos SaveChangesAsync a estas interfaces porque usaremos 
-     * el del ISeatCommand para guardar todo en una sola transacción*/
+    // Nota de Diseño: Se omite el método SaveChangesAsync en esta interfaz.
+    // La persistencia de la transacción completa (Reserva + Butaca + Auditoría) 
+    // es coordinada por el Caso de Uso para garantizar atomicidad.
 }
