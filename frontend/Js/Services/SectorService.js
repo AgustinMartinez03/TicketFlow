@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5041/api/v1"; // Recordá verificar tu puerto
+const API_BASE_URL = "http://localhost:5041/api/v1";
 
 export async function fetchSectorsByEvent(eventId) {
     try {

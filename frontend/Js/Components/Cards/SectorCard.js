@@ -1,5 +1,3 @@
-// Js/Components/Cards/SectorCard.js
-
 export function createSectorCard(sector) {
     return `
         <div class="col-12 col-md-6 col-lg-4 mb-4">

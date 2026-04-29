@@ -9,11 +9,11 @@ body {
 
 .btn-back {
     background-color: transparent;
-    color: var(--text-main); /* Un gris clarito sutil */
-    border: 1px solid var(--text-main); /* Borde oscuro para que no llame mucho la atención */
+    color: var(--text-main);
+    border: 1px solid var(--text-main);
     display: inline-flex;
     align-items: center;
-    gap: 8px; /* Espacio entre el ícono y el texto */
+    gap: 8px;
     font-weight: 500;
     padding: 8px 16px;
     border-radius: 8px;
@@ -21,10 +21,10 @@ body {
 }
 
 .btn-back:hover {
-    background-color: #1a1d24; /* Fondo apenitas más claro que el body */
-    color: #ffffff; /* El texto se ilumina a blanco */
-    border-color: #8b5cf6; /* El borde toma nuestro color violeta principal */
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); /* Un resplandor violeta súper suave */
+    background-color: #1a1d24;
+    color: #ffffff;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
 }
 
 /* =========================================
@@ -33,7 +33,6 @@ body {
 .navbar-custom { background-color: #0b0c10; }
 .text-neon { color: var(--neon-purple); }
 
-/* Reemplaza a las clases hardcodeadas y de Tailwind que tenías (tracking-wider) */
 .step-subtitle {
     color: var(--neon-purple);
     font-size: 0.85rem;

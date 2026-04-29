@@ -1,14 +1,8 @@
-// Js/Components/Cards/EventCard.js
-
 export function createEventCard(event) {
-    // Usamos una imagen genérica hermosa de Unsplash para los recitales
     const placeholderImage = "Assets/Images/placeholder.jpg";
-    
-    // Formatear la fecha (el backend devuelve 2026-12-20T20:00:00Z)
     const dateObj = new Date(event.eventDate);
     const dateStr = dateObj.toLocaleString('es-AR', { dateStyle: 'full', timeStyle: 'short' });
 
-    // HTML de la tarjeta limpio y semántico
     return `
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card event-card h-100 rounded-3 overflow-hidden">

@@ -2,19 +2,16 @@
    Estilos de la Grilla de Butacas
    ========================================= */
 
-/* Contenedor principal de la grilla para permitir scroll en celulares */
 #seats-grid {
-    overflow-x: auto; /* Activa el scroll horizontal solo si es necesario */
-    padding-bottom: 15px; /* Espacio para que la barra de scroll no tape las butacas */
+    overflow-x: auto;
+    padding-bottom: 15px;
 }
 
-/* Evita que las filas se aprieten y se deformen en pantallas chicas */
 .seat-row {
     min-width: max-content;
     padding: 0 10px;
 }
 
-/* Etiquetas de las letras (Fila A, B, C...) */
 .row-label {
     width: 25px;
     font-weight: bold;
@@ -23,7 +20,6 @@
     text-align: center;
 }
 
-/* Base de la butaca */
 .seat-btn {
     width: 32px;
     height: 32px;
@@ -34,41 +30,37 @@
     transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-/* Efecto hover SOLO para las butacas que no están deshabilitadas */
 .seat-btn:not(.disabled):hover {
     transform: scale(1.1);
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
 }
 
-/* Efecto hover SOLO para las butacas disponibles */
 .seat-btn.seat-available:not(.disabled):hover {
-    background-color: #059669; /* Verde oscuro (el que antes era el color base) */
+    background-color: #059669;
     border-color: #34d399;     
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6); /* Resplandor más suave y oscuro */
+    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
 }
 
-/* --- Estados de las Butacas --- */
-
 .seat-btn.seat-available {
-    background-color: #065f46; /* Verde bosque mucho más oscuro y relajante */
-    border: 1px solid #047857; /* Borde sutil */
+    background-color: #065f46;
+    border: 1px solid #047857;
     cursor: pointer;
 }
 
 .seat-btn.seat-reserved {
-    background-color: #926f0e !important; /* Tono mostaza/marrón oscuro */
-    border: 1px solid #b49809 !important; /* Borde a juego, sin ser chillón */
-    color: #e5e7eb !important; /* Texto apenas gris claro para que no encandile */
+    background-color: #926f0e !important;
+    border: 1px solid #b49809 !important;
+    color: #e5e7eb !important;
     opacity: 1 !important; 
     pointer-events: auto !important; 
     cursor: not-allowed !important;
 }
 
 .seat-btn.seat-sold {
-    background-color: #1f2937 !important; /* Gris casi negro, se funde con el fondo */
+    background-color: #1f2937 !important;
     border: 1px solid #374151 !important;
-    color: #9ca3af !important; /* Texto oscuro para que pase a segundo plano */
+    color: #9ca3af !important;
     opacity: 0.5 !important;
     pointer-events: auto !important;
     cursor: not-allowed !important;
@@ -92,7 +84,6 @@
     letter-spacing: 0.3em;
 }
 
-/* Leyendas */
 .legend-box {
     width: 15px;
     height: 15px;
