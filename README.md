@@ -1,6 +1,6 @@
 # 🎫 TicketFlow - Plataforma de Reserva de Entradas
 
-TicketFlow es una solución de software escalable para la gestión y reserva de entradas de eventos, diseñada aplicando **Clean Architecture** y principios de diseño orientados al dominio (DDD).
+TicketFlow es una solución de software escalable para la gestión y reserva de entradas de eventos, diseñada aplicando **Clean Architecture** para garantizar un alto desacoplamiento entre las reglas de negocio y la infraestructura.
 
 Este repositorio contiene la **Entrega 1**, que establece la infraestructura base, el modelo de dominio, la API de Catálogo y la experiencia de usuario (UX) inicial para la selección de butacas.
 
