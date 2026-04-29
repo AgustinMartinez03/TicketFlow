@@ -4,7 +4,6 @@ using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.IUseCases;
-using TicketFlow.Application.UseCases;
 
 namespace TicketFlow.API.Controllers
 {
@@ -19,7 +18,6 @@ namespace TicketFlow.API.Controllers
             _reserveUseCase = reserveUseCase;
         }
 
-        // POST: api/v1/seats/reservations
         [HttpPost]
         [ProducesResponseType(typeof(ReserveSeatResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
@@ -31,7 +29,6 @@ namespace TicketFlow.API.Controllers
             {
                 var response = await _reserveUseCase.ExecuteAsync(request);
 
-                // Retornamos 201 Created
                 return Created($"/api/v1/users/{request.UserId}/reservations", response);
             }
             catch (ExceptionBadRequest ex)

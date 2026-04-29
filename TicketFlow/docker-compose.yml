@@ -6,7 +6,7 @@ services:
     container_name: ticketflow-db
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=TicketFlow123! # ¡Debe coincidir con tu appsettings.json!
+      - MSSQL_SA_PASSWORD=TicketFlow123!
     ports:
       - "1433:1433"
     volumes:

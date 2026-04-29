@@ -9,7 +9,6 @@ namespace TicketFlow.Infrastructure.Persistence
         {
         }
 
-        // Nuestra tabla.
         public DbSet<Event> Events { get; set; }
         public DbSet<Sector> Sectors { get; set; }
         public DbSet<Seat> Seats { get; set; }
@@ -21,8 +20,7 @@ namespace TicketFlow.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // Esta línea mágica escanea la carpeta "Configurations" y aplica el EventConfiguration
-            // que acabamos de crear, y cualquier otro que creemos en el futuro.
+            // Registra automáticamente todas las configuraciones de entidades definidas en el directorio "Configurations".
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }

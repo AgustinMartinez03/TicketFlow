@@ -19,12 +19,11 @@ namespace TicketFlow.Infrastructure.Querys
             return await _context.Seats
                 .AsNoTracking()
                 .Where(s => s.SectorId == sectorId)
-                .ToListAsync(); // Devolvemos la entidad sin mapear
+                .ToListAsync();
         }
 
         public async Task<Seat?> GetSeatByIdAsync(Guid seatId)
         {
-            // Usamos FindAsync porque es la forma más rápida de buscar por Primary Key
             return await _context.Seats.FindAsync(seatId);
         }
     }

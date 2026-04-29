@@ -8,7 +8,6 @@
         public string Venue { get; set; } = string.Empty;
         public string Status { get; set; } = "Active";
 
-        // Propiedad de navegación para indicar que un Evento tiene muchos Sectores
         public ICollection<Sector> Sectors { get; set; } = new List<Sector>();
     }
 }

@@ -7,7 +7,6 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
 
-        // Propiedad de navegación
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

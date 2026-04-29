@@ -18,13 +18,9 @@ namespace TicketFlow.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            // 1. Configurar Entity Framework y SQL Server
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // 2. Inyección de Dependencias (Nuestras capas)
-            // Scoped significa que se crea una instancia por cada petición HTTP
             builder.Services.AddScoped<IEventCommand, EventCommand>();
             builder.Services.AddScoped<IEventMapper, EventMapper>();
             builder.Services.AddScoped<IEventQuery, EventQuery>();
@@ -49,8 +45,6 @@ namespace TicketFlow.API
 
             builder.Services.AddScoped<IUserQuery, UserQuery>();
 
-
-            // Configuración de CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -63,14 +57,13 @@ namespace TicketFlow.API
 
             // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

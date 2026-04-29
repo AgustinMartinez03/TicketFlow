@@ -11,7 +11,6 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.ToTable("Users");
             builder.HasKey(u => u.Id);
 
-            // Restricciones de tamaño para optimizar la base de datos
             builder.Property(u => u.Name)
                    .IsRequired()
                    .HasMaxLength(100);
@@ -22,7 +21,6 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                    .IsRequired()
                    .HasMaxLength(255);
 
-            // Indice único: No pueden existir dos usuarios con el mismo email
             builder.HasIndex(u => u.Email).IsUnique();
 
             builder.HasData(
@@ -31,7 +29,7 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                     Id = 1,
                     Name = "Agustin",
                     Email = "agus@ticketflow.com",
-                    PasswordHash = "123456" // En producción esto iría encriptado con BCrypt
+                    PasswordHash = "123456"
                 },
                 new User
                 {

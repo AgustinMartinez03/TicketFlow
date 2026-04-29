@@ -8,13 +8,9 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Event> builder)
         {
-            // Nombre de la tabla
             builder.ToTable("Events");
 
-            // Clave Primaria (PK)
             builder.HasKey(e => e.Id);
-
-            // Propiedades y restricciones
 
             builder.Property(e => e.Id)
                 .IsRequired()

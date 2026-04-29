@@ -22,7 +22,7 @@ namespace TicketFlow.Infrastructure.Querys
                     .ThenInclude(s => s.Sector)
                         .ThenInclude(sec => sec.Event)
                 .Where(r => r.UserId == userId)
-                .ToListAsync(); // Devolvemos las entidades puras sin transformarlas
+                .ToListAsync();
         }
 
         public async Task<Seat?> GetSeatByIdAsync(Guid seatId)

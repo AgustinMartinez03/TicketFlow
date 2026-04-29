@@ -8,8 +8,6 @@
         public decimal Price { get; set; }
         public int Capacity { get; set; }
 
-
-        // Propiedad de navegación
         public Event Event { get; set; } = null!;
         public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     }

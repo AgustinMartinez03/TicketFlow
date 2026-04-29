@@ -19,16 +19,13 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.Property(r => r.ExpiresAt)
                    .IsRequired();
 
-            // Relaciones (Foreign Keys)
-            // Una reserva pertenece a un Usuario
             builder.HasOne(r => r.User)
                    .WithMany(u => u.Reservations)
                    .HasForeignKey(r => r.UserId)
-                   .OnDelete(DeleteBehavior.Restrict); // Evita borrar un usuario si tiene reservas
+                   .OnDelete(DeleteBehavior.Restrict);
 
-            // Una reserva pertenece a una Butaca
             builder.HasOne(r => r.Seat)
-                   .WithMany() // No pusimos lista de reservas en la clase Seat, lo cual está bien
+                   .WithMany()
                    .HasForeignKey(r => r.SeatId)
                    .OnDelete(DeleteBehavior.Restrict);
         }

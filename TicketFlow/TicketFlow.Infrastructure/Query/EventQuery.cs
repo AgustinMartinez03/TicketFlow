@@ -23,7 +23,7 @@ namespace TicketFlow.Infrastructure.Querys
                 .OrderBy(e => e.EventDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync(); // Traemos la entidad completa
+                .ToListAsync();
 
             return (events, totalRecords);
         }

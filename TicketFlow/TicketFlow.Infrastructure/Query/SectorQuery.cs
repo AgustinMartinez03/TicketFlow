@@ -18,9 +18,9 @@ namespace TicketFlow.Infrastructure.Query
         public async Task<IEnumerable<Sector>> GetSectorsByEventAsync(int eventId)
         {
             return await _context.Sectors
-                .AsNoTracking() // Recomendado para lecturas
+                .AsNoTracking()
                 .Where(s => s.EventId == eventId)
-                .ToListAsync(); // Traemos la entidad completa sin transformar
+                .ToListAsync();
         }
     }
 }

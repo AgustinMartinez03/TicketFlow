@@ -24,7 +24,6 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                    .IsRequired()
                    .HasColumnType("decimal(18,2)");
 
-            // DATA SEEDING: 2 Sectores con distintas tarifas.
             builder.HasData(
                 new Sector { Id = 1, EventId = 1, Name = "VIP", Price = 15000.00m, Capacity = 50 },
                 new Sector { Id = 2, EventId = 1, Name = "General", Price = 5000.00m, Capacity = 50 }
