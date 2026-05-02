@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore; // 👈 NECESARIO PARA DbUpdateConcurrencyException
-using TicketFlow.Application.DTOs.Request;
+﻿using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
@@ -95,7 +94,7 @@ namespace TicketFlow.Application.UseCases
             {
                 await _seatCommand.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ExceptionConcurrency)
             {
                 // 🛡️ SI LLEGAMOS ACÁ: Alguien más compró la butaca milisegundos antes que nosotros.
                 // TODO: Registrar intento fallido en AuditLog (Ver nota abajo)
