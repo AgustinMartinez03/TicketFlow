@@ -1,4 +1,5 @@
-﻿using TicketFlow.Application.DTOs.Request;
+﻿using Microsoft.EntityFrameworkCore; // 👈 NECESARIO PARA DbUpdateConcurrencyException
+using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
@@ -42,6 +43,7 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionBadRequest("El ID de la butaca es obligatorio.");
             }
 
+            // 1. LEER LA BASE DE DATOS (Obtiene la butaca con su Version actual, ej: Version = 1)
             var seat = await _seatQuery.GetSeatByIdAsync(request.SeatId);
 
             if (seat == null)
@@ -61,7 +63,9 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionNotFound("El usuario no existe.");
             }
 
+            // 2. MODIFICAR EL ESTADO EN MEMORIA
             seat.Status = "Reserved";
+            seat.Version++;
             _seatCommand.UpdateSeat(seat);
 
             var reservation = new Reservation
@@ -69,24 +73,54 @@ namespace TicketFlow.Application.UseCases
                 Id = Guid.NewGuid(),
                 UserId = request.UserId,
                 SeatId = seat.Id,
-                Status = "Confirmed",
+                Status = "Pending", // Sugerencia de Tech Lead: "Pending" tiene más sentido inicial que "Confirmed" hasta que pague.
                 ReservedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddHours(24)
+                ExpiresAt = DateTime.UtcNow.AddMinutes(5) // Ajustado a la regla de negocio de los 5 minutos
             };
             _reservationCommand.InsertReservation(reservation);
 
             var auditLog = new AuditLog
             {
                 UserId = request.UserId,
-                Action = "RESERVE",
+                Action = "RESERVE_SUCCESS",
                 EntityType = "Seat",
                 EntityId = seat.Id.ToString(),
-                Details = $"Usuario {request.UserId} reservó la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
+                Details = $"Usuario {request.UserId} reservó exitosamente la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
                 CreatedAt = DateTime.UtcNow
             };
             _auditLogCommand.InsertAuditLog(auditLog);
 
-            await _seatCommand.SaveChangesAsync();
+            // 3. INTENTAR GUARDAR EN BASE DE DATOS (Acá ocurre la magia de la concurrencia)
+            try
+            {
+                await _seatCommand.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // 🛡️ SI LLEGAMOS ACÁ: Alguien más compró la butaca milisegundos antes que nosotros.
+                // TODO: Registrar intento fallido en AuditLog (Ver nota abajo)
+
+                // 🛡️ 1. Limpiamos la memoria para que EF Core no intente guardar la basura de nuevo
+                _seatCommand.DiscardChanges();
+
+                // 🛡️ 2. Creamos el log de fallo
+                var errorLog = new AuditLog
+                {
+                    UserId = request.UserId,
+                    Action = "RESERVE_FAILED",
+                    EntityType = "Seat",
+                    EntityId = seat.Id.ToString(),
+                    Details = $"Choque de concurrencia: Usuario {request.UserId} perdió la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                // 🛡️ 3. Guardamos solo este log en la base de datos limpia
+                _auditLogCommand.InsertAuditLog(errorLog);
+                await _seatCommand.SaveChangesAsync();
+
+                // 🛡️ 4. Explotamos con el 409 para el usuario
+                throw new ExceptionConflict("¡Ups! Otro usuario acaba de ganar esta butaca. Por favor, selecciona otra.");
+            }
 
             return new ReserveSeatResponse
             {

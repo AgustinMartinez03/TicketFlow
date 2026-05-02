@@ -22,5 +22,11 @@ namespace TicketFlow.Infrastructure.Command
         {
             await _context.SaveChangesAsync();
         }
+
+        public void DiscardChanges()
+        {
+            // Esto borra toda la basura que quedó trabada (la butaca rota y la reserva a medias)
+            _context.ChangeTracker.Clear();
+        }
     }
 }
