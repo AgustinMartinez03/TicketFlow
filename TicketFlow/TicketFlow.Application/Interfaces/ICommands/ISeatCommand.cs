@@ -6,5 +6,6 @@ namespace TicketFlow.Application.Interfaces.ICommands
     {
         void UpdateSeat(Seat seat);
         Task SaveChangesAsync();
+        void DiscardChanges();
     }
 }

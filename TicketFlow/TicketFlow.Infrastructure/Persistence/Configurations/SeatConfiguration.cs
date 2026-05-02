@@ -20,7 +20,8 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                    .IsRequired()
                    .HasMaxLength(20);
 
-            builder.Property(s => s.Version).IsConcurrencyToken();
+            builder.Property(s => s.Version)
+                   .IsConcurrencyToken();
 
             var seats = new List<Seat>();
 
