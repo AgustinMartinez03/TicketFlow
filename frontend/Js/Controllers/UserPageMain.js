@@ -120,46 +120,75 @@ function attachSectorButtonEvents() {
 
 // ... (arriba de esto queda igual hasta attachSectorButtonEvents) ...
 
-// 👇 1. VARIABLES DE ESTADO Y TEMPORIZADOR
+// 👇 1. VARIABLES DE ESTADO Y MANEJO DE SESSION STORAGE
 const CURRENT_USER_ID = "1";
-let misReservas = []; // Formato: [{ seatId: "...", reservationId: "..." }]
 let temporizadorInterval = null;
 
-function iniciarCarritoConTemporizador(reservationId, currentSectorId) {
+// Funciones para manejar la única reserva permitida en el SessionStorage
+function getMiReserva() {
+    const data = sessionStorage.getItem('miReservaActiva');
+    return data ? JSON.parse(data) : null;
+}
+
+function setMiReserva(reserva) {
+    sessionStorage.setItem('miReservaActiva', JSON.stringify(reserva));
+}
+
+function clearMiReserva() {
+    sessionStorage.removeItem('miReservaActiva');
+}
+
+// 👇 2. TEMPORIZADOR A PRUEBA DE F5 Y WORKER DEL BACKEND
+function iniciarCarritoConTemporizador(reservationId, currentSectorId, expiresAtTimestamp) {
     document.getElementById('carrito-container').style.display = 'block';
+    document.body.style.paddingBottom = '150px'; 
     
-    let tiempoRestante = 300; 
     const timerElement = document.getElementById('contador-carrito');
 
     if (temporizadorInterval) clearInterval(temporizadorInterval);
 
     temporizadorInterval = setInterval(() => {
-        let minutos = Math.floor(tiempoRestante / 60);
-        let segundos = tiempoRestante % 60;
-        
-        timerElement.innerText = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+        const ahora = Date.now();
+        const tiempoRestanteMs = expiresAtTimestamp - ahora;
 
-        if (tiempoRestante <= 0) {
+        if (tiempoRestanteMs <= 0) {
             clearInterval(temporizadorInterval);
             document.getElementById('carrito-container').style.display = 'none';
-            misReservas = []; // Limpiamos memoria
+            document.body.style.paddingBottom = '0px';
+
+            // 🪄 TRUCO VISUAL: Buscamos la butaca naranja y la forzamos a verde 
+            // para no esperar al Worker del backend.
+            const miReservaActual = getMiReserva();
+            if (miReservaActual) {
+                const btnNaranja = document.querySelector(`button[data-seat-id="${miReservaActual.seatId}"]`);
+                if (btnNaranja) {
+                    btnNaranja.classList.remove('seat-my-reserved', 'disabled');
+                    btnNaranja.classList.add('seat-available');
+                }
+            }
+
+            clearMiReserva(); // Limpiamos la memoria
             
             Swal.fire({
                 icon: 'warning',
                 title: 'Tiempo expirado',
                 text: 'El tiempo para pagar ha expirado. Tu butaca ha sido liberada.',
-                background: '#1a1d24',
-                color: '#ffffff',
-                confirmButtonColor: '#8b5cf6'
-            }).then(() => {
-                recargarGrillaButacas(currentSectorId); 
+                background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#8b5cf6'
             });
+            // 🛑 Eliminamos el ".then(() => recargarGrillaButacas)" para no traer datos "viejos" del backend.
+            
+            return; 
         }
-        tiempoRestante--;
+
+        let segundosTotales = Math.floor(tiempoRestanteMs / 1000);
+        let minutos = Math.floor(segundosTotales / 60);
+        let segundos = segundosTotales % 60;
+        
+        timerElement.innerText = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
     }, 1000);
 }
 
-// Función auxiliar para recargar la grilla silenciosamente
+// Función auxiliar para recargar la grilla
 async function recargarGrillaButacas(sectorId) {
     try {
         const responseData = await fetchSeatsBySector(sectorId);
@@ -170,8 +199,27 @@ async function recargarGrillaButacas(sectorId) {
     }
 }
 
-// 👇 2. RENDERIZADO INTELIGENTE DE BUTACAS
+// 👇 3. RENDERIZADO INTELIGENTE (VERIFICA MEMORIA AL INICIAR)
 function renderSeatsGrid(seatsList, sectorId) { 
+    // Verificamos si hay una reserva activa en memoria y si sigue viva
+    const miReserva = getMiReserva();
+    if (miReserva) {
+        if (miReserva.expiresAt > Date.now()) {
+            // Si está viva, reactivamos el temporizador visualmente (Cubre el caso del F5)
+            iniciarCarritoConTemporizador(miReserva.reservationId, sectorId, miReserva.expiresAt);
+        } else {
+            // Si el tiempo pasó mientras estaba offline o hizo F5 tarde, la borramos
+            clearMiReserva(); 
+        }
+    } else {
+        // Nos aseguramos de ocultar el carrito si no hay nada
+        document.getElementById('carrito-container').style.display = 'none';
+        document.body.style.paddingBottom = '0px';
+        if (temporizadorInterval) clearInterval(temporizadorInterval);
+    }
+
+    const reservaActiva = getMiReserva(); // Volvemos a leer por si la borramos arriba
+
     const rows = {};
     seatsList.forEach(seat => {
         if (!rows[seat.rowIdentifier]) rows[seat.rowIdentifier] = [];
@@ -197,10 +245,11 @@ function renderSeatsGrid(seatsList, sectorId) {
             if (seat.status === 'Available') {
                 statusClass = 'seat-available';
             } else if (seat.status === 'Reserved') {
-                const esMia = misReservas.some(r => r.seatId === seat.id);
+                // Chequeamos contra el SessionStorage
+                const esMia = reservaActiva && reservaActiva.seatId === seat.id;
                 if (esMia) {
                     statusClass = 'seat-my-reserved'; 
-                    disabledClass = ''; // ¡Fundamental! No debe estar disabled para poder clickear
+                    disabledClass = ''; // Se puede clickear
                 } else {
                     statusClass = 'seat-reserved';
                     disabledClass = 'disabled'; 
@@ -230,20 +279,18 @@ function renderSeatsGrid(seatsList, sectorId) {
     });
 
     seatsGrid.innerHTML = html;
-    attachSeatClickEvents(); // Volvemos a enlazar los eventos a los nuevos botones
+    attachSeatClickEvents();
 }
 
-// 👇 3. LÓGICA DE CLIC (RESERVAR, PAGAR Y ERROR 409)
+
+// 👇 4. LÓGICA DE CLIC (CON BLOQUEO DE MULTIPLES RESERVAS Y FIX DEL SWEETALERT)
 function attachSeatClickEvents() {
-    // Seleccionamos TODOS los botones que no sean disabled (verdes y naranjas)
     const clickableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
     
     clickableSeats.forEach(seatBtn => {
-        // Removemos eventos previos para evitar ejecuciones dobles si se recarga la grilla
         seatBtn.replaceWith(seatBtn.cloneNode(true));
     });
 
-    // Volvemos a seleccionar tras el clonado
     const newClickableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
 
     newClickableSeats.forEach(seatBtn => {
@@ -254,10 +301,10 @@ function attachSeatClickEvents() {
             const number = e.target.getAttribute('data-seat-number');
             const sectorId = e.target.getAttribute('data-sector-id'); 
 
+            const miReservaActual = getMiReserva();
+
             // -- ESCENARIO A: PAGO DE BUTACA NARANJA --
-            if (seatBtn.classList.contains('seat-my-reserved')) {
-                const miReserva = misReservas.find(r => r.seatId === seatId);
-                
+            if (seatBtn.classList.contains('seat-my-reserved') && miReservaActual) {
                 const { value: formValues } = await Swal.fire({
                     title: 'Pagar Reserva',
                     html: `
@@ -268,9 +315,7 @@ function attachSeatClickEvents() {
                     showCancelButton: true,
                     confirmButtonText: 'Procesar Pago',
                     cancelButtonText: 'Cancelar',
-                    background: '#1a1d24',
-                    color: '#ffffff',
-                    confirmButtonColor: '#10b981',
+                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981',
                     preConfirm: () => {
                         return document.getElementById('swal-input1').value;
                     }
@@ -289,18 +334,19 @@ function attachSeatClickEvents() {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                reservationId: miReserva.reservationId,
+                                reservationId: miReservaActual.reservationId,
                                 creditCardToken: formValues
                             })
                         });
 
                         if (!response.ok) throw new Error("Error procesando el pago");
 
+                        // Éxito
                         clearInterval(temporizadorInterval);
                         document.getElementById('carrito-container').style.display = 'none';
-                        misReservas = misReservas.filter(r => r.seatId !== seatId);
+                        document.body.style.paddingBottom = '0px';
+                        clearMiReserva();
 
-                        // TRUCO VISUAL: La pintamos de gris (sold) inmediatamente
                         seatBtn.classList.remove('seat-my-reserved');
                         seatBtn.classList.add('seat-sold', 'disabled');
 
@@ -312,6 +358,7 @@ function attachSeatClickEvents() {
                         });
 
                     } catch (error) {
+                        // Fix del colgado: Este Swal pisa al de "Procesando pago..."
                         Swal.fire({ title: 'Error', text: 'El pago no pudo procesarse.', icon: 'error', background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'});
                     }
                 }
@@ -320,39 +367,51 @@ function attachSeatClickEvents() {
 
             // -- ESCENARIO B: RESERVAR BUTACA VERDE --
             if (seatBtn.classList.contains('seat-available')) {
+                
+                // REGLA DE NEGOCIO: Bloqueamos si ya tiene una reserva pendiente
+                if (miReservaActual) {
+                    Swal.fire({
+                        title: 'Reserva en curso',
+                        text: 'Ya tienes una butaca pendiente de pago. Por favor, finaliza esa compra o espera a que expire.',
+                        icon: 'info',
+                        background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#8b5cf6'
+                    });
+                    return; // Cortamos acá
+                }
+
                 Swal.fire({
                     title: '¿Confirmar Reserva?',
                     text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#8b5cf6',
-                    cancelButtonColor: '#3f3f46',
-                    confirmButtonText: 'Sí, reservar',
-                    cancelButtonText: 'Cancelar',
-                    background: '#1a1d24',
-                    color: '#ffffff'
+                    confirmButtonColor: '#8b5cf6', cancelButtonColor: '#3f3f46',
+                    confirmButtonText: 'Sí, reservar', cancelButtonText: 'Cancelar',
+                    background: '#1a1d24', color: '#ffffff'
                 }).then(async(result) => {
-                    
                     if (result.isConfirmed) {
-                        
                         Swal.fire({
                             title: 'Procesando reserva...',
-                            background: '#1a1d24',
-                            color: '#ffffff',
+                            background: '#1a1d24', color: '#ffffff',
                             allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
+                            didOpen: () => { Swal.showLoading(); }
                         });
 
                         try {
                             const responseData = await reserveSeatApi(seatId, CURRENT_USER_ID);
                             
-                            misReservas.push({ seatId: seatId, reservationId: responseData.reservationId });
+                            // Creamos la reserva con Timestamp exacto: Ahora + 5 minutos
+                            const timestampExpiracion = Date.now() + (5 * 60 * 1000);
                             
-                            iniciarCarritoConTemporizador(responseData.reservationId, sectorId);
+                            const nuevaReserva = { 
+                                seatId: seatId, 
+                                reservationId: responseData.reservationId,
+                                expiresAt: timestampExpiracion 
+                            };
+                            
+                            setMiReserva(nuevaReserva);
+                            
+                            iniciarCarritoConTemporizador(responseData.reservationId, sectorId, timestampExpiracion);
 
-                            // TRUCO VISUAL: La pintamos de naranja inmediatamente antes de recargar
                             seatBtn.classList.remove('seat-available');
                             seatBtn.classList.add('seat-my-reserved');
 
@@ -360,14 +419,11 @@ function attachSeatClickEvents() {
                                 title: '¡Reserva Confirmada!',
                                 text: `Tu butaca ha sido reservada con éxito. Tienes 5 minutos para pagar.`,
                                 icon: 'success',
-                                background: '#1a1d24',
-                                color: '#ffffff',
-                                confirmButtonColor: '#10b981'
+                                background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
                             });
 
                         } catch (error) {
                             if (error.status === 409) {
-                                // TRUCO VISUAL: Nos ganaron, la pintamos amarilla
                                 seatBtn.classList.remove('seat-available');
                                 seatBtn.classList.add('seat-reserved', 'disabled');
 
@@ -375,18 +431,14 @@ function attachSeatClickEvents() {
                                     title: '¡Asiento no disponible!',
                                     text: 'Otro usuario ganó esta butaca milisegundos antes. Por favor elige otra.',
                                     icon: 'warning',
-                                    background: '#1a1d24',
-                                    color: '#ffffff',
-                                    confirmButtonColor: '#ef4444'
+                                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
                                 });
                             } else {
                                 Swal.fire({
                                     title: '¡Ups!',
                                     text: error.message || 'No se pudo completar la reserva.',
                                     icon: 'error',
-                                    background: '#1a1d24',
-                                    color: '#ffffff',
-                                    confirmButtonColor: '#ef4444'
+                                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
                                 });
                             }
                         }
