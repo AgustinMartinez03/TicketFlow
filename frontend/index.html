@@ -90,6 +90,13 @@
 
     </main>
 
+    <!-- 👇 NUEVO: CONTENEDOR DEL CARRITO FLOTANTE -->
+    <div id="carrito-container" style="display: none; position: fixed; bottom: 20px; right: 20px; background: #1f2937; padding: 20px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); border: 1px solid #374151; z-index: 1000; min-width: 250px;">
+        <h4 style="margin-top: 0; color: #f3f4f6; font-size: 1.1rem;">🎟️ Tienes 1 reserva pendiente</h4>
+        <p style="margin-bottom: 0; color: #9ca3af;">Tiempo para pagar: <span id="contador-carrito" style="color: #ef4444; font-weight: 800; font-size: 1.2rem;">05:00</span></p>
+        <p style="font-size: 0.8rem; color: #6b7280; margin-top: 5px;">Haz clic en tu butaca naranja para pagar.</p>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="./Js/Controllers/UserPageMain.js"></script>
 </body>

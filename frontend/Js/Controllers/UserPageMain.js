@@ -118,7 +118,60 @@ function attachSectorButtonEvents() {
     });
 }
 
-function renderSeatsGrid(seatsList) {
+// ... (arriba de esto queda igual hasta attachSectorButtonEvents) ...
+
+// 👇 1. VARIABLES DE ESTADO Y TEMPORIZADOR
+const CURRENT_USER_ID = "1";
+let misReservas = []; // Formato: [{ seatId: "...", reservationId: "..." }]
+let temporizadorInterval = null;
+
+function iniciarCarritoConTemporizador(reservationId, currentSectorId) {
+    document.getElementById('carrito-container').style.display = 'block';
+    
+    let tiempoRestante = 300; 
+    const timerElement = document.getElementById('contador-carrito');
+
+    if (temporizadorInterval) clearInterval(temporizadorInterval);
+
+    temporizadorInterval = setInterval(() => {
+        let minutos = Math.floor(tiempoRestante / 60);
+        let segundos = tiempoRestante % 60;
+        
+        timerElement.innerText = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+        if (tiempoRestante <= 0) {
+            clearInterval(temporizadorInterval);
+            document.getElementById('carrito-container').style.display = 'none';
+            misReservas = []; // Limpiamos memoria
+            
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tiempo expirado',
+                text: 'El tiempo para pagar ha expirado. Tu butaca ha sido liberada.',
+                background: '#1a1d24',
+                color: '#ffffff',
+                confirmButtonColor: '#8b5cf6'
+            }).then(() => {
+                recargarGrillaButacas(currentSectorId); 
+            });
+        }
+        tiempoRestante--;
+    }, 1000);
+}
+
+// Función auxiliar para recargar la grilla silenciosamente
+async function recargarGrillaButacas(sectorId) {
+    try {
+        const responseData = await fetchSeatsBySector(sectorId);
+        const seatsList = responseData.seats ? responseData.seats : responseData;
+        renderSeatsGrid(seatsList, sectorId);
+    } catch (error) {
+        console.error("Error al recargar grilla:", error);
+    }
+}
+
+// 👇 2. RENDERIZADO INTELIGENTE DE BUTACAS
+function renderSeatsGrid(seatsList, sectorId) { 
     const rows = {};
     seatsList.forEach(seat => {
         if (!rows[seat.rowIdentifier]) rows[seat.rowIdentifier] = [];
@@ -144,8 +197,14 @@ function renderSeatsGrid(seatsList) {
             if (seat.status === 'Available') {
                 statusClass = 'seat-available';
             } else if (seat.status === 'Reserved') {
-                statusClass = 'seat-reserved';
-                disabledClass = 'disabled';
+                const esMia = misReservas.some(r => r.seatId === seat.id);
+                if (esMia) {
+                    statusClass = 'seat-my-reserved'; 
+                    disabledClass = ''; // ¡Fundamental! No debe estar disabled para poder clickear
+                } else {
+                    statusClass = 'seat-reserved';
+                    disabledClass = 'disabled'; 
+                }
             } else {
                 statusClass = 'seat-sold';
                 disabledClass = 'disabled';
@@ -156,6 +215,7 @@ function renderSeatsGrid(seatsList) {
                         data-seat-id="${seat.id}"
                         data-seat-row="${seat.rowIdentifier}"
                         data-seat-number="${seat.seatNumber}"
+                        data-sector-id="${sectorId}"
                         title="Fila ${seat.rowIdentifier} - Butaca ${seat.seatNumber}">
                     ${seat.seatNumber}
                 </button>
@@ -170,78 +230,169 @@ function renderSeatsGrid(seatsList) {
     });
 
     seatsGrid.innerHTML = html;
-    attachSeatClickEvents();
+    attachSeatClickEvents(); // Volvemos a enlazar los eventos a los nuevos botones
 }
 
+// 👇 3. LÓGICA DE CLIC (RESERVAR, PAGAR Y ERROR 409)
 function attachSeatClickEvents() {
-    const availableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
+    // Seleccionamos TODOS los botones que no sean disabled (verdes y naranjas)
+    const clickableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
     
-    availableSeats.forEach(seatBtn => {
-        seatBtn.addEventListener('click', (e) => {
+    clickableSeats.forEach(seatBtn => {
+        // Removemos eventos previos para evitar ejecuciones dobles si se recarga la grilla
+        seatBtn.replaceWith(seatBtn.cloneNode(true));
+    });
 
-            if (seatBtn.classList.contains('disabled')) {
-                return; 
-            }
+    // Volvemos a seleccionar tras el clonado
+    const newClickableSeats = document.querySelectorAll('.seat-btn:not(.disabled)');
 
+    newClickableSeats.forEach(seatBtn => {
+        seatBtn.addEventListener('click', async (e) => {
+            
             const seatId = e.target.getAttribute('data-seat-id');
             const row = e.target.getAttribute('data-seat-row');
             const number = e.target.getAttribute('data-seat-number');
+            const sectorId = e.target.getAttribute('data-sector-id'); 
 
-            Swal.fire({
-                title: '¿Confirmar Reserva?',
-                text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#8b5cf6',
-                cancelButtonColor: '#3f3f46',
-                confirmButtonText: 'Sí, reservar',
-                cancelButtonText: 'Cancelar',
-                background: '#1a1d24',
-                color: '#ffffff'
-            }).then(async(result) => {
+            // -- ESCENARIO A: PAGO DE BUTACA NARANJA --
+            if (seatBtn.classList.contains('seat-my-reserved')) {
+                const miReserva = misReservas.find(r => r.seatId === seatId);
                 
-                if (result.isConfirmed) {
-                    
-                    Swal.fire({
-                        title: 'Procesando reserva...',
-                        text: 'Por favor aguardá un instante.',
-                        background: '#1a1d24',
-                        color: '#ffffff',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
+                const { value: formValues } = await Swal.fire({
+                    title: 'Pagar Reserva',
+                    html: `
+                        <p class="text-light mb-3">Estás a punto de pagar la Fila ${row}, Butaca ${number}.</p>
+                        <input id="swal-input1" class="swal2-input bg-dark text-light border-secondary" placeholder="Número de Tarjeta (Simulado)">
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Procesar Pago',
+                    cancelButtonText: 'Cancelar',
+                    background: '#1a1d24',
+                    color: '#ffffff',
+                    confirmButtonColor: '#10b981',
+                    preConfirm: () => {
+                        return document.getElementById('swal-input1').value;
+                    }
+                });
 
+                if (formValues) {
                     try {
-                        const dummyUserId = "1";
-                        
-                        await reserveSeatApi(seatId, dummyUserId);
-                        
-                        seatBtn.classList.remove('seat-available');
-                        seatBtn.classList.add('disabled', 'seat-reserved');
+                        Swal.fire({
+                            title: 'Procesando pago...',
+                            background: '#1a1d24', color: '#ffffff',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
 
-                        await Swal.fire({
-                            title: '¡Reserva Confirmada!',
-                            text: `Tu butaca ha sido reservada con éxito.`,
+                        const response = await fetch('http://localhost:5041/api/v1/payments', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                reservationId: miReserva.reservationId,
+                                creditCardToken: formValues
+                            })
+                        });
+
+                        if (!response.ok) throw new Error("Error procesando el pago");
+
+                        clearInterval(temporizadorInterval);
+                        document.getElementById('carrito-container').style.display = 'none';
+                        misReservas = misReservas.filter(r => r.seatId !== seatId);
+
+                        // TRUCO VISUAL: La pintamos de gris (sold) inmediatamente
+                        seatBtn.classList.remove('seat-my-reserved');
+                        seatBtn.classList.add('seat-sold', 'disabled');
+
+                        Swal.fire({
+                            title: '¡Pago Exitoso!',
+                            text: 'Disfruta tu evento.',
                             icon: 'success',
-                            background: '#1a1d24',
-                            color: '#ffffff',
-                            confirmButtonColor: '#10b981'
+                            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
                         });
 
                     } catch (error) {
-                        Swal.fire({
-                            title: '¡Ups!',
-                            text: error.message || 'No se pudo completar la reserva.',
-                            icon: 'error',
-                            background: '#1a1d24',
-                            color: '#ffffff',
-                            confirmButtonColor: '#ef4444'
-                        });
+                        Swal.fire({ title: 'Error', text: 'El pago no pudo procesarse.', icon: 'error', background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'});
                     }
                 }
-            });
+                return; 
+            }
+
+            // -- ESCENARIO B: RESERVAR BUTACA VERDE --
+            if (seatBtn.classList.contains('seat-available')) {
+                Swal.fire({
+                    title: '¿Confirmar Reserva?',
+                    text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#8b5cf6',
+                    cancelButtonColor: '#3f3f46',
+                    confirmButtonText: 'Sí, reservar',
+                    cancelButtonText: 'Cancelar',
+                    background: '#1a1d24',
+                    color: '#ffffff'
+                }).then(async(result) => {
+                    
+                    if (result.isConfirmed) {
+                        
+                        Swal.fire({
+                            title: 'Procesando reserva...',
+                            background: '#1a1d24',
+                            color: '#ffffff',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        try {
+                            const responseData = await reserveSeatApi(seatId, CURRENT_USER_ID);
+                            
+                            misReservas.push({ seatId: seatId, reservationId: responseData.reservationId });
+                            
+                            iniciarCarritoConTemporizador(responseData.reservationId, sectorId);
+
+                            // TRUCO VISUAL: La pintamos de naranja inmediatamente antes de recargar
+                            seatBtn.classList.remove('seat-available');
+                            seatBtn.classList.add('seat-my-reserved');
+
+                            Swal.fire({
+                                title: '¡Reserva Confirmada!',
+                                text: `Tu butaca ha sido reservada con éxito. Tienes 5 minutos para pagar.`,
+                                icon: 'success',
+                                background: '#1a1d24',
+                                color: '#ffffff',
+                                confirmButtonColor: '#10b981'
+                            });
+
+                        } catch (error) {
+                            if (error.status === 409) {
+                                // TRUCO VISUAL: Nos ganaron, la pintamos amarilla
+                                seatBtn.classList.remove('seat-available');
+                                seatBtn.classList.add('seat-reserved', 'disabled');
+
+                                Swal.fire({
+                                    title: '¡Asiento no disponible!',
+                                    text: 'Otro usuario ganó esta butaca milisegundos antes. Por favor elige otra.',
+                                    icon: 'warning',
+                                    background: '#1a1d24',
+                                    color: '#ffffff',
+                                    confirmButtonColor: '#ef4444'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: '¡Ups!',
+                                    text: error.message || 'No se pudo completar la reserva.',
+                                    icon: 'error',
+                                    background: '#1a1d24',
+                                    color: '#ffffff',
+                                    confirmButtonColor: '#ef4444'
+                                });
+                            }
+                        }
+                    }
+                });
+            }
         });
     });
 }
