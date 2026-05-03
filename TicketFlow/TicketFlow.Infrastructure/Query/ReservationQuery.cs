@@ -29,5 +29,18 @@ namespace TicketFlow.Infrastructure.Querys
         {
             return await _context.Seats.FirstOrDefaultAsync(s => s.Id == seatId);
         }
+
+        public async Task<Reservation?> GetReservationByIdAsync(Guid id)
+        {
+            return await _context.Reservations.FindAsync(id);
+        }
+
+        // 👇 LA IMPLEMENTACIÓN DE LA BÚSQUEDA
+        public async Task<IEnumerable<Reservation>> GetExpiredPendingReservationsAsync(DateTime referenceTime)
+        {
+            return await _context.Reservations
+                .Where(r => r.Status == "Pending" && r.ExpiresAt <= referenceTime)
+                .ToListAsync();
+        }
     }
 }

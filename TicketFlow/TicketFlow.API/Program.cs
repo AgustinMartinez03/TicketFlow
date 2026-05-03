@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TicketFlow.API.Workers;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
@@ -44,6 +45,14 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
             builder.Services.AddScoped<IUserQuery, UserQuery>();
+
+            builder.Services.AddScoped<IPayReservationUseCase, PayReservationUseCase>();
+
+            // Registrar el nuevo Caso de Uso
+            builder.Services.AddScoped<ICancelExpiredReservationsUseCase, CancelExpiredReservationsUseCase>();
+
+            // Registrar el Worker (Hosted Service)
+            builder.Services.AddHostedService<ReservationCleanupWorker>();
 
             builder.Services.AddCors(options =>
             {
