@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Domain.Entities;
@@ -9,6 +10,7 @@ namespace TicketFlow.Infrastructure.Command
     public class SeatCommand : ISeatCommand
     {
         private readonly AppDbContext _context;
+        private IDbContextTransaction? _currentTransaction;
 
         public SeatCommand(AppDbContext context)
         {
@@ -37,6 +39,32 @@ namespace TicketFlow.Infrastructure.Command
         {
             // Esto borra toda la basura que quedó trabada (la butaca rota y la reserva a medias)
             _context.ChangeTracker.Clear();
+        }
+
+        // Implementá los métodos:
+        public async Task BeginTransactionAsync()
+        {
+            _currentTransaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (_currentTransaction != null)
+            {
+                await _currentTransaction.CommitAsync();
+                await _currentTransaction.DisposeAsync();
+                _currentTransaction = null;
+            }
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_currentTransaction != null)
+            {
+                await _currentTransaction.RollbackAsync();
+                await _currentTransaction.DisposeAsync();
+                _currentTransaction = null;
+            }
         }
     }
 }

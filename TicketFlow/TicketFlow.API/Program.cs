@@ -45,6 +45,8 @@ namespace TicketFlow.API
 
             builder.Services.AddScoped<IUserQuery, UserQuery>();
 
+            builder.Services.AddScoped<IPayReservationUseCase, PayReservationUseCase>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>

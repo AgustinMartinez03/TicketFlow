@@ -6,5 +6,6 @@ namespace TicketFlow.Application.Interfaces.IQuerys
     {
         Task<IEnumerable<Reservation>> GetReservationsByUserIdAsync(int userId);
         Task<Seat?> GetSeatByIdAsync(Guid seatId);
+        Task<Reservation?> GetReservationByIdAsync(Guid id);
     }
 }
