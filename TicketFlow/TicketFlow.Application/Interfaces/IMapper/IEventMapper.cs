@@ -8,5 +8,6 @@ namespace TicketFlow.Application.Interfaces.IMapper
     {
         Event CreateEvent(CreateEventRequest request);
         List<EventResponse> MapToEventResponse(IEnumerable<Event> eventEntity);
+        CreateEventResponse MapToCreateEventResponse(Event eventEntity, string message);
     }
 }

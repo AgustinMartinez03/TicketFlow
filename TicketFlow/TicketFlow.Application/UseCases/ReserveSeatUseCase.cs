@@ -4,6 +4,7 @@ using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
@@ -15,19 +16,22 @@ namespace TicketFlow.Application.UseCases
         private readonly IUserQuery _userQuery;
         private readonly IReservationCommand _reservationCommand;
         private readonly IAuditLogCommand _auditLogCommand;
+        private readonly IReservationMapper _reservationMapper;
 
         public ReserveSeatUseCase(
             ISeatCommand seatCommand,
             ISeatQuery seatQuery,
             IUserQuery userQuery,
             IReservationCommand reservationCommand,
-            IAuditLogCommand auditLogCommand)
+            IAuditLogCommand auditLogCommand,
+            IReservationMapper reservationMapper)
         {
             _seatCommand = seatCommand;
             _seatQuery = seatQuery;
             _userQuery = userQuery;
             _reservationCommand = reservationCommand;
             _auditLogCommand = auditLogCommand;
+            _reservationMapper = reservationMapper;
         }
 
         public async Task<ReserveSeatResponse> ExecuteAsync(ReserveSeatRequest request)
@@ -121,11 +125,7 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionConflict("¡Ups! Otro usuario acaba de ganar esta butaca. Por favor, selecciona otra.");
             }
 
-            return new ReserveSeatResponse
-            {
-                ReservationId = reservation.Id,
-                Message = $"Reserva exitosa. Tu Nro de Comprobante es {reservation.Id}"
-            };
+            return _reservationMapper.MapToReserveSeatResponse(reservation, $"Reserva exitosa. Tu Nro de Comprobante es {reservation.Id}");
         }
     }
 }

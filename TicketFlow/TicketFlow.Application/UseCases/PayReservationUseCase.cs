@@ -4,6 +4,7 @@ using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
@@ -15,19 +16,22 @@ namespace TicketFlow.Application.UseCases
         private readonly IReservationCommand _reservationCommand;
         private readonly ISeatCommand _seatCommand;
         private readonly IAuditLogCommand _auditLogCommand;
+        private readonly IReservationMapper _reservationMapper;
 
         public PayReservationUseCase(
             IReservationQuery reservationQuery,
             ISeatQuery seatQuery,
             IReservationCommand reservationCommand,
             ISeatCommand seatCommand,
-            IAuditLogCommand auditLogCommand)
+            IAuditLogCommand auditLogCommand,
+            IReservationMapper reservationMapper)
         {
             _reservationQuery = reservationQuery;
             _seatQuery = seatQuery;
             _reservationCommand = reservationCommand;
             _seatCommand = seatCommand;
             _auditLogCommand = auditLogCommand;
+            _reservationMapper = reservationMapper;
         }
 
         public async Task<PayReservationResponse> ExecuteAsync(PayReservationRequest request)
@@ -80,12 +84,7 @@ namespace TicketFlow.Application.UseCases
                 // 6. Si llegamos acá sin errores, confirmamos la transacción de BD
                 await _seatCommand.CommitTransactionAsync();
 
-                return new PayReservationResponse
-                {
-                    ReservationId = reservation.Id,
-                    Status = "Completed",
-                    Message = "El pago se procesó correctamente. ¡Disfruta el evento!"
-                };
+                return _reservationMapper.MapToPayReservationResponse(reservation,"El pago se procesó correctamente. ¡Disfruta el evento!");
             }
             catch (Exception)
             {

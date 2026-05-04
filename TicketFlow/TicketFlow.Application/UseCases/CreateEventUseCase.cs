@@ -3,6 +3,7 @@ using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
@@ -10,10 +11,12 @@ namespace TicketFlow.Application.UseCases
     public class CreateEventUseCase : ICreateEventUseCase
     {
         private readonly IEventCommand _eventCommand;
+        private readonly IEventMapper _eventMapper;
 
-        public CreateEventUseCase(IEventCommand eventCommand)
+        public CreateEventUseCase(IEventCommand eventCommand, IEventMapper eventMapper)
         {
             _eventCommand = eventCommand;
+            _eventMapper = eventMapper;
         }
 
         public async Task<CreateEventResponse> ExecuteAsync(CreateEventRequest request)
@@ -79,11 +82,7 @@ namespace TicketFlow.Application.UseCases
             await _eventCommand.InsertEventAsync(newEvent);
             await _eventCommand.SaveChangesAsync();
 
-            return new CreateEventResponse
-            {
-                Id = newEvent.Id,
-                Message = "Evento creado exitosamente con sus sectores y butacas."
-            };
+            return _eventMapper.MapToCreateEventResponse(newEvent, "Evento creado exitosamente con sus sectores y butacas.");
         }
     }
 }
