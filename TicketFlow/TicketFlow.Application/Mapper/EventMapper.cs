@@ -29,5 +29,14 @@ namespace TicketFlow.Application.Mapper
                 Status = e.Status
             }).ToList();
         }
+
+        public CreateEventResponse MapToCreateEventResponse(Event eventEntity, string message)
+        {
+            return new CreateEventResponse
+            {
+                Id = eventEntity.Id,
+                Message = message
+            };
+        }
     }
 }

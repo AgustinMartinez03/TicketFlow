@@ -19,5 +19,24 @@ namespace TicketFlow.Application.Mapper
                 Status = r.Status
             }).ToList();
         }
+
+        public PayReservationResponse MapToPayReservationResponse(Reservation reservation, string message)
+        {
+            return new PayReservationResponse
+            {
+                ReservationId = reservation.Id,
+                Status = "Completed",
+                Message = message
+            };
+        }
+
+        public ReserveSeatResponse MapToReserveSeatResponse(Reservation reservation, string message)
+        {
+            return new ReserveSeatResponse
+            {
+                ReservationId = reservation.Id,
+                Message = message
+            };
+        }
     }
 }
