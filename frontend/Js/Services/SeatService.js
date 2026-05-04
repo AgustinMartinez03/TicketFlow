@@ -27,6 +27,12 @@ export async function reserveSeatApi(seatId, userId) {
 
         if (!response.ok) {
             const errorData = await response.json();
+            // 👇 NUEVO: Si es 409, lanzamos un error con una bandera especial
+            if (response.status === 409) {
+                const error = new Error(errorData.message || 'Error de concurrencia');
+                error.status = 409; 
+                throw error;
+            }
             throw new Error(errorData.message || 'Error al procesar la reserva');
         }
 

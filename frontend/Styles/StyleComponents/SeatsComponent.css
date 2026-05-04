@@ -57,6 +57,14 @@
     cursor: not-allowed !important;
 }
 
+.seat-btn.seat-my-reserved {
+    background-color: #f59e0b !important;
+    border: 2px solid #b45309 !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
 .seat-btn.seat-sold {
     background-color: #1f2937 !important;
     border: 1px solid #374151 !important;
