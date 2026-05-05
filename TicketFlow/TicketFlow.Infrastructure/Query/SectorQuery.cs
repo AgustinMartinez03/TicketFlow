@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Domain.Entities;
 using TicketFlow.Infrastructure.Persistence;
