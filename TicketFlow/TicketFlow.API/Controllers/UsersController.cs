@@ -1,5 +1,4 @@
-﻿using Aplication.DTOs.Responses;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.IUseCases;

@@ -1,5 +1,4 @@
-﻿using Aplication.DTOs.Responses;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response; // Necesario para PayReservationResponse y ApiError
 using TicketFlow.Application.Exceptions; // Necesario para atrapar las excepciones personalizadas

@@ -1,4 +1,4 @@
-﻿namespace Aplication.DTOs.Responses
+﻿namespace TicketFlow.Application.DTOs.Response
 {
     public class ApiError
     {
