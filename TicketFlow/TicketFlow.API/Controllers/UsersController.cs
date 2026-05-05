@@ -20,21 +20,11 @@ namespace TicketFlow.API.Controllers
         [ProducesResponseType(typeof(List<UserReservationResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserReservations(int id)
         {
-            try
-            {
-                var results = await _getUserReservationUseCase.ExecuteAsync(id);
-                return Ok(results);
-            }
-            catch (ExceptionNotFound ex)
-            {
-                return NotFound(new ApiError { Message = ex.Message });
-            }
-            catch (ExceptionBadRequest ex)
-            {
-                return BadRequest(new ApiError { Message = ex.Message });
-            }
+            var results = await _getUserReservationUseCase.ExecuteAsync(id);
+            return Ok(results);
         }
     }
 }
