@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TicketFlow.API.Middlewares;
 using TicketFlow.API.Workers;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IMapper;
@@ -72,6 +73,8 @@ namespace TicketFlow.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

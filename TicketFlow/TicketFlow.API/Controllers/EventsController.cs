@@ -27,55 +27,32 @@ namespace TicketFlow.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(CreateEventResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            try
-            {
-                var result = await _createEventUseCase.ExecuteAsync(request);
-
-                return Created($"/api/v1/events/{result.Id}", result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiError { Message = ex.Message });
-            }
+            var result = await _createEventUseCase.ExecuteAsync(request);
+            return Created($"/api/v1/events/{result.Id}", result);
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(EventCatalogResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetEvents([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            try
-            {
-                var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
-                return Ok(response);
-            }
-            catch (ExceptionBadRequest ex)
-            {
-                return BadRequest(new ApiError { Message = ex.Message });
-            }
+            var response = await _getCatalogUseCase.ExecuteAsync(pageNumber, pageSize);
+            return Ok(response);
         }
 
         [HttpGet("{id}/sectors")]
         [ProducesResponseType(typeof(IEnumerable<SectorResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSectors(int id)
         {
-            try
-            {
-                var sectors = await _getSectorsUseCase.ExecuteAsync(id);
-                return Ok(sectors);
-            }
-            catch (ExceptionNotFound ex)
-            {
-                return NotFound(new ApiError { Message = ex.Message });
-            }
-            catch (ExceptionBadRequest ex)
-            {
-                return BadRequest(new ApiError { Message = ex.Message });
-            }
+            var sectors = await _getSectorsUseCase.ExecuteAsync(id);
+            return Ok(sectors);
         }
     }
 }

@@ -21,24 +21,11 @@ namespace TicketFlow.API.Controllers
         [ProducesResponseType(typeof(PayReservationResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ProcessPayment([FromBody] PayReservationRequest request)
         {
-            try
-            {
-                var response = await _payReservationUseCase.ExecuteAsync(request);
-
-                // Devolvemos 201 Created. Como el pago impacta en la reserva, 
-                // indicamos la URL de la reserva como ubicaciÃ³n del recurso modificado.
-                return Created($"/api/v1/reservations/{response.ReservationId}", response);
-            }
-            catch (ExceptionNotFound ex)
-            {
-                return NotFound(new ApiError { Message = ex.Message });
-            }
-            catch (ExceptionBadRequest ex)
-            {
-                return BadRequest(new ApiError { Message = ex.Message });
-            }
+            var response = await _payReservationUseCase.ExecuteAsync(request);
+            return Created($"/api/v1/reservations/{response.ReservationId}", response);
         }
     }
 }
