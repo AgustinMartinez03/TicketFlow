@@ -1,0 +1,36 @@
+#carrito-container {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    border: 1px solid #374151;
+    z-index: 1000;
+    min-width: 250px;
+}
+
+.cart-title {
+    margin-top: 0;
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+
+.cart-timer-text {
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+#contador-carrito {
+    color: var(--danger);
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.cart-instruction {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
