@@ -6,6 +6,7 @@ import { fetchSeatsBySector, reserveSeatApi } from '../Services/SeatService.js';
 import { processPaymentApi } from '../Services/PaymentService.js';
 import { getMiReserva, setMiReserva, clearMiReserva } from '../Services/ReservationStorage.js';
 import { iniciarCarritoConTemporizador, detenerTemporizador } from './CartController.js';
+import { createSeatsGridHtml } from '../Components/SeatsComponent.js';
 
 const viewCatalog = document.getElementById('view-catalog');
 const viewSectors = document.getElementById('view-sectors');
@@ -145,78 +146,19 @@ function renderSeatsGrid(seatsList, sectorId) {
     const miReserva = getMiReserva();
     if (miReserva) {
         if (miReserva.expiresAt > Date.now()) {
-            // Si está viva, reactivamos el temporizador visualmente (Cubre el caso del F5)
             iniciarCarritoConTemporizador(miReserva.reservationId, sectorId, miReserva.expiresAt);
         } else {
-            // Si el tiempo pasó mientras estaba offline o hizo F5 tarde, la borramos
             clearMiReserva(); 
         }
     } else {
-        // Nos aseguramos de ocultar el carrito si no hay nada
         detenerTemporizador();
     }
 
     const reservaActiva = getMiReserva(); // Volvemos a leer por si la borramos arriba
 
-    const rows = {};
-    seatsList.forEach(seat => {
-        if (!rows[seat.rowIdentifier]) rows[seat.rowIdentifier] = [];
-        rows[seat.rowIdentifier].push(seat);
-    });
-
-    let html = '';
-
-    Object.keys(rows).sort().forEach(rowKey => {
-        const seatsInRow = rows[rowKey];
-        seatsInRow.sort((a, b) => a.seatNumber - b.seatNumber);
-
-        html += `
-            <div class="d-flex align-items-center mb-2 seat-row">
-                <div class="row-label">${rowKey}</div>
-                <div class="d-flex gap-2 flex-nowrap flex-grow-1 justify-content-center">
-        `;
-
-        seatsInRow.forEach(seat => {
-            let statusClass = '';
-            let disabledClass = '';
-
-            if (seat.status === 'Available') {
-                statusClass = 'seat-available';
-            } else if (seat.status === 'Reserved') {
-                // Chequeamos contra el SessionStorage
-                const esMia = reservaActiva && reservaActiva.seatId === seat.id;
-                if (esMia) {
-                    statusClass = 'seat-my-reserved'; 
-                    disabledClass = ''; // Se puede clickear
-                } else {
-                    statusClass = 'seat-reserved';
-                    disabledClass = 'disabled'; 
-                }
-            } else {
-                statusClass = 'seat-sold';
-                disabledClass = 'disabled';
-            }
-
-            html += `
-                <button class="btn btn-sm seat-btn ${statusClass} ${disabledClass}"
-                        data-seat-id="${seat.id}"
-                        data-seat-row="${seat.rowIdentifier}"
-                        data-seat-number="${seat.seatNumber}"
-                        data-sector-id="${sectorId}"
-                        title="Fila ${seat.rowIdentifier} - Butaca ${seat.seatNumber}">
-                    ${seat.seatNumber}
-                </button>
-            `;
-        });
-
-        html += `
-                </div>
-                <div class="row-label text-end">${rowKey}</div>
-            </div>
-        `;
-    });
-
-    seatsGrid.innerHTML = html;
+    // 👇 REFACTOR: Delegamos el armado del HTML al componente visual
+    seatsGrid.innerHTML = createSeatsGridHtml(seatsList, sectorId, reservaActiva);
+    
     attachSeatClickEvents();
 }
 
