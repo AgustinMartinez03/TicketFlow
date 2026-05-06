@@ -3,6 +3,7 @@ import { createEventCard } from '../Components/Cards/EventCard.js';
 import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
 import { fetchSeatsBySector, reserveSeatApi } from '../Services/SeatService.js';
+import { processPaymentApi } from '../Services/PaymentService.js';
 
 const viewCatalog = document.getElementById('view-catalog');
 const viewSectors = document.getElementById('view-sectors');
@@ -330,16 +331,8 @@ function attachSeatClickEvents() {
                             didOpen: () => { Swal.showLoading(); }
                         });
 
-                        const response = await fetch('http://localhost:5041/api/v1/payments', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                reservationId: miReservaActual.reservationId,
-                                creditCardToken: formValues
-                            })
-                        });
-
-                        if (!response.ok) throw new Error("Error procesando el pago");
+                        // 👇 REFACTOR: Usamos el servicio en lugar del fetch manual
+                        await processPaymentApi(miReservaActual.reservationId, formValues);
 
                         // Éxito
                         clearInterval(temporizadorInterval);
@@ -359,7 +352,12 @@ function attachSeatClickEvents() {
 
                     } catch (error) {
                         // Fix del colgado: Este Swal pisa al de "Procesando pago..."
-                        Swal.fire({ title: 'Error', text: 'El pago no pudo procesarse.', icon: 'error', background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'});
+                        Swal.fire({ 
+                            title: 'Error', 
+                            text: error.message || 'El pago no pudo procesarse.', 
+                            icon: 'error', 
+                            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+                        });
                     }
                 }
                 return; 
