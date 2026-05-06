@@ -4,6 +4,8 @@ import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
 import { fetchSeatsBySector, reserveSeatApi } from '../Services/SeatService.js';
 import { processPaymentApi } from '../Services/PaymentService.js';
+import { getMiReserva, setMiReserva, clearMiReserva } from '../Services/ReservationStorage.js';
+import { iniciarCarritoConTemporizador, detenerTemporizador } from './CartController.js';
 
 const viewCatalog = document.getElementById('view-catalog');
 const viewSectors = document.getElementById('view-sectors');
@@ -123,71 +125,8 @@ function attachSectorButtonEvents() {
 
 // 👇 1. VARIABLES DE ESTADO Y MANEJO DE SESSION STORAGE
 const CURRENT_USER_ID = "1";
-let temporizadorInterval = null;
-
-// Funciones para manejar la única reserva permitida en el SessionStorage
-function getMiReserva() {
-    const data = sessionStorage.getItem('miReservaActiva');
-    return data ? JSON.parse(data) : null;
-}
-
-function setMiReserva(reserva) {
-    sessionStorage.setItem('miReservaActiva', JSON.stringify(reserva));
-}
-
-function clearMiReserva() {
-    sessionStorage.removeItem('miReservaActiva');
-}
 
 // 👇 2. TEMPORIZADOR A PRUEBA DE F5 Y WORKER DEL BACKEND
-function iniciarCarritoConTemporizador(reservationId, currentSectorId, expiresAtTimestamp) {
-    document.getElementById('carrito-container').style.display = 'block';
-    document.body.style.paddingBottom = '150px'; 
-    
-    const timerElement = document.getElementById('contador-carrito');
-
-    if (temporizadorInterval) clearInterval(temporizadorInterval);
-
-    temporizadorInterval = setInterval(() => {
-        const ahora = Date.now();
-        const tiempoRestanteMs = expiresAtTimestamp - ahora;
-
-        if (tiempoRestanteMs <= 0) {
-            clearInterval(temporizadorInterval);
-            document.getElementById('carrito-container').style.display = 'none';
-            document.body.style.paddingBottom = '0px';
-
-            // 🪄 TRUCO VISUAL: Buscamos la butaca naranja y la forzamos a verde 
-            // para no esperar al Worker del backend.
-            const miReservaActual = getMiReserva();
-            if (miReservaActual) {
-                const btnNaranja = document.querySelector(`button[data-seat-id="${miReservaActual.seatId}"]`);
-                if (btnNaranja) {
-                    btnNaranja.classList.remove('seat-my-reserved', 'disabled');
-                    btnNaranja.classList.add('seat-available');
-                }
-            }
-
-            clearMiReserva(); // Limpiamos la memoria
-            
-            Swal.fire({
-                icon: 'warning',
-                title: 'Tiempo expirado',
-                text: 'El tiempo para pagar ha expirado. Tu butaca ha sido liberada.',
-                background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#8b5cf6'
-            });
-            // 🛑 Eliminamos el ".then(() => recargarGrillaButacas)" para no traer datos "viejos" del backend.
-            
-            return; 
-        }
-
-        let segundosTotales = Math.floor(tiempoRestanteMs / 1000);
-        let minutos = Math.floor(segundosTotales / 60);
-        let segundos = segundosTotales % 60;
-        
-        timerElement.innerText = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-    }, 1000);
-}
 
 // Función auxiliar para recargar la grilla
 async function recargarGrillaButacas(sectorId) {
@@ -214,9 +153,7 @@ function renderSeatsGrid(seatsList, sectorId) {
         }
     } else {
         // Nos aseguramos de ocultar el carrito si no hay nada
-        document.getElementById('carrito-container').style.display = 'none';
-        document.body.style.paddingBottom = '0px';
-        if (temporizadorInterval) clearInterval(temporizadorInterval);
+        detenerTemporizador();
     }
 
     const reservaActiva = getMiReserva(); // Volvemos a leer por si la borramos arriba
@@ -335,9 +272,7 @@ function attachSeatClickEvents() {
                         await processPaymentApi(miReservaActual.reservationId, formValues);
 
                         // Éxito
-                        clearInterval(temporizadorInterval);
-                        document.getElementById('carrito-container').style.display = 'none';
-                        document.body.style.paddingBottom = '0px';
+                        detenerTemporizador();
                         clearMiReserva();
 
                         seatBtn.classList.remove('seat-my-reserved');
