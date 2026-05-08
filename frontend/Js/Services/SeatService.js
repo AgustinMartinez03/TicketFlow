@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:5041/api/v1"; 
+import { getAuthToken } from './AuthService.js';
+
+const API_BASE_URL = "https://localhost:7157/api/v1"; 
 
 export async function fetchSeatsBySector(sectorId) {
     try {
@@ -13,11 +15,11 @@ export async function fetchSeatsBySector(sectorId) {
 
 export async function reserveSeatApi(seatId, userId) {
     try {
-
         const response = await fetch(`${API_BASE_URL}/reservations`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
             },
             body: JSON.stringify({
                 seatId: seatId,
@@ -26,13 +28,20 @@ export async function reserveSeatApi(seatId, userId) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            // 👇 NUEVO: Si es 409, lanzamos un error con una bandera especial
+            // 👇 CORRECCIÓN: Intentamos leer el JSON, si falla (ej: 401 vacío), devuelve un objeto vacío
+            const errorData = await response.json().catch(() => ({})); 
+
+            if (response.status === 401) {
+                throw new Error('Tu sesión ha expirado o no tienes permisos. Por favor, vuelve a iniciar sesión.');
+            }
+
+            // Si es 409, lanzamos un error con una bandera especial
             if (response.status === 409) {
                 const error = new Error(errorData.message || 'Error de concurrencia');
                 error.status = 409; 
                 throw error;
             }
+            
             throw new Error(errorData.message || 'Error al procesar la reserva');
         }
 

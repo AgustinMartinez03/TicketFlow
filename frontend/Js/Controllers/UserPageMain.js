@@ -1,4 +1,5 @@
-import { fetchEvents } from '../Services/EventService.js';
+import { getUserIdFromToken, logout } from '../Services/AuthService.js';
+import { fetchEvents, createEventApi } from '../Services/EventService.js';
 import { createEventCard } from '../Components/Cards/EventCard.js';
 import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
@@ -14,8 +15,22 @@ const sectorsGrid = document.getElementById('sectors-grid');
 const viewSeats = document.getElementById('view-seats');
 const seatsGrid = document.getElementById('seats-grid');
 const seatMapTitle = document.getElementById('seat-map-title');
+const viewCreateEvent = document.getElementById('view-create-event');
+const adminControls = document.getElementById('admin-controls');
+const sectorsContainer = document.getElementById('sectors-container');
 
 async function initPage() {
+    const userName = sessionStorage.getItem('user_name');
+    const nameDisplay = document.getElementById('user-name-display');
+    
+    if (userName && nameDisplay) {
+        nameDisplay.innerText = `Usuario: ${userName}`;
+    }
+
+    const userRole = sessionStorage.getItem('user_role');
+    if (userRole === 'Admin') {
+        adminControls.classList.remove('d-none');
+    }
     const gridContainer = document.getElementById('events-grid');
     
     try {
@@ -125,7 +140,13 @@ function attachSectorButtonEvents() {
 // ... (arriba de esto queda igual hasta attachSectorButtonEvents) ...
 
 // 👇 1. VARIABLES DE ESTADO Y MANEJO DE SESSION STORAGE
-const CURRENT_USER_ID = "1";
+// 👇 Leemos el ID del token
+const CURRENT_USER_ID = getUserIdFromToken();
+
+// 👇 Si no hay usuario logueado, lo pateamos al login
+if (!CURRENT_USER_ID) {
+    window.location.href = 'Pages/login.html';
+}
 
 // 👇 2. TEMPORIZADOR A PRUEBA DE F5 Y WORKER DEL BACKEND
 
@@ -324,9 +345,141 @@ function attachSeatClickEvents() {
     });
 }
 
+// Abrir panel admin
+document.getElementById('btn-nav-create-event').addEventListener('click', () => {
+    viewCatalog.classList.add('d-none');
+    viewCreateEvent.classList.remove('d-none');
+    
+    // Si no hay ningún sector en pantalla, agregamos uno por defecto
+    if (sectorsContainer.children.length === 0) {
+        agregarFilaSector();
+    }
+});
+
+// Volver al catálogo desde admin
+document.getElementById('btn-back-catalog-from-admin').addEventListener('click', () => {
+    viewCreateEvent.classList.add('d-none');
+    viewCatalog.classList.remove('d-none');
+});
+
 document.getElementById('btn-back-sectors').addEventListener('click', () => {
     viewSeats.classList.add('d-none');
     viewSectors.classList.remove('d-none');
+});
+
+// 👇 FUNCIONES PARA EL PANEL ADMIN
+function agregarFilaSector() {
+    const sectorId = Date.now(); // ID único temporal
+    
+    const html = `
+        <div class="row g-2 mb-3 sector-entry" id="sector-row-${sectorId}">
+            <div class="col-md-5">
+                <input type="text" class="form-control text-white sector-name" style="background-color: #1f2937; border: none;" placeholder="Nombre (ej: VIP)" required>
+            </div>
+            <div class="col-md-3 mt-2 mt-md-0">
+                <input type="number" class="form-control text-white sector-price" style="background-color: #1f2937; border: none;" placeholder="Precio $" min="1" required>
+            </div>
+            <div class="col-md-3 mt-2 mt-md-0">
+                <input type="number" class="form-control text-white sector-capacity" style="background-color: #1f2937; border: none;" placeholder="Capacidad" min="1" max="100" required>
+            </div>
+            <div class="col-md-1 mt-2 mt-md-0 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-danger w-100" onclick="document.getElementById('sector-row-${sectorId}').remove()" title="Eliminar Sector">
+                    X
+                </button>
+            </div>
+        </div>
+    `;
+    
+    sectorsContainer.insertAdjacentHTML('beforeend', html);
+}
+
+document.getElementById('btn-add-sector').addEventListener('click', agregarFilaSector);
+
+// 👇 EVENTO PARA CREAR EL EVENTO Y SUS SECTORES
+document.getElementById('form-create-event').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Evita que la página recargue
+
+    // 1. Capturamos los datos básicos
+    const name = document.getElementById('event-name').value;
+    const venue = document.getElementById('event-venue').value;
+    const dateInput = document.getElementById('event-date').value;
+
+    // Convertimos la fecha local al formato universal (ISO) que exige el Backend
+    const formattedDate = new Date(dateInput).toISOString();
+
+    // 2. Armamos la lista dinámica de sectores
+    const sectorsArray = [];
+    const sectorEntries = document.querySelectorAll('.sector-entry');
+
+    if (sectorEntries.length === 0) {
+        Swal.fire({ icon: 'warning', title: 'Atención', text: 'Debes agregar al menos un sector.', background: '#1a1d24', color: '#ffffff' });
+        return;
+    }
+
+    // Recorremos cada fila de sector que haya en la pantalla
+    sectorEntries.forEach(entry => {
+        const sName = entry.querySelector('.sector-name').value;
+        const sPrice = parseFloat(entry.querySelector('.sector-price').value); // Convertir a número decimal
+        const sCapacity = parseInt(entry.querySelector('.sector-capacity').value); // Convertir a número entero
+
+        sectorsArray.push({
+            name: sName,
+            price: sPrice,
+            capacity: sCapacity
+        });
+    });
+
+    // 3. Armamos el JSON final idéntico al que pide Swagger
+    const newEventData = {
+        name: name,
+        venue: venue,
+        date: formattedDate,
+        sectors: sectorsArray
+    };
+
+    // 4. Lo enviamos al Backend
+    try {
+        Swal.fire({
+            title: 'Creando Evento...',
+            text: 'Generando recinto y butacas en la base de datos.',
+            background: '#1a1d24', color: '#ffffff',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        await createEventApi(newEventData);
+
+        // Si salió bien...
+        Swal.fire({
+            icon: 'success',
+            title: '¡Evento Creado!',
+            text: 'El evento está listo para recibir reservas.',
+            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
+        });
+
+        // Limpiamos el formulario
+        document.getElementById('form-create-event').reset();
+        document.getElementById('sectors-container').innerHTML = '';
+        
+        // Volvemos al catálogo principal
+        document.getElementById('btn-back-catalog-from-admin').click();
+        
+        // Recargamos los eventos para que el nuevo aparezca instantáneamente
+        initPage();
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de creación',
+            text: error.message,
+            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+        });
+    }
+});
+
+// Al final de UserPageMain.js
+document.getElementById('btn-logout').addEventListener('click', () => {
+    logout(); // La función que ya importamos de AuthService
 });
 
 initPage();

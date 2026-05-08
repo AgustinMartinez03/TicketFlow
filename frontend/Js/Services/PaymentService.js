@@ -1,9 +1,14 @@
-const API_BASE_URL = 'http://localhost:5041/api/v1';
+import { getAuthToken } from './AuthService.js';
+
+const API_BASE_URL = 'https://localhost:7157/api/v1';
 
 export async function processPaymentApi(reservationId, creditCardToken) {
     const response = await fetch(`${API_BASE_URL}/payments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}`
+        },
         body: JSON.stringify({
             reservationId: reservationId,
             creditCardToken: creditCardToken
@@ -11,7 +16,13 @@ export async function processPaymentApi(reservationId, creditCardToken) {
     });
 
     if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        // Manejo seguro del body
+        const errorData = await response.json().catch(() => ({}));
+        
+        if (response.status === 401) {
+            throw { status: 401, message: 'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.' };
+        }
+
         throw { 
             status: response.status, 
             message: errorData?.message || "Error procesando el pago en el servidor" 
