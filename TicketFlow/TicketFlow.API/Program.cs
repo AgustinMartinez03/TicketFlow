@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketFlow.API.Middlewares;
 using TicketFlow.API.Workers;
+using TicketFlow.Application.DTOs;
 using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
@@ -11,6 +12,9 @@ using TicketFlow.Infrastructure.Command;
 using TicketFlow.Infrastructure.Persistence;
 using TicketFlow.Infrastructure.Query;
 using TicketFlow.Infrastructure.Querys;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace TicketFlow.API
 {
@@ -46,6 +50,8 @@ namespace TicketFlow.API
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
             builder.Services.AddScoped<IUserQuery, UserQuery>();
+            builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
+
 
             builder.Services.AddScoped<IPayReservationUseCase, PayReservationUseCase>();
 
@@ -54,6 +60,29 @@ namespace TicketFlow.API
 
             // Registrar el Worker (Hosted Service)
             builder.Services.AddHostedService<ReservationCleanupWorker>();
+
+            // 1. Creamos la instancia de JwtSettings y la llenamos con la sección "Jwt" del appsettings.json
+            var jwtSettings = new JwtSettings();
+            builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
+
+            // 2. Registramos el objeto como Singleton para que el LoginUseCase pueda recibirlo
+            builder.Services.AddSingleton(jwtSettings);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                };
+            });
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddCors(options =>
             {
@@ -85,6 +114,8 @@ namespace TicketFlow.API
             app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

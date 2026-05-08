@@ -14,9 +14,15 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Name)
                    .IsRequired()
                    .HasMaxLength(100);
+
             builder.Property(u => u.Email)
                    .IsRequired()
                    .HasMaxLength(150);
+
+            builder.Property(u => u.Role)
+                   .IsRequired()
+                   .HasMaxLength(20);
+
             builder.Property(u => u.PasswordHash)
                    .IsRequired()
                    .HasMaxLength(255);
@@ -26,7 +32,7 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
             builder.HasData(
                 new User
                 {
-                    Id = 1,
+                    Id = 3,
                     Name = "Agustin",
                     Email = "agus@ticketflow.com",
                     PasswordHash = "123456"
@@ -37,6 +43,14 @@ namespace TicketFlow.Infrastructure.Persistence.Configurations
                     Name = "Alejandro",
                     Email = "ale@ticketflow.com",
                     PasswordHash = "123456"
+                },
+                new User
+                {
+                    Id = 1,
+                    Name = "Admin General",
+                    Email = "admin@ticketflow.com",
+                    PasswordHash = "admin123",
+                    Role = "Admin"
                 }
             );
         }
