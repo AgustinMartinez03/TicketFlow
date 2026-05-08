@@ -42,3 +42,8 @@ body {
 }
 
 .hero-subtitle { color: var(--text-muted); }
+
+.form-control::placeholder {
+    color: #9ca3af !important;
+    opacity: 1;
+}
