@@ -1,3 +1,4 @@
+import { getUserIdFromToken, logout } from '../Services/AuthService.js';
 import { fetchEvents } from '../Services/EventService.js';
 import { createEventCard } from '../Components/Cards/EventCard.js';
 import { fetchSectorsByEvent } from '../Services/SectorService.js';
@@ -16,6 +17,13 @@ const seatsGrid = document.getElementById('seats-grid');
 const seatMapTitle = document.getElementById('seat-map-title');
 
 async function initPage() {
+    const userName = sessionStorage.getItem('user_name');
+    const nameDisplay = document.getElementById('user-name-display');
+    
+    if (userName && nameDisplay) {
+        nameDisplay.innerText = `Usuario: ${userName}`;
+    }
+
     const gridContainer = document.getElementById('events-grid');
     
     try {
@@ -125,7 +133,13 @@ function attachSectorButtonEvents() {
 // ... (arriba de esto queda igual hasta attachSectorButtonEvents) ...
 
 // 👇 1. VARIABLES DE ESTADO Y MANEJO DE SESSION STORAGE
-const CURRENT_USER_ID = "1";
+// 👇 Leemos el ID del token
+const CURRENT_USER_ID = getUserIdFromToken();
+
+// 👇 Si no hay usuario logueado, lo pateamos al login
+if (!CURRENT_USER_ID) {
+    window.location.href = 'Pages/login.html';
+}
 
 // 👇 2. TEMPORIZADOR A PRUEBA DE F5 Y WORKER DEL BACKEND
 
@@ -327,6 +341,11 @@ function attachSeatClickEvents() {
 document.getElementById('btn-back-sectors').addEventListener('click', () => {
     viewSeats.classList.add('d-none');
     viewSectors.classList.remove('d-none');
+});
+
+// Al final de UserPageMain.js
+document.getElementById('btn-logout').addEventListener('click', () => {
+    logout(); // La función que ya importamos de AuthService
 });
 
 initPage();

@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5041/api/v1";
+const API_BASE_URL = "https://localhost:7157/api/v1";
 
 export async function fetchEvents() {
     try {
