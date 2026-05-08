@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
-using TicketFlow.Application.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using TicketFlow.Application.Interfaces.IUseCases;
 
 namespace TicketFlow.API.Controllers
@@ -25,8 +25,11 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(CreateEventResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {

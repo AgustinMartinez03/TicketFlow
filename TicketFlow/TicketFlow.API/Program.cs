@@ -82,6 +82,8 @@ namespace TicketFlow.API
                 };
             });
 
+            builder.Services.AddAuthorization();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
