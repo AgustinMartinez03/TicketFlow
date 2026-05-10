@@ -392,18 +392,19 @@ document.getElementById('btn-back-sectors').addEventListener('click', () => {
 function agregarFilaSector() {
     const sectorId = Date.now(); // ID único temporal
     
+    // 👇 NOTA: Agregamos 'align-items-center' en la clase del row y limpiamos los márgenes de las columnas
     const html = `
-        <div class="row g-2 mb-3 sector-entry" id="sector-row-${sectorId}">
+        <div class="row g-2 mb-3 sector-entry align-items-center" id="sector-row-${sectorId}">
             <div class="col-md-5">
-                <input type="text" class="form-control text-white sector-name" style="background-color: #1f2937; border: none;" placeholder="Nombre (ej: VIP)" required>
+                <input type="text" class="form-control text-white sector-name admin-input" placeholder="Nombre (ej: VIP)" required>
             </div>
-            <div class="col-md-3 mt-2 mt-md-0">
-                <input type="number" class="form-control text-white sector-price" style="background-color: #1f2937; border: none;" placeholder="Precio $" min="1" required>
+            <div class="col-md-3">
+                <input type="number" class="form-control text-white sector-price admin-input fw-normal" placeholder="Precio ($)" min="1" required>
             </div>
-            <div class="col-md-3 mt-2 mt-md-0">
-                <input type="number" class="form-control text-white sector-capacity" style="background-color: #1f2937; border: none;" placeholder="Capacidad" min="1" max="100" required>
+            <div class="col-md-3">
+                <input type="number" class="form-control text-white sector-capacity admin-input" placeholder="Capacidad" min="1" required>
             </div>
-            <div class="col-md-1 mt-2 mt-md-0 d-flex align-items-end">
+            <div class="col-md-1">
                 <button type="button" class="btn btn-outline-danger w-100" onclick="document.getElementById('sector-row-${sectorId}').remove()" title="Eliminar Sector">
                     X
                 </button>
@@ -411,7 +412,7 @@ function agregarFilaSector() {
         </div>
     `;
     
-    sectorsContainer.insertAdjacentHTML('beforeend', html);
+    document.getElementById('sectors-container').insertAdjacentHTML('beforeend', html);
 }
 
 document.getElementById('btn-add-sector').addEventListener('click', agregarFilaSector);
