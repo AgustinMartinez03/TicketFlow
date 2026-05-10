@@ -6,23 +6,27 @@ using TicketFlow.Application.DTOs;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
+using TicketFlow.Application.Interfaces.ICommands;
 using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
+using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
 {
     public class LoginUseCase : ILoginUseCase
     {
         private readonly IUserQuery _userQuery;
-        private readonly JwtSettings _jwtSettings; // 👈 Usamos JwtSettings en lugar de IConfiguration
+        private readonly JwtSettings _jwtSettings;
         private readonly ILoginMapper _mapper;
+        private readonly IAuditLogCommand _auditLogCommand;
 
-        public LoginUseCase(IUserQuery userQuery, JwtSettings jwtSettings, ILoginMapper mapper) // 👈 Inyección limpia
+        public LoginUseCase(IUserQuery userQuery, JwtSettings jwtSettings, ILoginMapper mapper, IAuditLogCommand auditLogCommand)
         {
             _userQuery = userQuery;
             _jwtSettings = jwtSettings;
             _mapper = mapper;
+            _auditLogCommand = auditLogCommand;
         }
 
         public async Task<LoginResponse> ExecuteAsync(LoginRequest request)
@@ -31,10 +35,22 @@ namespace TicketFlow.Application.UseCases
 
             if (user == null || user.PasswordHash != request.Password)
             {
+                var failedLog = new AuditLog
+                {
+                    UserId = user?.Id,
+                    Action = "LOGIN_FAILED",
+                    EntityType = "User",
+                    EntityId = user?.Id.ToString() ?? "N/A",
+                    Details = $"Intento fallido de inicio de sesión para el email: {request.Email}",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _auditLogCommand.InsertAuditLog(failedLog);
+                await _auditLogCommand.SaveChangesAsync();
+
                 throw new ExceptionBadRequest("Email o contraseña incorrectos.");
             }
 
-            // 1. Usamos la propiedad Key de nuestro objeto JwtSettings
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -46,7 +62,6 @@ namespace TicketFlow.Application.UseCases
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            // 2. Usamos Issuer y Audience desde el objeto JwtSettings
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
@@ -55,6 +70,19 @@ namespace TicketFlow.Application.UseCases
                 signingCredentials: credentials);
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            var successLog = new AuditLog
+            {
+                UserId = user.Id,
+                Action = "LOGIN_SUCCESS",
+                EntityType = "User",
+                EntityId = user.Id.ToString(),
+                Details = "Inicio de sesión exitoso.",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _auditLogCommand.InsertAuditLog(successLog);
+            await _auditLogCommand.SaveChangesAsync();
 
             return _mapper.MapToLoginResponse(user, tokenString);
         }
