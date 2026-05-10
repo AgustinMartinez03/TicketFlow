@@ -19,6 +19,7 @@ namespace TicketFlow.Infrastructure.Query
             return await _context.Sectors
                 .AsNoTracking()
                 .Where(s => s.EventId == eventId)
+                .OrderBy(s => s.Price)
                 .ToListAsync();
         }
     }
