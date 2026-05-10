@@ -27,5 +27,11 @@ namespace TicketFlow.Infrastructure.Querys
 
             return (events, totalRecords);
         }
+
+        public async Task<bool> ExistsEventAtVenueAndDateAsync(string venue, DateTime eventDate)
+        {
+            return await _context.Events
+                .AnyAsync(e => e.Venue == venue && e.EventDate == eventDate);
+        }
     }
 }

@@ -2,8 +2,9 @@
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
-using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Application.Interfaces.IMapper;
+using TicketFlow.Application.Interfaces.IQuerys;
+using TicketFlow.Application.Interfaces.IUseCases;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
@@ -12,11 +13,13 @@ namespace TicketFlow.Application.UseCases
     {
         private readonly IEventCommand _eventCommand;
         private readonly IEventMapper _eventMapper;
+        private readonly IEventQuery _eventQuery;
 
-        public CreateEventUseCase(IEventCommand eventCommand, IEventMapper eventMapper)
+        public CreateEventUseCase(IEventCommand eventCommand, IEventMapper eventMapper, IEventQuery eventQuery)
         {
             _eventCommand = eventCommand;
             _eventMapper = eventMapper;
+            _eventQuery = eventQuery;
         }
 
         public async Task<CreateEventResponse> ExecuteAsync(CreateEventRequest request)
@@ -33,6 +36,12 @@ namespace TicketFlow.Application.UseCases
 
             if (request.Sectors == null || !request.Sectors.Any())
                 throw new ExceptionBadRequest("Debe incluir al menos un sector para el evento.");
+
+            bool existsConflict = await _eventQuery.ExistsEventAtVenueAndDateAsync(request.Venue, request.Date);
+            if (existsConflict)
+            {
+                throw new ExceptionConflict($"Ya existe un evento programado en '{request.Venue}' para esa misma fecha y hora exacta.");
+            }
 
             var newEvent = new Event
             {
