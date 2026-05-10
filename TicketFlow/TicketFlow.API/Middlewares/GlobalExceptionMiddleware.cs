@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
-using TicketFlow.Application.DTOs.Response; // Para usar tu clase ApiError
-using TicketFlow.Application.Exceptions; // Para reconocer tus excepciones de negocio
+using TicketFlow.Application.DTOs.Response;
+using TicketFlow.Application.Exceptions;
 
 namespace TicketFlow.API.Middlewares
 {
@@ -20,13 +20,16 @@ namespace TicketFlow.API.Middlewares
         {
             try
             {
-                // Dejamos que la petición siga su curso normal hacia el Controller
                 await _next(context);
+            }
+            catch (Exception ex) when (ex is ExceptionNotFound || ex is ExceptionBadRequest || ex is ExceptionConcurrency || ex is ExceptionConflict)
+            {
+                _logger.LogWarning($"Regla de negocio no cumplida: {ex.Message}");
+                await HandleExceptionAsync(context, ex);
             }
             catch (Exception ex)
             {
-                // Si CUALQUIER error no atrapado explota, cae acá.
-                _logger.LogError(ex, "Ha ocurrido un error no controlado en la API.");
+                _logger.LogError(ex, "Ha ocurrido un error CRÍTICO no controlado en la API.");
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -35,11 +38,9 @@ namespace TicketFlow.API.Middlewares
         {
             context.Response.ContentType = "application/json";
 
-            // Por defecto, asumimos que es un error 500 (Error interno del servidor)
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             var responseModel = new ApiError { Message = "Ocurrió un error interno en el servidor. Por favor, intente más tarde." };
 
-            // Si es un error de negocio que se nos escapó atrapar en el controller, lo mapeamos:
             switch (exception)
             {
                 case ExceptionNotFound e:
@@ -59,9 +60,6 @@ namespace TicketFlow.API.Middlewares
                     responseModel.Message = e.Message;
                     break;
             }
-
-            // En un entorno de desarrollo, podrías devolver exception.Message en el 500 para debugear, 
-            // pero en producción siempre es mejor dar un mensaje genérico para no exponer código interno.
 
             var result = JsonSerializer.Serialize(responseModel);
             return context.Response.WriteAsync(result);
