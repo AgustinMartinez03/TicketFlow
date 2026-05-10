@@ -1,11 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using TicketFlow.Application.DTOs;
 using TicketFlow.Application.DTOs.Request;
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
 
@@ -15,11 +16,13 @@ namespace TicketFlow.Application.UseCases
     {
         private readonly IUserQuery _userQuery;
         private readonly JwtSettings _jwtSettings; // 👈 Usamos JwtSettings en lugar de IConfiguration
+        private readonly ILoginMapper _mapper;
 
-        public LoginUseCase(IUserQuery userQuery, JwtSettings jwtSettings) // 👈 Inyección limpia
+        public LoginUseCase(IUserQuery userQuery, JwtSettings jwtSettings, ILoginMapper mapper) // 👈 Inyección limpia
         {
             _userQuery = userQuery;
             _jwtSettings = jwtSettings;
+            _mapper = mapper;
         }
 
         public async Task<LoginResponse> ExecuteAsync(LoginRequest request)
@@ -53,12 +56,7 @@ namespace TicketFlow.Application.UseCases
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new LoginResponse
-            {
-                Token = tokenString,
-                Name = user.Name,
-                Role = user.Role
-            };
+            return _mapper.MapToLoginResponse(user, tokenString);
         }
     }
 }

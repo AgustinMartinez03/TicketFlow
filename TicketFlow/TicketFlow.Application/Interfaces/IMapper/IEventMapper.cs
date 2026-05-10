@@ -9,5 +9,6 @@ namespace TicketFlow.Application.Interfaces.IMapper
         Event CreateEvent(CreateEventRequest request);
         List<EventResponse> MapToEventResponse(IEnumerable<Event> eventEntity);
         CreateEventResponse MapToCreateEventResponse(Event eventEntity, string message);
+        EventCatalogResponse MapToEventCatalogResponse(IEnumerable<Event> events, int totalRecords, int pageNumber, int pageSize);
     }
 }

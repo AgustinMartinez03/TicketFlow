@@ -51,7 +51,7 @@ namespace TicketFlow.API
 
             builder.Services.AddScoped<IUserQuery, UserQuery>();
             builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
-
+            builder.Services.AddScoped<ILoginMapper, LoginMapper>();
 
             builder.Services.AddScoped<IPayReservationUseCase, PayReservationUseCase>();
 

@@ -36,13 +36,7 @@ namespace TicketFlow.Application.UseCases
 
             var (events, totalRecords) = await _eventQuery.GetPaginatedEventsAsync(pageNumber, pageSize);
 
-            return new EventCatalogResponse
-            {
-                Events = _eventMapper.MapToEventResponse(events),
-                TotalRecords = totalRecords,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
+            return _eventMapper.MapToEventCatalogResponse(events, totalRecords, pageNumber, pageSize);
         }
     }
 }

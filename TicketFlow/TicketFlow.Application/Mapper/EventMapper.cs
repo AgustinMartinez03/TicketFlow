@@ -38,5 +38,16 @@ namespace TicketFlow.Application.Mapper
                 Message = message
             };
         }
+
+        public EventCatalogResponse MapToEventCatalogResponse(IEnumerable<Event> events, int totalRecords, int pageNumber, int pageSize)
+        {
+            return new EventCatalogResponse
+            {
+                Events = MapToEventResponse(events),
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
     }
 }
