@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="Styles/StyleComponents/CardComponent.css">
     <link rel="stylesheet" href="Styles/StyleComponents/SeatsComponent.css">
     <link rel="stylesheet" href="Styles/StyleComponents/CartComponent.css">
+    <link rel="stylesheet" href="Styles/StyleComponents/AdminPanelComponent.css">
 </head>
 <body class="bg-dark text-white">
     
@@ -41,26 +42,26 @@
                 <i class="bi bi-arrow-left"></i> Volver al Catálogo
             </button>
             
-            <div class="card p-4 shadow-lg" style="background-color: var(--card-bg); border: 1px solid #374151; border-radius: 12px;">
+            <div class="card p-4 shadow-lg admin-panel-card">
                 <h2 id="create-event-title" class="text-neon mb-4 fw-bold">Configurar Nuevo Evento</h2>
                 <form id="form-create-event">
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label text-light">Nombre del Evento</label>
-                            <input type="text" id="event-name" class="form-control text-white" style="background-color: #1f2937; border: none;" required>
+                            <input type="text" id="event-name" class="form-control text-white admin-input" required>
                         </div>
                         <div class="col-md-6 mt-3 mt-md-0">
                             <label class="form-label text-light">Recinto / Venue</label>
-                            <input type="text" id="event-venue" class="form-control text-white" style="background-color: #1f2937; border: none;" required>
+                            <input type="text" id="event-venue" class="form-control text-white admin-input" required>
                         </div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-light">Fecha y Hora</label>
-                        <input type="datetime-local" id="event-date" class="form-control text-white" style="background-color: #1f2937; border: none;" lang="es" required>
+                        <input type="datetime-local" id="event-date" class="form-control text-white admin-input" lang="es" required>
                     </div>
 
-                    <hr style="border-color: #374151;">
+                    <hr class="admin-divider">
                     
                     <h4 class="mb-3 text-light">Sectores y Capacidad</h4>
                     
@@ -70,7 +71,7 @@
                         ➕ Añadir otro sector
                     </button>
 
-                    <button type="submit" class="btn w-100" style="background-color: var(--neon-purple); color: white; font-weight: bold;">
+                    <button type="submit" class="btn w-100 btn-admin-submit">
                         Guardar Evento en Base de Datos
                     </button>
                 </form>
@@ -80,7 +81,7 @@
         <section id="view-catalog" aria-labelledby="catalog-title">
 
             <div id="admin-controls" class="d-none mb-4">
-                <button id="btn-nav-create-event" class="btn btn-warning w-100 shadow-sm" style="font-weight: bold;">
+                <button id="btn-nav-create-event" class="btn btn-warning w-100 shadow-sm fw-bold">
                     ⭐ PANEL ADMIN: Crear Nuevo Evento
                 </button>
             </div>

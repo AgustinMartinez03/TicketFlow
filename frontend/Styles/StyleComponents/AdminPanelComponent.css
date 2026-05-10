@@ -1,0 +1,31 @@
+.admin-panel-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.admin-input {
+    background-color: var(--input-bg);
+    border: none;
+}
+
+.admin-input:focus {
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    box-shadow: var(--neon-glow);
+}
+
+.admin-divider {
+    border-color: var(--border-color);
+}
+
+.btn-admin-submit {
+    background-color: var(--neon-purple);
+    color: white;
+    font-weight: bold;
+}
+
+.btn-admin-submit:hover {
+    background-color: #7c3aed; 
+    color: white;
+}
