@@ -19,7 +19,13 @@ const viewCreateEvent = document.getElementById('view-create-event');
 const adminControls = document.getElementById('admin-controls');
 const sectorsContainer = document.getElementById('sectors-container');
 
-async function initPage() {
+let currentPage = 1;
+const pageSize = 10;
+
+async function initPage(page = 1) {
+    currentPage = page; // Actualizamos la página actual
+
+    // 1. IDENTIDAD Y ROLES (Lo que ya tenías)
     const userName = sessionStorage.getItem('user_name');
     const nameDisplay = document.getElementById('user-name-display');
     
@@ -31,20 +37,29 @@ async function initPage() {
     if (userRole === 'Admin') {
         adminControls.classList.remove('d-none');
     }
+    
+    // 2. CAPTURAR CONTENEDORES
     const gridContainer = document.getElementById('events-grid');
+    const paginationContainer = document.getElementById('pagination-container'); // 👈 El nuevo contenedor
     
     try {
-        const responseData = await fetchEvents();
+        // 3. PETICIÓN PAGINADA
+        const responseData = await fetchEvents(currentPage, pageSize);
         
+        // Extraemos los datos (soportando tanto tu estructura vieja como la nueva paginada)
         const eventsList = responseData.events ? responseData.events : responseData; 
+        const totalPages = responseData.totalPages || 1; // Si no viene, asumimos 1
 
         gridContainer.innerHTML = ''; 
 
+        // 4. SI NO HAY EVENTOS
         if (!eventsList || eventsList.length === 0) {
             gridContainer.innerHTML = '<div class="col-12 text-center text-muted">No hay eventos disponibles.</div>';
+            if (paginationContainer) paginationContainer.innerHTML = ''; // Limpiamos la paginación
             return;
         }
 
+        // 5. RENDERIZAR TARJETAS
         let cardsHtml = '';
         eventsList.forEach(event => {
             cardsHtml += createEventCard(event);
@@ -53,9 +68,15 @@ async function initPage() {
 
         attachButtonEvents();
 
+        // 6. RENDERIZAR PAGINACIÓN (👇 Lo nuevo)
+        if (paginationContainer) {
+            renderPagination(totalPages);
+        }
+
     } catch (error) {
         console.error("Error real capturado:", error);
         gridContainer.innerHTML = '<div class="col-12 text-center text-danger">Error al cargar el catálogo.</div>';
+        if (paginationContainer) paginationContainer.innerHTML = '';
     }
 }
 
@@ -405,8 +426,9 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
     const dateInput = document.getElementById('event-date').value;
 
     // Convertimos la fecha local al formato universal (ISO) que exige el Backend
-    const formattedDate = new Date(dateInput).toISOString();
-
+    // const formattedDate = new Date(dateInput).toISOString();
+    const formattedDate = dateInput;
+    
     // 2. Armamos la lista dinámica de sectores
     const sectorsArray = [];
     const sectorEntries = document.querySelectorAll('.sector-entry');
@@ -476,6 +498,46 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
         });
     }
 });
+
+function renderPagination(totalPages) {
+    const container = document.getElementById('pagination-container');
+    container.innerHTML = '';
+
+    if (totalPages <= 1) return; // Si hay una sola página, no mostramos nada
+
+    // Botón Anterior
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    container.insertAdjacentHTML('beforeend', `
+        <li class="page-item ${prevDisabled}">
+            <button class="page-link bg-dark text-light border-secondary" onclick="changePage(${currentPage - 1})">Anterior</button>
+        </li>
+    `);
+
+    // Números de página
+    for (let i = 1; i <= totalPages; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        container.insertAdjacentHTML('beforeend', `
+            <li class="page-item ${activeClass}">
+                <button class="page-link ${i === currentPage ? 'bg-purple border-purple' : 'bg-dark text-light border-secondary'}" 
+                        onclick="changePage(${i})">${i}</button>
+            </li>
+        `);
+    }
+
+    // Botón Siguiente
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+    container.insertAdjacentHTML('beforeend', `
+        <li class="page-item ${nextDisabled}">
+            <button class="page-link bg-dark text-light border-secondary" onclick="changePage(${currentPage + 1})">Siguiente</button>
+        </li>
+    `);
+}
+
+// Función global para que los botones funcionen
+window.changePage = (page) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Efecto pro de volver arriba
+    initPage(page);
+};
 
 // Al final de UserPageMain.js
 document.getElementById('btn-logout').addEventListener('click', () => {

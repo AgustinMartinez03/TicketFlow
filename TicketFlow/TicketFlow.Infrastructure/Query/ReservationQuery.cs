@@ -22,6 +22,7 @@ namespace TicketFlow.Infrastructure.Querys
                     .ThenInclude(s => s.Sector)
                         .ThenInclude(sec => sec.Event)
                 .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.ReservedAt)
                 .ToListAsync();
         }
 

@@ -19,6 +19,8 @@ namespace TicketFlow.Infrastructure.Querys
             return await _context.Seats
                 .AsNoTracking()
                 .Where(s => s.SectorId == sectorId)
+                .OrderBy(s => s.RowIdentifier)
+                .ThenBy(s => s.SeatNumber)
                 .ToListAsync();
         }
 
