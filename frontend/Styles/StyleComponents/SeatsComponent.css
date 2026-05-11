@@ -26,49 +26,49 @@
     padding: 0;
     font-size: 0.75rem;
     border-radius: 6px;
-    color: #fff;
+    color: var(--text-main);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .seat-btn:not(.disabled):hover {
     transform: scale(1.1);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+    box-shadow: var(--seat-available-glow-light);
 }
 
 .seat-btn.seat-available:not(.disabled):hover {
-    background-color: #059669;
-    border-color: #34d399;     
+    background-color: var(--seat-available-hover);
+    border-color: var(--seat-available-border-hover);
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+    box-shadow: var(--seat-available-glow);
 }
 
 .seat-btn.seat-available {
-    background-color: #065f46;
-    border: 1px solid #047857;
+    background-color: var(--seat-available-bg);
+    border: 1px solid var(--seat-available-border);
     cursor: pointer;
 }
 
 .seat-btn.seat-reserved {
-    background-color: #926f0e !important;
-    border: 1px solid #b49809 !important;
-    color: #e5e7eb !important;
+    background-color: var(--seat-reserved-bg) !important;
+    border: 1px solid var(--seat-reserved-border) !important;
+    color: var(--text-main) !important;
     opacity: 1 !important; 
     pointer-events: auto !important; 
     cursor: not-allowed !important;
 }
 
 .seat-btn.seat-my-reserved {
-    background-color: #f59e0b !important;
-    border: 2px solid #b45309 !important;
-    color: #ffffff !important;
+    background-color: var(--seat-my-reserved-bg) !important;
+    border: 2px solid var(--seat-my-reserved-border) !important;
+    color: var(--text-main) !important;
     cursor: pointer !important;
     pointer-events: auto !important;
 }
 
 .seat-btn.seat-sold {
-    background-color: #1f2937 !important;
-    border: 1px solid #374151 !important;
-    color: #9ca3af !important;
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
     opacity: 0.5 !important;
     pointer-events: auto !important;
     cursor: not-allowed !important;
@@ -98,9 +98,9 @@
     border-radius: 4px;
 }
 
-.legend-available { background-color: #065f46; border: 1px solid #047857; }
-.legend-reserved  { background-color: #926f0e; border: 1px solid #b49809; }
-.legend-sold      { background-color: #1f2937; border: 1px solid #374151; }
+.legend-available { background-color: var(--seat-available-bg); border: 1px solid var(--seat-available-border); }
+.legend-reserved  { background-color: var(--seat-reserved-bg); border: 1px solid var(--seat-reserved-border); }
+.legend-sold      { background-color: var(--input-bg); border: 1px solid var(--border-color); }
 
 .seats-card-wrapper { max-width: 800px; }
 
