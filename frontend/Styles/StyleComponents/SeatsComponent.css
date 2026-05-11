@@ -103,3 +103,7 @@
 .legend-sold      { background-color: #1f2937; border: 1px solid #374151; }
 
 .seats-card-wrapper { max-width: 800px; }
+
+.spinner-neon {
+    color: var(--neon-purple);
+}

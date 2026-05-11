@@ -137,7 +137,7 @@ function attachSectorButtonEvents() {
             viewSectors.classList.add('d-none');
             viewSeats.classList.remove('d-none');
 
-            seatsGrid.innerHTML = '<div class="text-center my-5"><div class="spinner-border" style="color: var(--neon-purple);" role="status"></div><p class="mt-2 text-muted">Armando el escenario...</p></div>';
+            seatsGrid.innerHTML = '<div class="text-center my-5"><div class="spinner-border spinner-neon" role="status"></div><p class="mt-2 text-muted">Armando el escenario...</p></div>';
 
             try {
                 const responseData = await fetchSeatsBySector(sectorId);
@@ -540,9 +540,24 @@ window.changePage = (page) => {
     initPage(page);
 };
 
-// Al final de UserPageMain.js
+// Cierre de Sesión con Confirmación (SweetAlert2)
 document.getElementById('btn-logout').addEventListener('click', () => {
-    logout(); // La función que ya importamos de AuthService
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: "Tendrás que volver a ingresar tus credenciales para comprar o crear eventos.",
+        icon: 'warning',
+        showCancelButton: true,
+        background: 'var(--card-bg)',
+        color: 'var(--text-main)',
+        confirmButtonColor: 'var(--danger)',
+        cancelButtonColor: 'var(--border-color)',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            logout();
+        }
+    });
 });
 
 initPage();
