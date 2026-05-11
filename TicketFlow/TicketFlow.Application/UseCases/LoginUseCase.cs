@@ -33,7 +33,7 @@ namespace TicketFlow.Application.UseCases
         {
             var user = await _userQuery.GetUserByEmailAsync(request.Email);
 
-            if (user == null || user.PasswordHash != request.Password)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 var failedLog = new AuditLog
                 {
