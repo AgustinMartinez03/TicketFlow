@@ -8,4 +8,19 @@
     --danger: #ef4444;
     --input-bg: #1f2937;
     --border-color: #374151;
+    --success: #10b981;
+    --neon-purple-hover: #7c3aed;
+    --border-neon: rgba(168, 85, 247, 0.5);
+    --border-light: rgba(255, 255, 255, 0.05);
+    --shadow-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --seat-available-bg: #065f46;
+    --seat-available-border: #047857;
+    --seat-available-hover: #059669;
+    --seat-available-border-hover: #34d399;
+    --seat-available-glow: 0 0 10px rgba(5, 150, 105, 0.6);
+    --seat-available-glow-light: 0 0 8px rgba(16, 185, 129, 0.8);
+    --seat-reserved-bg: #926f0e;
+    --seat-reserved-border: #b49809;
+    --seat-my-reserved-bg: #f59e0b;
+    --seat-my-reserved-border: #b45309;
 }

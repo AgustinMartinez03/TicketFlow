@@ -137,7 +137,7 @@ function attachSectorButtonEvents() {
             viewSectors.classList.add('d-none');
             viewSeats.classList.remove('d-none');
 
-            seatsGrid.innerHTML = '<div class="text-center my-5"><div class="spinner-border" style="color: var(--neon-purple);" role="status"></div><p class="mt-2 text-muted">Armando el escenario...</p></div>';
+            seatsGrid.innerHTML = '<div class="text-center my-5"><div class="spinner-border spinner-neon" role="status"></div><p class="mt-2 text-muted">Armando el escenario...</p></div>';
 
             try {
                 const responseData = await fetchSeatsBySector(sectorId);
@@ -237,7 +237,7 @@ function attachSeatClickEvents() {
                     showCancelButton: true,
                     confirmButtonText: 'Procesar Pago',
                     cancelButtonText: 'Cancelar',
-                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981',
+                    background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)',
                     preConfirm: () => {
                         return document.getElementById('swal-input1').value;
                     }
@@ -247,7 +247,7 @@ function attachSeatClickEvents() {
                     try {
                         Swal.fire({
                             title: 'Procesando pago...',
-                            background: '#1a1d24', color: '#ffffff',
+                            background: 'var(--card-bg)', color: 'var(--text-main)',
                             allowOutsideClick: false,
                             didOpen: () => { Swal.showLoading(); }
                         });
@@ -266,7 +266,7 @@ function attachSeatClickEvents() {
                             title: '¡Pago Exitoso!',
                             text: 'Disfruta tu evento.',
                             icon: 'success',
-                            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
+                            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)'
                         });
 
                     } catch (error) {
@@ -275,7 +275,7 @@ function attachSeatClickEvents() {
                             title: 'Error', 
                             text: error.message || 'El pago no pudo procesarse.', 
                             icon: 'error', 
-                            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+                            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)'
                         });
                     }
                 }
@@ -291,7 +291,7 @@ function attachSeatClickEvents() {
                         title: 'Reserva en curso',
                         text: 'Ya tienes una butaca pendiente de pago. Por favor, finaliza esa compra o espera a que expire.',
                         icon: 'info',
-                        background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#8b5cf6'
+                        background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--neon-purple)'
                     });
                     return; // Cortamos acá
                 }
@@ -301,14 +301,14 @@ function attachSeatClickEvents() {
                     text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#8b5cf6', cancelButtonColor: '#3f3f46',
+                    confirmButtonColor: 'var(--neon-purple)', cancelButtonColor: 'var(--border-color)',
                     confirmButtonText: 'Sí, reservar', cancelButtonText: 'Cancelar',
-                    background: '#1a1d24', color: '#ffffff'
+                    background: 'var(--card-bg)', color: 'var(--text-main)'
                 }).then(async(result) => {
                     if (result.isConfirmed) {
                         Swal.fire({
                             title: 'Procesando reserva...',
-                            background: '#1a1d24', color: '#ffffff',
+                            background: 'var(--card-bg)', color: 'var(--text-main)',
                             allowOutsideClick: false,
                             didOpen: () => { Swal.showLoading(); }
                         });
@@ -336,7 +336,7 @@ function attachSeatClickEvents() {
                                 title: '¡Reserva Confirmada!',
                                 text: `Tu butaca ha sido reservada con éxito. Tienes 5 minutos para pagar.`,
                                 icon: 'success',
-                                background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
+                                background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)'
                             });
 
                         } catch (error) {
@@ -348,14 +348,14 @@ function attachSeatClickEvents() {
                                     title: '¡Asiento no disponible!',
                                     text: 'Otro usuario ganó esta butaca milisegundos antes. Por favor elige otra.',
                                     icon: 'warning',
-                                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+                                    background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)'
                                 });
                             } else {
                                 Swal.fire({
                                     title: '¡Ups!',
                                     text: error.message || 'No se pudo completar la reserva.',
                                     icon: 'error',
-                                    background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+                                    background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)'
                                 });
                             }
                         }
@@ -435,7 +435,13 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
     const sectorEntries = document.querySelectorAll('.sector-entry');
 
     if (sectorEntries.length === 0) {
-        Swal.fire({ icon: 'warning', title: 'Atención', text: 'Debes agregar al menos un sector.', background: '#1a1d24', color: '#ffffff' });
+        Swal.fire({ 
+            icon: 'warning',
+            title: 'Atención',
+            text: 'Debes agregar al menos un sector.',
+            background: 'var(--card-bg)',
+            color: 'var(--text-main)'
+        });
         return;
     }
 
@@ -465,7 +471,7 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
         Swal.fire({
             title: 'Creando Evento...',
             text: 'Generando recinto y butacas en la base de datos.',
-            background: '#1a1d24', color: '#ffffff',
+            background: 'var(--card-bg)', color: 'var(--text-main)',
             allowOutsideClick: false,
             didOpen: () => { Swal.showLoading(); }
         });
@@ -477,7 +483,7 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
             icon: 'success',
             title: '¡Evento Creado!',
             text: 'El evento está listo para recibir reservas.',
-            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#10b981'
+            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)'
         });
 
         // Limpiamos el formulario
@@ -495,7 +501,7 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
             icon: 'error',
             title: 'Error de creación',
             text: error.message,
-            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)'
         });
     }
 });
@@ -540,9 +546,24 @@ window.changePage = (page) => {
     initPage(page);
 };
 
-// Al final de UserPageMain.js
+// Cierre de Sesión con Confirmación (SweetAlert2)
 document.getElementById('btn-logout').addEventListener('click', () => {
-    logout(); // La función que ya importamos de AuthService
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: "Tendrás que volver a ingresar tus credenciales para comprar o crear eventos.",
+        icon: 'warning',
+        showCancelButton: true,
+        background: 'var(--card-bg)',
+        color: 'var(--text-main)',
+        confirmButtonColor: 'var(--danger)',
+        cancelButtonColor: 'var(--border-color)',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            logout();
+        }
+    });
 });
 
 initPage();

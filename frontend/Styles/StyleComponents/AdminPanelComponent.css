@@ -21,11 +21,11 @@
 
 .btn-admin-submit {
     background-color: var(--neon-purple);
-    color: white;
+    color: var(--text-main);
     font-weight: bold;
 }
 
 .btn-admin-submit:hover {
-    background-color: #7c3aed; 
-    color: white;
+    background-color: var(--neon-purple-hover); 
+    color: var(--text-main);
 }

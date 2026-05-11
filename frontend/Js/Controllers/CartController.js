@@ -38,7 +38,8 @@ export function iniciarCarritoConTemporizador(reservationId, currentSectorId, ex
                 icon: 'warning',
                 title: 'Tiempo expirado',
                 text: 'El tiempo para pagar ha expirado. Tu butaca ha sido liberada.',
-                background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#8b5cf6'
+                color: 'var(--text-main)', 
+                confirmButtonColor: 'var(--neon-purple)'
             });
             
             return; 

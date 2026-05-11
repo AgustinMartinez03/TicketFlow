@@ -9,7 +9,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     try {
         Swal.fire({
             title: 'Iniciando sesión...',
-            background: '#1a1d24', color: '#ffffff',
+            background: 'var(--card-bg)', 
+            color: 'var(--text-main)',
             allowOutsideClick: false,
             didOpen: () => { Swal.showLoading(); }
         });
@@ -29,7 +30,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             icon: 'error',
             title: 'Error de acceso',
             text: error.message,
-            background: '#1a1d24', color: '#ffffff', confirmButtonColor: '#ef4444'
+            background: 'var(--card-bg)', 
+            color: 'var(--text-main)', 
+            confirmButtonColor: 'var(--danger)'
         });
     }
 });
