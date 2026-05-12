@@ -426,9 +426,8 @@ document.getElementById('form-create-event').addEventListener('submit', async (e
     const venue = document.getElementById('event-venue').value;
     const dateInput = document.getElementById('event-date').value;
 
-    // Convertimos la fecha local al formato universal (ISO) que exige el Backend
-    // const formattedDate = new Date(dateInput).toISOString();
-    const formattedDate = dateInput;
+    // Convertimos la fecha local al formato universal (ISO) que exige el Backend en UTC
+    const formattedDate = new Date(dateInput).toISOString();
     
     // 2. Armamos la lista dinámica de sectores
     const sectorsArray = [];
