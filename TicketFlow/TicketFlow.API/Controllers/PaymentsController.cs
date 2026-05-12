@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketFlow.Application.DTOs.Request;
-using TicketFlow.Application.DTOs.Response; // Necesario para PayReservationResponse y ApiError
+using TicketFlow.Application.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using TicketFlow.Application.Interfaces.IUseCases;
 
@@ -19,7 +19,7 @@ namespace TicketFlow.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(PayReservationResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(PayReservationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
@@ -27,7 +27,7 @@ namespace TicketFlow.API.Controllers
         public async Task<IActionResult> ProcessPayment([FromBody] PayReservationRequest request)
         {
             var response = await _payReservationUseCase.ExecuteAsync(request);
-            return Created($"/api/v1/reservations/{response.ReservationId}", response);
+            return Ok(response);
         }
     }
 }

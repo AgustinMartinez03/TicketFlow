@@ -2,8 +2,7 @@
 {
     public class PayReservationRequest
     {
-        public Guid ReservationId { get; set; }
-        // Simulamos un token de tarjeta de crédito (como si usáramos MercadoPago o Stripe)
+        public List<Guid> ReservationIds { get; set; } = new List<Guid>();
         public string CreditCardToken { get; set; } = string.Empty;
     }
 }
