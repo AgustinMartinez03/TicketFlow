@@ -95,6 +95,18 @@ El proyecto incluye un script de inicialización (`Seed`) que cargará 1 evento 
 
 ---
 
+## 🔑 Credenciales de Prueba (Seed Data)
+
+Al ejecutar las migraciones, la base de datos se poblará automáticamente con eventos, sectores, butacas y **usuarios de prueba**. Puedes utilizar los siguientes accesos para evaluar el sistema:
+
+| Rol | Email | Contraseña | Permisos / Acciones |
+| :--- | :--- | :--- | :--- |
+| **Administrador** | `admin@ticketflow.com` | `admin123` | Puede acceder al panel de creación de eventos y sectores. |
+| **Cliente** | `agus@ticketflow.com` | `123456` | Puede navegar el catálogo, usar el carrito y pagar reservas. |
+| **Cliente** | `ale@ticketflow.com` | `123456` | Ideal para probar la concurrencia (Error 409) compitiendo contra Agus. |
+
+---
+
 ## 📋 Funcionalidades Cumplidas en la Entrega 1
 
 ✅ Catálogo paginado de eventos.
