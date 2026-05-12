@@ -2,7 +2,7 @@
 
 TicketFlow es una solución de software escalable para la gestión y reserva de entradas de eventos, diseñada aplicando **Clean Architecture** para garantizar un alto desacoplamiento entre las reglas de negocio y la infraestructura.
 
-Este repositorio contiene la **Entrega 1**, que establece la infraestructura base, el modelo de dominio, la API de Catálogo y la experiencia de usuario (UX) inicial para la selección de butacas.
+Este repositorio contiene la **Entrega 2**, la cual se centra en la **Tolerancia a Fallos, Transaccionalidad y Sistemas de Auto-Mantenimiento**.
 
 ---
 
@@ -21,7 +21,7 @@ El proyecto está dividido en dos grandes bloques completamente desacoplados:
 * **Lenguajes:** HTML5, CSS3, JavaScript (Vanilla ES6+).
 * **Framework CSS:** Bootstrap 5.
 * **Librerías Extra:** SweetAlert2 (Para modales y alertas UX).
-* **Enfoque:** Modular (Componentes y Servicios separados), Diseño Responsive y Accesibilidad (WAI-ARIA).
+* **Enfoque:** Modular (Componentes y Servicios separados) y Diseño Responsive.
 
 ---
 
@@ -95,6 +95,18 @@ El proyecto incluye un script de inicialización (`Seed`) que cargará 1 evento 
 
 ---
 
+## 🔑 Credenciales de Prueba (Seed Data)
+
+Al ejecutar las migraciones, la base de datos se poblará automáticamente con eventos, sectores, butacas y **usuarios de prueba**. Puedes utilizar los siguientes accesos para evaluar el sistema:
+
+| Rol | Email | Contraseña | Permisos / Acciones |
+| :--- | :--- | :--- | :--- |
+| **Administrador** | `admin@ticketflow.com` | `admin123` | Puede acceder al panel de creación de eventos y sectores. |
+| **Cliente** | `agus@ticketflow.com` | `123456` | Puede navegar el catálogo, usar el carrito y pagar reservas. |
+| **Cliente** | `ale@ticketflow.com` | `123456` | Ideal para probar la concurrencia (Error 409) compitiendo contra Agus. |
+
+---
+
 ## 📋 Funcionalidades Cumplidas en la Entrega 1
 
 ✅ Catálogo paginado de eventos.
@@ -107,8 +119,28 @@ El proyecto incluye un script de inicialización (`Seed`) que cargará 1 evento 
 
 ✅ Documentación autogenerada vía Swagger / OpenAPI.
 
-✅ Accesibilidad en el Frontend (WAI-ARIA) para lectores de pantalla.
+---
+## 📋 Funcionalidades Cumplidas en la Entrega 2
 
+✅ **Control de Concurrencia:** Implementación de mecanismos en el endpoint de reservas para evitar la venta duplicada de entradas (Manejo de Error 409 Conflict).
+
+✅ **Transaccionalidad Estricta:** Endpoint de Pagos con soporte de **Rollback**. Si falla el cobro o la actualización, la base de datos revierte todos los cambios automáticamente.
+
+✅ **Background Jobs (Worker):** Proceso en segundo plano (`ReservationCleanupWorker`) que se ejecuta periódicamente para liberar automáticamente reservas expiradas (5 min) y recuperar el inventario.
+
+✅ **Carrito de Compras con Temporizador:** UX avanzada que permite seleccionar múltiples butacas y visualizarlas en un carrito con cuenta regresiva en tiempo real.
+
+✅ **Refactorización Clean Code:** Frontend modularizado por controladores para facilitar el mantenimiento y escalabilidad.
+
+---
+
+## 🛠️ Guía de Pruebas de Estrés (Concurrencia)
+
+Para verificar la robustez del sistema:
+*  Intenta realizar una reserva de la misma butaca desde dos navegadores distintos simultáneamente.
+*  El sistema garantizará que solo una petición retorne `201 Created`.
+*  La segunda petición recibirá un `409 Conflict`, disparando una notificación Toast en el frontend y refrescando el mapa de asientos automáticamente.
+*  Todas las acciones quedarán registradas en la tabla de **AuditLog** para trazabilidad.
 
 ---
 *Desarrollado con ❤️ para la cátedra.*
