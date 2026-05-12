@@ -86,7 +86,7 @@ namespace TicketFlow.API
             // ==========================================
             // 9. CONFIGURACIÓN DE RUTAS Y CONTROLADORES
             // ==========================================
-            // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas (Buena práctica SEO/API)
+            // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddControllers();
 
@@ -109,7 +109,6 @@ namespace TicketFlow.API
             var jwtSettings = new JwtSettings();
             builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
 
-            // Registramos el objeto como Singleton para que el LoginUseCase u otros puedan inyectarlo
             builder.Services.AddSingleton(jwtSettings);
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
