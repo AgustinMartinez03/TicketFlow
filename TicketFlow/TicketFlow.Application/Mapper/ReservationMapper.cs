@@ -20,12 +20,12 @@ namespace TicketFlow.Application.Mapper
             }).ToList();
         }
 
-        public PayReservationResponse MapToPayReservationResponse(Reservation reservation, string message)
+        public PayReservationResponse MapToPayReservationResponse(List<Guid> reservationIds, string message, string status)
         {
             return new PayReservationResponse
             {
-                ReservationId = reservation.Id,
-                Status = "Completed",
+                ReservationIds = reservationIds,
+                Status = status,
                 Message = message
             };
         }

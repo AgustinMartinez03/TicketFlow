@@ -6,7 +6,7 @@ namespace TicketFlow.Application.Interfaces.IMapper
     public interface IReservationMapper
     {
         List<UserReservationResponse> MapToUserReservationResponseList(IEnumerable<Reservation> reservations);
-        PayReservationResponse MapToPayReservationResponse(Reservation reservation, string message);
+        PayReservationResponse MapToPayReservationResponse(List<Guid> reservationIds, string message, string status);
         ReserveSeatResponse MapToReserveSeatResponse(Reservation reservation, string message);
     }
 }

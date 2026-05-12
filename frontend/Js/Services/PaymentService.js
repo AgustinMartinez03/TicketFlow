@@ -2,7 +2,7 @@ import { getAuthToken } from './AuthService.js';
 
 const API_BASE_URL = 'https://localhost:7157/api/v1';
 
-export async function processPaymentApi(reservationId, creditCardToken) {
+export async function processPaymentApi(reservationIds, creditCardToken) {
     const response = await fetch(`${API_BASE_URL}/payments`, {
         method: 'POST',
         headers: {
@@ -10,13 +10,12 @@ export async function processPaymentApi(reservationId, creditCardToken) {
             'Authorization': `Bearer ${getAuthToken()}`
         },
         body: JSON.stringify({
-            reservationId: reservationId,
+            reservationIds: reservationIds,
             creditCardToken: creditCardToken
         })
     });
 
     if (!response.ok) {
-        // Manejo seguro del body
         const errorData = await response.json().catch(() => ({}));
         
         if (response.status === 401) {

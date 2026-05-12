@@ -2,9 +2,9 @@
 using TicketFlow.Application.DTOs.Response;
 using TicketFlow.Application.Exceptions;
 using TicketFlow.Application.Interfaces.ICommands;
+using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Application.Interfaces.IQuerys;
 using TicketFlow.Application.Interfaces.IUseCases;
-using TicketFlow.Application.Interfaces.IMapper;
 using TicketFlow.Domain.Entities;
 
 namespace TicketFlow.Application.UseCases
@@ -36,47 +36,52 @@ namespace TicketFlow.Application.UseCases
 
         public async Task<PayReservationResponse> ExecuteAsync(PayReservationRequest request)
         {
-            var reservation = await _reservationQuery.GetReservationByIdAsync(request.ReservationId);
+            if (request.ReservationIds == null || !request.ReservationIds.Any())
+                throw new ExceptionBadRequest("No hay reservas para pagar.");
 
-            if (reservation == null)
-                throw new ExceptionNotFound("La reserva no existe.");
-
-            if (reservation.Status != "Pending")
-                throw new ExceptionBadRequest($"La reserva no se puede pagar porque su estado es: {reservation.Status}");
-
-            var seat = await _seatQuery.GetSeatByIdAsync(reservation.SeatId);
-            if (seat == null)
-                throw new ExceptionNotFound("La butaca asociada no existe.");
+            if (string.IsNullOrWhiteSpace(request.CreditCardToken))
+                throw new ExceptionBadRequest("Token de tarjeta inválido.");
 
             // 🚀 INICIAMOS LA TRANSACCIÓN: Todo o nada a partir de acá
             await _seatCommand.BeginTransactionAsync();
 
             try
             {
-                // 1. Cobrar (Acá iría la lógica real de Stripe/MercadoPago. Por ahora lo simulamos)
-                if (string.IsNullOrWhiteSpace(request.CreditCardToken))
-                    throw new ExceptionBadRequest("Token de tarjeta inválido.");
-
-                // 2. Actualizar Reserva
-                reservation.Status = "Completed";
-                _reservationCommand.UpdateReservation(reservation); // Asumo que tenés este método, si no, agregalo a la interfaz y al command
-
-                // 3. Actualizar Butaca
-                seat.Status = "Sold";
-                seat.Version++; // Mantenemos la sana costumbre de la concurrencia
-                _seatCommand.UpdateSeat(seat);
-
-                // 4. Auditoría
-                var auditLog = new AuditLog
+                // Iteramos sobre cada ID de reserva que nos manda el Front
+                foreach (var resId in request.ReservationIds)
                 {
-                    UserId = reservation.UserId,
-                    Action = "PAYMENT_SUCCESS",
-                    EntityType = "Reservation",
-                    EntityId = reservation.Id.ToString(),
-                    Details = $"Pago confirmado para la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
-                    CreatedAt = DateTime.UtcNow
-                };
-                _auditLogCommand.InsertAuditLog(auditLog);
+                    var reservation = await _reservationQuery.GetReservationByIdAsync(resId);
+                    if (reservation == null)
+                        throw new ExceptionNotFound($"La reserva {resId} no existe.");
+
+                    if (reservation.Status != "Pending")
+                        throw new ExceptionBadRequest($"La reserva {resId} no se puede pagar porque su estado es: {reservation.Status}");
+
+                    var seat = await _seatQuery.GetSeatByIdAsync(reservation.SeatId);
+                    if (seat == null)
+                        throw new ExceptionNotFound($"La butaca asociada a la reserva {resId} no existe.");
+
+                    // 2. Actualizar Reserva
+                    reservation.Status = "Completed";
+                    _reservationCommand.UpdateReservation(reservation);
+
+                    // 3. Actualizar Butaca
+                    seat.Status = "Sold";
+                    seat.Version++; // Mantenemos la sana costumbre de la concurrencia
+                    _seatCommand.UpdateSeat(seat);
+
+                    // 4. Auditoría
+                    var auditLog = new AuditLog
+                    {
+                        UserId = reservation.UserId,
+                        Action = "PAYMENT_SUCCESS",
+                        EntityType = "Reservation",
+                        EntityId = reservation.Id.ToString(),
+                        Details = $"Pago confirmado para la butaca {seat.RowIdentifier}-{seat.SeatNumber}",
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    _auditLogCommand.InsertAuditLog(auditLog);
+                }
 
                 // 5. Guardar cambios en BD
                 await _seatCommand.SaveChangesAsync();
@@ -84,7 +89,12 @@ namespace TicketFlow.Application.UseCases
                 // 6. Si llegamos acá sin errores, confirmamos la transacción de BD
                 await _seatCommand.CommitTransactionAsync();
 
-                return _reservationMapper.MapToPayReservationResponse(reservation,"El pago se procesó correctamente. ¡Disfruta el evento!");
+                // Retornamos la respuesta (incluyendo el Status que me mencionaste)
+                return _reservationMapper.MapToPayReservationResponse(
+                    request.ReservationIds,
+                    "El pago se procesó correctamente. ¡Disfruta el evento!",
+                    "Success"
+                );
             }
             catch (Exception)
             {

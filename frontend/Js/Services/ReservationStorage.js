@@ -1,12 +1,14 @@
-export function getMiReserva() {
-    const data = sessionStorage.getItem('miReservaActiva');
-    return data ? JSON.parse(data) : null;
+export function getMisReservas() {
+    const data = sessionStorage.getItem('misReservasActivas');
+    return data ? JSON.parse(data) : [];
 }
 
-export function setMiReserva(reserva) {
-    sessionStorage.setItem('miReservaActiva', JSON.stringify(reserva));
+export function addMiReserva(reserva) {
+    const reservas = getMisReservas();
+    reservas.push(reserva);
+    sessionStorage.setItem('misReservasActivas', JSON.stringify(reservas));
 }
 
-export function clearMiReserva() {
-    sessionStorage.removeItem('miReservaActiva');
+export function clearMisReservas() {
+    sessionStorage.removeItem('misReservasActivas');
 }
