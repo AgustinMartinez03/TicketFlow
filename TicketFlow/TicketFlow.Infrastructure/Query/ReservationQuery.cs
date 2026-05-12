@@ -36,7 +36,6 @@ namespace TicketFlow.Infrastructure.Querys
             return await _context.Reservations.FindAsync(id);
         }
 
-        // 👇 LA IMPLEMENTACIÓN DE LA BÚSQUEDA
         public async Task<IEnumerable<Reservation>> GetExpiredPendingReservationsAsync(DateTime referenceTime)
         {
             return await _context.Reservations

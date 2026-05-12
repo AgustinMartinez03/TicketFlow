@@ -30,18 +30,15 @@ namespace TicketFlow.Infrastructure.Command
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Acá traducimos el error de EF Core a un error puro de nuestra arquitectura
                 throw new ExceptionConcurrency("Colisión de concurrencia en la base de datos.");
             }
         }
 
         public void DiscardChanges()
         {
-            // Esto borra toda la basura que quedó trabada (la butaca rota y la reserva a medias)
             _context.ChangeTracker.Clear();
         }
 
-        // Implementá los métodos:
         public async Task BeginTransactionAsync()
         {
             _currentTransaction = await _context.Database.BeginTransactionAsync();

@@ -6,7 +6,6 @@ export function detenerTemporizador() {
     if (temporizadorInterval) clearInterval(temporizadorInterval);
     document.getElementById('carrito-container').style.display = 'none';
     document.body.style.paddingBottom = '0px';
-    // Limpiamos el tiempo global de la sesión al detener
     sessionStorage.removeItem('cartExpiration'); 
 }
 

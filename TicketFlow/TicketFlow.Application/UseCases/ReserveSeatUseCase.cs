@@ -46,7 +46,6 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionBadRequest("El ID de la butaca es obligatorio.");
             }
 
-            // 1. LEER LA BASE DE DATOS (Obtiene la butaca con su Version actual, ej: Version = 1)
             var seat = await _seatQuery.GetSeatByIdAsync(request.SeatId);
 
             if (seat == null)
@@ -66,7 +65,6 @@ namespace TicketFlow.Application.UseCases
                 throw new ExceptionNotFound("El usuario no existe.");
             }
 
-            // 2. MODIFICAR EL ESTADO EN MEMORIA
             seat.Status = "Reserved";
             seat.Version++;
             _seatCommand.UpdateSeat(seat);
@@ -76,9 +74,9 @@ namespace TicketFlow.Application.UseCases
                 Id = Guid.NewGuid(),
                 UserId = request.UserId,
                 SeatId = seat.Id,
-                Status = "Pending", // Sugerencia de Tech Lead: "Pending" tiene más sentido inicial que "Confirmed" hasta que pague.
+                Status = "Pending",
                 ReservedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(5) // Ajustado a la regla de negocio de los 5 minutos
+                ExpiresAt = DateTime.UtcNow.AddMinutes(5)
             };
             _reservationCommand.InsertReservation(reservation);
 
@@ -93,20 +91,14 @@ namespace TicketFlow.Application.UseCases
             };
             _auditLogCommand.InsertAuditLog(auditLog);
 
-            // 3. INTENTAR GUARDAR EN BASE DE DATOS (Acá ocurre la magia de la concurrencia)
             try
             {
                 await _seatCommand.SaveChangesAsync();
             }
             catch (ExceptionConcurrency)
             {
-                // 🛡️ SI LLEGAMOS ACÁ: Alguien más compró la butaca milisegundos antes que nosotros.
-                // TODO: Registrar intento fallido en AuditLog (Ver nota abajo)
-
-                // 🛡️ 1. Limpiamos la memoria para que EF Core no intente guardar la basura de nuevo
                 _seatCommand.DiscardChanges();
 
-                // 🛡️ 2. Creamos el log de fallo
                 var errorLog = new AuditLog
                 {
                     UserId = request.UserId,
@@ -117,11 +109,9 @@ namespace TicketFlow.Application.UseCases
                     CreatedAt = DateTime.UtcNow
                 };
 
-                // 🛡️ 3. Guardamos solo este log en la base de datos limpia
                 _auditLogCommand.InsertAuditLog(errorLog);
                 await _seatCommand.SaveChangesAsync();
 
-                // 🛡️ 4. Explotamos con el 409 para el usuario
                 throw new ExceptionConflict("¡Ups! Otro usuario acaba de ganar esta butaca. Por favor, selecciona otra.");
             }
 
