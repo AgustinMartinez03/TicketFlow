@@ -1,6 +1,10 @@
 export function createEventCard(event) {
     const placeholderImage = "Assets/Images/placeholder.jpg";
-    const dateObj = new Date(event.eventDate);
+    
+    const utcString = event.eventDate.endsWith('Z') ? event.eventDate : event.eventDate + 'Z';
+    
+    const dateObj = new Date(utcString);
+    
     const dateStr = dateObj.toLocaleString('es-AR', { dateStyle: 'full', timeStyle: 'short' });
 
     return `
