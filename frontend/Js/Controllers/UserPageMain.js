@@ -554,8 +554,6 @@ if (btnPayCart) {
     });
 }
 
-initPage();
-
 // Cierre de Sesión con Confirmación (SweetAlert2)
 document.getElementById('btn-logout').addEventListener('click', () => {
     Swal.fire({
