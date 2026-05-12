@@ -496,11 +496,6 @@ window.changePage = (page) => {
     initPage(page);
 };
 
-// Al final de UserPageMain.js
-document.getElementById('btn-logout').addEventListener('click', () => {
-    logout(); // La función que ya importamos de AuthService
-});
-
 // 👇 NUEVA LÓGICA DE PAGO DEL CARRITO
 const btnPayCart = document.getElementById('btn-pay-cart');
 if (btnPayCart) {
@@ -553,8 +548,6 @@ if (btnPayCart) {
         }
     });
 }
-
-initPage();
 
 // Cierre de Sesión con Confirmación (SweetAlert2)
 document.getElementById('btn-logout').addEventListener('click', () => {
