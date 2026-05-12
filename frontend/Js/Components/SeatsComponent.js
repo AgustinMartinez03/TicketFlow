@@ -1,4 +1,4 @@
-export function createSeatsGridHtml(seatsList, sectorId, miReservaActual) {
+export function createSeatsGridHtml(seatsList, sectorId, reservasActivas) {
     const rows = {};
     
     seatsList.forEach(seat => {
@@ -25,7 +25,9 @@ export function createSeatsGridHtml(seatsList, sectorId, miReservaActual) {
             if (seat.status === 'Available') {
                 statusClass = 'seat-available';
             } else if (seat.status === 'Reserved') {
-                const esMia = miReservaActual && miReservaActual.seatId === seat.id;
+                
+                const esMia = reservasActivas && reservasActivas.some(r => r.seatId === seat.id);
+                
                 if (esMia) {
                     statusClass = 'seat-my-reserved'; 
                     disabledClass = '';

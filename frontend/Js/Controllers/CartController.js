@@ -1,4 +1,4 @@
-import { getMiReserva, clearMiReserva } from '../Services/ReservationStorage.js';
+import { getMisReservas, clearMisReservas } from '../Services/ReservationStorage.js';
 
 let temporizadorInterval = null;
 
@@ -6,11 +6,24 @@ export function detenerTemporizador() {
     if (temporizadorInterval) clearInterval(temporizadorInterval);
     document.getElementById('carrito-container').style.display = 'none';
     document.body.style.paddingBottom = '0px';
+    // Limpiamos el tiempo global de la sesión al detener
+    sessionStorage.removeItem('cartExpiration'); 
 }
 
-export function iniciarCarritoConTemporizador(reservationId, currentSectorId, expiresAtTimestamp) {
+export function actualizarContadorCarrito() {
+    const reservas = getMisReservas();
+    const titleElement = document.querySelector('.cart-title');
+
+    if (titleElement) {
+        titleElement.innerHTML = `🎟️ Tienes <span id="cart-count">${reservas.length}</span> reserva${reservas.length !== 1 ? 's' : ''} pendiente${reservas.length !== 1 ? 's' : ''}`;
+    }
+}
+
+export function iniciarCarritoConTemporizador(expiresAtTimestamp) {
     document.getElementById('carrito-container').style.display = 'block';
     document.body.style.paddingBottom = '150px'; 
+    
+    actualizarContadorCarrito();
     
     const timerElement = document.getElementById('contador-carrito');
 
@@ -23,21 +36,23 @@ export function iniciarCarritoConTemporizador(reservationId, currentSectorId, ex
         if (tiempoRestanteMs <= 0) {
             detenerTemporizador();
 
-            const miReservaActual = getMiReserva();
-            if (miReservaActual) {
-                const btnNaranja = document.querySelector(`button[data-seat-id="${miReservaActual.seatId}"]`);
+            const misReservasActuales = getMisReservas();
+            
+            misReservasActuales.forEach(reserva => {
+                const btnNaranja = document.querySelector(`button[data-seat-id="${reserva.seatId}"]`);
                 if (btnNaranja) {
                     btnNaranja.classList.remove('seat-my-reserved', 'disabled');
                     btnNaranja.classList.add('seat-available');
                 }
-            }
+            });
 
-            clearMiReserva();
+            clearMisReservas();
             
             Swal.fire({
                 icon: 'warning',
                 title: 'Tiempo expirado',
-                text: 'El tiempo para pagar ha expirado. Tu butaca ha sido liberada.',
+                text: 'El tiempo para pagar ha expirado. Tus butacas han sido liberadas.',
+                background: 'var(--card-bg)',
                 color: 'var(--text-main)', 
                 confirmButtonColor: 'var(--neon-purple)'
             });

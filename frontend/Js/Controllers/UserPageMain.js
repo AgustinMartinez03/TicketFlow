@@ -5,8 +5,8 @@ import { fetchSectorsByEvent } from '../Services/SectorService.js';
 import { createSectorCard } from '../Components/Cards/SectorCard.js';
 import { fetchSeatsBySector, reserveSeatApi } from '../Services/SeatService.js';
 import { processPaymentApi } from '../Services/PaymentService.js';
-import { getMiReserva, setMiReserva, clearMiReserva } from '../Services/ReservationStorage.js';
-import { iniciarCarritoConTemporizador, detenerTemporizador } from './CartController.js';
+import { getMisReservas, addMiReserva, clearMisReservas } from '../Services/ReservationStorage.js';
+import { iniciarCarritoConTemporizador, detenerTemporizador, actualizarContadorCarrito } from './CartController.js';
 import { createSeatsGridHtml } from '../Components/SeatsComponent.js';
 
 const viewCatalog = document.getElementById('view-catalog');
@@ -184,22 +184,24 @@ async function recargarGrillaButacas(sectorId) {
 
 // 👇 3. RENDERIZADO INTELIGENTE (VERIFICA MEMORIA AL INICIAR)
 function renderSeatsGrid(seatsList, sectorId) { 
-    // Verificamos si hay una reserva activa en memoria y si sigue viva
-    const miReserva = getMiReserva();
-    if (miReserva) {
-        if (miReserva.expiresAt > Date.now()) {
-            iniciarCarritoConTemporizador(miReserva.reservationId, sectorId, miReserva.expiresAt);
+    // Verificamos si hay reservas activas en memoria y si sigue vivo el tiempo global
+    const misReservas = getMisReservas();
+    const expiracionGlobal = sessionStorage.getItem('cartExpiration');
+
+    if (misReservas.length > 0 && expiracionGlobal) {
+        if (expiracionGlobal > Date.now()) {
+            iniciarCarritoConTemporizador(expiracionGlobal);
         } else {
-            clearMiReserva(); 
+            clearMisReservas(); 
         }
     } else {
         detenerTemporizador();
     }
 
-    const reservaActiva = getMiReserva(); // Volvemos a leer por si la borramos arriba
+    const reservasActivas = getMisReservas(); // Volvemos a leer por si se borraron arriba
 
-    // 👇 REFACTOR: Delegamos el armado del HTML al componente visual
-    seatsGrid.innerHTML = createSeatsGridHtml(seatsList, sectorId, reservaActiva);
+    // 👇 Le pasamos el ARRAY de reservas al componente visual
+    seatsGrid.innerHTML = createSeatsGridHtml(seatsList, sectorId, reservasActivas);
     
     attachSeatClickEvents();
 }
@@ -223,79 +225,24 @@ function attachSeatClickEvents() {
             const number = e.target.getAttribute('data-seat-number');
             const sectorId = e.target.getAttribute('data-sector-id'); 
 
-            const miReservaActual = getMiReserva();
-
-            // -- ESCENARIO A: PAGO DE BUTACA NARANJA --
-            if (seatBtn.classList.contains('seat-my-reserved') && miReservaActual) {
-                const { value: formValues } = await Swal.fire({
-                    title: 'Pagar Reserva',
-                    html: `
-                        <p class="text-light mb-3">Estás a punto de pagar la Fila ${row}, Butaca ${number}.</p>
-                        <input id="swal-input1" class="swal2-input bg-dark text-light border-secondary" placeholder="Número de Tarjeta (Simulado)">
-                    `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Procesar Pago',
-                    cancelButtonText: 'Cancelar',
-                    background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)',
-                    preConfirm: () => {
-                        return document.getElementById('swal-input1').value;
-                    }
+            // -- ESCENARIO A: CLIC EN BUTACA NARANJA --
+            if (seatBtn.classList.contains('seat-my-reserved')) {
+                // Como el pago ahora se hace desde el botón "Pagar Todo" del carrito,
+                // solo le avisamos al usuario que ya la tiene seleccionada.
+                Swal.fire({
+                    toast: true, position: 'top-end', showConfirmButton: false, timer: 2500,
+                    icon: 'info', title: 'Esta butaca ya está en tu carrito',
+                    background: 'var(--card-bg)', color: 'var(--text-main)'
                 });
-
-                if (formValues) {
-                    try {
-                        Swal.fire({
-                            title: 'Procesando pago...',
-                            background: 'var(--card-bg)', color: 'var(--text-main)',
-                            allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading(); }
-                        });
-
-                        // 👇 REFACTOR: Usamos el servicio en lugar del fetch manual
-                        await processPaymentApi(miReservaActual.reservationId, formValues);
-
-                        // Éxito
-                        detenerTemporizador();
-                        clearMiReserva();
-
-                        seatBtn.classList.remove('seat-my-reserved');
-                        seatBtn.classList.add('seat-sold', 'disabled');
-
-                        Swal.fire({
-                            title: '¡Pago Exitoso!',
-                            text: 'Disfruta tu evento.',
-                            icon: 'success',
-                            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)'
-                        });
-
-                    } catch (error) {
-                        // Fix del colgado: Este Swal pisa al de "Procesando pago..."
-                        Swal.fire({ 
-                            title: 'Error', 
-                            text: error.message || 'El pago no pudo procesarse.', 
-                            icon: 'error', 
-                            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)'
-                        });
-                    }
-                }
                 return; 
             }
 
             // -- ESCENARIO B: RESERVAR BUTACA VERDE --
             if (seatBtn.classList.contains('seat-available')) {
                 
-                // REGLA DE NEGOCIO: Bloqueamos si ya tiene una reserva pendiente
-                if (miReservaActual) {
-                    Swal.fire({
-                        title: 'Reserva en curso',
-                        text: 'Ya tienes una butaca pendiente de pago. Por favor, finaliza esa compra o espera a que expire.',
-                        icon: 'info',
-                        background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--neon-purple)'
-                    });
-                    return; // Cortamos acá
-                }
+                // NOTA: Eliminamos el bloqueo. ¡Ahora permitimos seguir reservando!
 
+                // Restauramos tu SweetAlert de confirmación original
                 Swal.fire({
                     title: '¿Confirmar Reserva?',
                     text: `Estás por seleccionar la Fila ${row}, Butaca ${number}. ¿Deseas continuar?`,
@@ -316,25 +263,29 @@ function attachSeatClickEvents() {
                         try {
                             const responseData = await reserveSeatApi(seatId, CURRENT_USER_ID);
                             
-                            // Creamos la reserva con Timestamp exacto: Ahora + 5 minutos
-                            const timestampExpiracion = Date.now() + (5 * 60 * 1000);
-                            
                             const nuevaReserva = { 
                                 seatId: seatId, 
-                                reservationId: responseData.reservationId,
-                                expiresAt: timestampExpiracion 
+                                reservationId: responseData.reservationId 
                             };
                             
-                            setMiReserva(nuevaReserva);
+                            addMiReserva(nuevaReserva); // Agregamos al array
                             
-                            iniciarCarritoConTemporizador(responseData.reservationId, sectorId, timestampExpiracion);
+                            // LA REGLA DEL PROFE: El tiempo arranca desde la PRIMERA reserva.
+                            let expiracionGlobal = sessionStorage.getItem('cartExpiration');
+                            if (!expiracionGlobal) {
+                                expiracionGlobal = Date.now() + (5 * 60 * 1000);
+                                sessionStorage.setItem('cartExpiration', expiracionGlobal);
+                            }
+                            
+                            iniciarCarritoConTemporizador(expiracionGlobal);
 
                             seatBtn.classList.remove('seat-available');
                             seatBtn.classList.add('seat-my-reserved');
 
+                            // Restauramos tu alerta de éxito original (ajustado el texto al carrito)
                             Swal.fire({
                                 title: '¡Reserva Confirmada!',
-                                text: `Tu butaca ha sido reservada con éxito. Tienes 5 minutos para pagar.`,
+                                text: `Tu butaca ha sido agregada al carrito. Recuerda pagar antes de que expire el tiempo.`,
                                 icon: 'success',
                                 background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)'
                             });
@@ -544,6 +495,66 @@ window.changePage = (page) => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Efecto pro de volver arriba
     initPage(page);
 };
+
+// Al final de UserPageMain.js
+document.getElementById('btn-logout').addEventListener('click', () => {
+    logout(); // La función que ya importamos de AuthService
+});
+
+// 👇 NUEVA LÓGICA DE PAGO DEL CARRITO
+const btnPayCart = document.getElementById('btn-pay-cart');
+if (btnPayCart) {
+    btnPayCart.addEventListener('click', async () => {
+        const reservas = getMisReservas();
+        if (reservas.length === 0) return;
+
+        // Extraemos solo los IDs para mandar al Backend
+        const reservationIds = reservas.map(r => r.reservationId);
+
+        const { value: formValues } = await Swal.fire({
+            title: 'Pagar Carrito',
+            html: `
+                <p class="text-light mb-3">Estás a punto de pagar <strong>${reservas.length}</strong> butacas.</p>
+                <input id="swal-input1" class="swal2-input bg-dark text-light border-secondary" placeholder="Número de Tarjeta (Simulado)">
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Procesar Pago',
+            cancelButtonText: 'Cancelar',
+            background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)',
+            preConfirm: () => document.getElementById('swal-input1').value
+        });
+
+        if (formValues) {
+            try {
+                Swal.fire({ title: 'Procesando pago...', background: 'var(--card-bg)', color: 'var(--text-main)', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+
+                // Mandamos el Array de IDs!
+                await processPaymentApi(reservationIds, formValues);
+
+                // Éxito: Limpiamos todo
+                detenerTemporizador();
+                clearMisReservas();
+
+                // Cambiamos el color de las butacas a vendidas visualmente
+                reservas.forEach(reserva => {
+                    const btn = document.querySelector(`button[data-seat-id="${reserva.seatId}"]`);
+                    if (btn) {
+                        btn.classList.remove('seat-my-reserved');
+                        btn.classList.add('seat-sold', 'disabled');
+                    }
+                });
+
+                Swal.fire({ title: '¡Pago Exitoso!', text: 'Disfruta tu evento.', icon: 'success', background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--success)' });
+
+            } catch (error) {
+                Swal.fire({ title: 'Error', text: error.message || 'El pago no pudo procesarse.', icon: 'error', background: 'var(--card-bg)', color: 'var(--text-main)', confirmButtonColor: 'var(--danger)' });
+            }
+        }
+    });
+}
+
+initPage();
 
 // Cierre de Sesión con Confirmación (SweetAlert2)
 document.getElementById('btn-logout').addEventListener('click', () => {
