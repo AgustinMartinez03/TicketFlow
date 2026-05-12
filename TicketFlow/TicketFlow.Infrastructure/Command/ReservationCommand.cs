@@ -18,7 +18,6 @@ namespace TicketFlow.Infrastructure.Command
             _context.Reservations.Add(reservation);
         }
 
-        // 👇 IMPLEMENTAMOS LA NUEVA HERRAMIENTA
         public void UpdateReservation(Reservation reservation)
         {
             _context.Reservations.Update(reservation);

@@ -29,11 +29,10 @@ namespace TicketFlow.Application.UseCases
 
         public async Task ExecuteAsync()
         {
-            // 1. Usamos la Query purificada
             var expiredReservations = await _reservationQuery.GetExpiredPendingReservationsAsync(DateTime.UtcNow);
 
             if (!expiredReservations.Any())
-                return; // No hay nada que limpiar
+                return;
 
             foreach (var reservation in expiredReservations)
             {
@@ -44,7 +43,6 @@ namespace TicketFlow.Application.UseCases
                     reservation.Status = "Cancelled";
                     _reservationCommand.UpdateReservation(reservation);
 
-                    // 2. Usamos la Query de Seat en lugar del DbContext directo
                     var seat = await _seatQuery.GetSeatByIdAsync(reservation.SeatId);
                     if (seat != null)
                     {
@@ -70,7 +68,7 @@ namespace TicketFlow.Application.UseCases
                 catch (Exception)
                 {
                     await _seatCommand.RollbackTransactionAsync();
-                    _seatCommand.DiscardChanges(); // Limpiamos la memoria por si acaso
+                    _seatCommand.DiscardChanges();
                 }
             }
         }

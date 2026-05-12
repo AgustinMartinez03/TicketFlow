@@ -24,66 +24,75 @@ namespace TicketFlow.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // ==========================================
+            // 1. CONFIGURACIÓN BASE (Base de Datos)
+            // ==========================================
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // ==========================================
+            // 2. DOMINIO: AUTH & USERS (Usuarios y Login)
+            // ==========================================
+            builder.Services.AddScoped<IUserQuery, UserQuery>();
+            builder.Services.AddScoped<ILoginMapper, LoginMapper>();
+            builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
+
+            // ==========================================
+            // 3. DOMINIO: EVENTS (Eventos)
+            // ==========================================
             builder.Services.AddScoped<IEventCommand, EventCommand>();
-            builder.Services.AddScoped<IEventMapper, EventMapper>();
             builder.Services.AddScoped<IEventQuery, EventQuery>();
+            builder.Services.AddScoped<IEventMapper, EventMapper>();
             builder.Services.AddScoped<ICreateEventUseCase, CreateEventUseCase>();
             builder.Services.AddScoped<IGetEventCatalogUseCase, GetEventCatalogUseCase>();
 
-            builder.Services.AddScoped<ISeatQuery, SeatQuery>();
-            builder.Services.AddScoped<ISeatMapper, SeatMapper>();
-            builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
-            builder.Services.AddScoped<ISeatCommand, SeatCommand>();
-            builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
-
-            builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
-            builder.Services.AddScoped<IReservationMapper, ReservationMapper>();
-            builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
-            builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
-            builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
-
+            // ==========================================
+            // 4. DOMINIO: SECTORS (Sectores)
+            // ==========================================
             builder.Services.AddScoped<ISectorQuery, SectorQuery>();
             builder.Services.AddScoped<ISectorMapper, SectorMapper>();
             builder.Services.AddScoped<IGetSectorsByEventUseCase, GetSectorsByEventUseCase>();
 
-            builder.Services.AddScoped<IUserQuery, UserQuery>();
-            builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
-            builder.Services.AddScoped<ILoginMapper, LoginMapper>();
+            // ==========================================
+            // 5. DOMINIO: SEATS (Butacas)
+            // ==========================================
+            builder.Services.AddScoped<ISeatCommand, SeatCommand>();
+            builder.Services.AddScoped<ISeatQuery, SeatQuery>();
+            builder.Services.AddScoped<ISeatMapper, SeatMapper>();
+            builder.Services.AddScoped<IGetSeatsBySectorUseCase, GetSeatsBySectorUseCase>();
 
+            // ==========================================
+            // 6. DOMINIO: RESERVATIONS & PAYMENTS (Reservas y Pagos)
+            // ==========================================
+            builder.Services.AddScoped<IReservationCommand, ReservationCommand>();
+            builder.Services.AddScoped<IReservationQuery, ReservationQuery>();
+            builder.Services.AddScoped<IReservationMapper, ReservationMapper>();
+            builder.Services.AddScoped<IReserveSeatUseCase, ReserveSeatUseCase>();
             builder.Services.AddScoped<IPayReservationUseCase, PayReservationUseCase>();
-
-            // Registrar el nuevo Caso de Uso
+            builder.Services.AddScoped<IGetUserReservationsUseCase, GetUserReservationsUseCase>();
             builder.Services.AddScoped<ICancelExpiredReservationsUseCase, CancelExpiredReservationsUseCase>();
 
-            // Registrar el Worker (Hosted Service)
+            // ==========================================
+            // 7. DOMINIO: AUDIT (Auditoría del Sistema)
+            // ==========================================
+            builder.Services.AddScoped<IAuditLogCommand, AuditLogCommand>();
+
+            // ==========================================
+            // 8. BACKGROUND SERVICES (Workers)
+            // ==========================================
             builder.Services.AddHostedService<ReservationCleanupWorker>();
 
-            // 1. Creamos la instancia de JwtSettings y la llenamos con la sección "Jwt" del appsettings.json
-            var jwtSettings = new JwtSettings();
-            builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
 
-            // 2. Registramos el objeto como Singleton para que el LoginUseCase pueda recibirlo
-            builder.Services.AddSingleton(jwtSettings);
+            // ==========================================
+            // 9. CONFIGURACIÓN DE RUTAS Y CONTROLADORES
+            // ==========================================
+            // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas (Buena práctica SEO/API)
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
+            builder.Services.AddControllers();
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-                };
-            });
-
-            builder.Services.AddAuthorization();
-
+            // ==========================================
+            // 10. SEGURIDAD: CORS (Cross-Origin Resource Sharing)
+            // ==========================================
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -94,15 +103,47 @@ namespace TicketFlow.API
                 });
             });
 
-            // Forzar que todas las URLs generadas y expuestas en Swagger sean en minúsculas
-            builder.Services.AddRouting(options => options.LowercaseUrls = true);
+            // ==========================================
+            // 11. SEGURIDAD: AUTENTICACIÓN (JWT) Y AUTORIZACIÓN
+            // ==========================================
+            var jwtSettings = new JwtSettings();
+            builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
 
-            builder.Services.AddControllers();
+            // Registramos el objeto como Singleton para que el LoginUseCase u otros puedan inyectarlo
+            builder.Services.AddSingleton(jwtSettings);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                    };
+                });
+
+            builder.Services.AddAuthorization();
+
+            // ==========================================
+            // 12. DOCUMENTACIÓN API (Swagger)
+            // ==========================================
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            // ==========================================
+            //  CONSTRUCCIÓN DE LA APLICACIÓN (BUILD)
+            // ==========================================
             var app = builder.Build();
 
+            // ==========================================
+            // 13. PIPELINE HTTP (MIDDLEWARES)
+            // ==========================================
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
@@ -111,16 +152,11 @@ namespace TicketFlow.API
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowAll");
-
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAll");
             app.UseAuthentication();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
         }
     }

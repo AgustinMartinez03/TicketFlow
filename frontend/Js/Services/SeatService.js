@@ -28,14 +28,12 @@ export async function reserveSeatApi(seatId, userId) {
         });
 
         if (!response.ok) {
-            // 👇 CORRECCIÓN: Intentamos leer el JSON, si falla (ej: 401 vacío), devuelve un objeto vacío
             const errorData = await response.json().catch(() => ({})); 
 
             if (response.status === 401) {
                 throw new Error('Tu sesión ha expirado o no tienes permisos. Por favor, vuelve a iniciar sesión.');
             }
 
-            // Si es 409, lanzamos un error con una bandera especial
             if (response.status === 409) {
                 const error = new Error(errorData.message || 'Error de concurrencia');
                 error.status = 409; 
