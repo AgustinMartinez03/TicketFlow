@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using TicketFlow.API.Middlewares;
 using TicketFlow.API.Workers;
 using TicketFlow.Application.DTOs;
@@ -12,9 +16,6 @@ using TicketFlow.Infrastructure.Command;
 using TicketFlow.Infrastructure.Persistence;
 using TicketFlow.Infrastructure.Query;
 using TicketFlow.Infrastructure.Querys;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace TicketFlow.API
 {
@@ -132,8 +133,38 @@ namespace TicketFlow.API
             // 12. DOCUMENTACIÓN API (Swagger)
             // ==========================================
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // ==========================================
+            // 12. DOCUMENTACIÓN API (Swagger)
+            // ==========================================
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TicketFlow API", Version = "v1" });
 
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Autorización JWT. Escribe la palabra 'Bearer' seguida de un espacio y luego tu token.\n\nEjemplo: 'Bearer eyJhbGci...'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             // ==========================================
             //  CONSTRUCCIÓN DE LA APLICACIÓN (BUILD)

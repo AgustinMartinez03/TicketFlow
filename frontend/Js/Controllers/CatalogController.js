@@ -81,11 +81,18 @@ function attachButtonEvents() {
     const viewCatalog = document.getElementById('view-catalog');
     const viewSectors = document.getElementById('view-sectors');
     const sectorsGrid = document.getElementById('sectors-grid');
+    const sectorsTitle = document.getElementById('sectors-title');
     const buttons = document.querySelectorAll('.btn-select-seats');
     
     buttons.forEach(button => {
         button.addEventListener('click', async (e) => {
             const eventId = e.target.getAttribute('data-id');
+            const eventName = e.target.getAttribute('data-name');
+            
+            if (sectorsTitle) {
+                sectorsTitle.innerText = `Seleccioná tu Sector para ${eventName}`;
+            }
+
             viewCatalog.classList.add('d-none');
             viewSectors.classList.remove('d-none');
             sectorsGrid.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-light" role="status"></div></div>';
