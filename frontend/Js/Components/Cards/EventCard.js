@@ -23,7 +23,7 @@ export function createEventCard(event) {
                         <span>📍 ${event.venue}</span>
                     </div>
                     
-                    <button class="btn btn-neon w-100 mt-auto btn-select-seats" data-id="${event.id}">
+                    <button class="btn btn-neon w-100 mt-auto btn-select-seats" data-id="${event.id}" data-name="${event.name}">
                         Ver Sectores
                     </button>
                 </div>
