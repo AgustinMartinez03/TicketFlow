@@ -10,7 +10,7 @@ export function createEventCard(event) {
     return `
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card event-card h-100 rounded-3 overflow-hidden">
-                <img src="${placeholderImage}" class="card-img-top event-image" alt="${event.name}">
+                <img src="${placeholderImage}" class="card-img-top event-image" alt="${event.name}" title="Imagen promocional de ${event.name}">
                 
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title event-title fw-bold mb-3">${event.name}</h5>
@@ -23,7 +23,7 @@ export function createEventCard(event) {
                         <span>📍 ${event.venue}</span>
                     </div>
                     
-                    <button class="btn btn-neon w-100 mt-auto btn-select-seats" data-id="${event.id}">
+                    <button class="btn btn-neon w-100 mt-auto btn-select-seats" data-id="${event.id}" data-name="${event.name}">
                         Ver Sectores
                     </button>
                 </div>
